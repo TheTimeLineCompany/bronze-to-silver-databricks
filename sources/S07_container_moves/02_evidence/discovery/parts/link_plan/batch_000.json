@@ -1,0 +1,202 @@
+[
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "CNTR_NO",
+    "ref_table": "bronze.container_track.containers",
+    "ref_column": "CNTR_NO",
+    "score": 1.4,
+    "name_similarity": 1.0
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "CNTR_NO",
+    "ref_table": "bronze.container_track.containers",
+    "ref_column": "CNTR_NO",
+    "score": 1.4,
+    "name_similarity": 1.0
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "SHPMT_ID",
+    "score": 1.32,
+    "name_similarity": 0.92
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "SHPMT_ID",
+    "score": 1.32,
+    "name_similarity": 0.92
+  },
+  {
+    "dep_table": "bronze.container_track.containers",
+    "dep_column": "TYPE_CD",
+    "ref_table": "bronze.container_track.container_types",
+    "ref_column": "TYPE_CD",
+    "score": 1.2,
+    "name_similarity": 0.8
+  },
+  {
+    "dep_table": "bronze.container_track.leg_daily_summary",
+    "dep_column": "FROM_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "FROM_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "TO_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "FROM_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "TO_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.shipments",
+    "dep_column": "ORIGIN_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.shipments",
+    "dep_column": "DEST_LOC",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "LOC_CD",
+    "score": 0.567,
+    "name_similarity": 0.267
+  },
+  {
+    "dep_table": "bronze.container_track.locations",
+    "dep_column": "LOC_NAME",
+    "ref_table": "bronze.container_track.locations",
+    "ref_column": "TZ_NAME",
+    "score": 0.329,
+    "name_similarity": 0.229
+  },
+  {
+    "dep_table": "bronze.container_track.containers",
+    "dep_column": "CNTR_NO",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "CNTR_NO",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "CNTR_NO",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.shipments",
+    "dep_column": "SHPMT_ID",
+    "ref_table": "bronze.container_track.shipments",
+    "ref_column": "BOOKED_FROM",
+    "score": 0.314,
+    "name_similarity": 0.114
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+FROM_LOC",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+FROM_LOC",
+    "score": 1.205,
+    "name_similarity": 0.905
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+TO_LOC",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+TO_LOC",
+    "score": 1.205,
+    "name_similarity": 0.905
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "CNTR_NO+ETA_TS",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "CNTR_NO+ETA_TS",
+    "score": 1.193,
+    "name_similarity": 0.893
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+ETA_TS",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+ETA_TS",
+    "score": 1.167,
+    "name_similarity": 0.867
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+ATA_TS",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+ATA_TS",
+    "score": 1.167,
+    "name_similarity": 0.867
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+ATD_TS",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+ATD_TS",
+    "score": 1.167,
+    "name_similarity": 0.867
+  }
+]

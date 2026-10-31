@@ -1,0 +1,35 @@
+table,key,is_best,checks_used
+bronze.container_track.locations,LOC_CD,True,3
+bronze.container_track.locations,LOC_NAME,False,3
+bronze.container_track.locations,TZ_NAME,False,3
+bronze.container_track.carrier_contacts,CONTACT_NAME,True,3
+bronze.container_track.carrier_contacts,EMAIL_ADDR,False,3
+bronze.container_track.carrier_contacts,TEL,False,3
+bronze.container_track.shipments,SHPMT_ID,True,4
+bronze.container_track.shipments,BOOKED_FROM,False,4
+bronze.container_track.leg_daily_summary,DEP_DATE + FROM_LOC,True,2
+bronze.container_track.legs_bkp_2025,SHPMT_ID + LEG_NO,True,25
+bronze.container_track.legs_bkp_2025,SHPMT_ID + ETA_TS,False,25
+bronze.container_track.legs_bkp_2025,SHPMT_ID + FROM_LOC,False,25
+bronze.container_track.legs_bkp_2025,SHPMT_ID + TO_LOC,False,25
+bronze.container_track.legs_bkp_2025,SHPMT_ID + ATD_TS,False,25
+bronze.container_track.legs_bkp_2025,SHPMT_ID + ATA_TS,False,25
+bronze.container_track.legs_bkp_2025,CNTR_NO + ETA_TS,False,25
+bronze.container_track.legs_bkp_2025,CNTR_NO + ATD_TS,False,25
+bronze.container_track.legs_bkp_2025,CNTR_NO + ATA_TS,False,25
+bronze.container_track.legs_bkp_2025,ATD_TS + ETA_TS,False,25
+bronze.container_track.legs_bkp_2025,FROM_LOC + ATD_TS,False,25
+bronze.container_track.container_types,TYPE_CD,True,2
+bronze.container_track.container_types,TYPE_DESC,False,2
+bronze.container_track.containers,CNTR_NO,True,1
+bronze.container_track.legs,SHPMT_ID + LEG_NO,True,24
+bronze.container_track.legs,SHPMT_ID + ETA_TS,False,24
+bronze.container_track.legs,SHPMT_ID + FROM_LOC,False,24
+bronze.container_track.legs,SHPMT_ID + TO_LOC,False,24
+bronze.container_track.legs,SHPMT_ID + ATA_TS,False,24
+bronze.container_track.legs,SHPMT_ID + ATD_TS,False,24
+bronze.container_track.legs,CNTR_NO + ETA_TS,False,24
+bronze.container_track.user_logins,SESSION_ID,True,8
+bronze.container_track.user_logins,USER_ID + IP_ADDR,False,8
+bronze.container_track.user_logins,USER_ID + LOGIN_TS,False,8
+bronze.container_track.user_logins,LOGIN_TS + IP_ADDR,False,8

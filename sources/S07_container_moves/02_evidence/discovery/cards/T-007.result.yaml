@@ -1,0 +1,11 @@
+card: T-007
+role: transaction_header
+business_object: Shipment
+grain_key: [SHPMT_ID]
+accept_links: []
+reject_links: []
+load_to_silver: yes
+reason: One row per booking. BOOKED_FROM holds IP addresses of the booking screen (application log), not business data.
+evidence: [discovery/column_scope.csv shipments.BOOKED_FROM]
+raise_upstream: null
+columns: {BOOKED_FROM: out_of_scope}

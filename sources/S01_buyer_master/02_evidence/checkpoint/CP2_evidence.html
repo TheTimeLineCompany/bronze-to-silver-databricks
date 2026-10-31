@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CP2_evidence S01_buyer_master</title><style>
+:root{--bg:#f4f6f7;--sf:#fff;--ink:#18232b;--mu:#5b6a74;--ln:#d5dde2;--err:#a3202f;--errb:#f8e6e8;--wrn:#8a5a00;--wrnb:#fbf0d9;--inf:#3d4f9c;--infb:#e7eaf7;--ok:#0f7c78;--okb:#e3f3f1;
+--sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}
+*{box-sizing:border-box}main>*,section,header{min-width:0}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+main{max-width:1040px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+h1{font-size:28px;line-height:1.15;margin:0;text-wrap:balance}h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:0 0 8px;font-weight:500}
+p{margin:0;max-width:70ch}code{font-family:var(--mono);font-size:.86em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mu)}
+.pill{display:inline-block;padding:1px 8px;font-family:var(--mono);font-size:12px;border:1px solid currentColor}
+.s-approved,.s-not_required{color:var(--ok)}.s-pending{color:var(--mu)}.s-in_review{color:var(--inf)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tile{background:var(--sf);border:1px solid var(--ln);padding:10px 12px;display:grid;gap:2px;align-content:start}
+.tile b{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1;overflow-wrap:anywhere}.tile span{font-size:13px;color:var(--mu)}
+.box{background:var(--sf);border:1px solid var(--ln);padding:14px 16px;min-width:0}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px 10px;align-items:center;font-size:14px}
+.node{border:1px solid var(--ln);padding:4px 8px;font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;background:var(--bg)}
+.edge{color:var(--mu);font-size:12.5px;white-space:nowrap}.edge::after{content:" \2192"}.rid{font-family:var(--mono);font-size:11.5px;color:var(--mu);overflow-wrap:anywhere}
+@media (max-width:620px){.flow{grid-template-columns:1fr}.edge{white-space:normal}}
+.funnel{display:grid;gap:4px}.fs{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 12px;background:var(--infb);margin-inline:calc(var(--i)*3%)}
+.fs b{font-weight:600}.fs span{font-family:var(--mono);font-size:12.5px;color:var(--inf)}
+.chain{display:flex;flex-wrap:wrap;gap:6px}.ch{padding:6px 10px;border:1px solid var(--ln);font-family:var(--mono);font-size:12.5px;display:grid}
+.ch small{font-size:11px}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.issues li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:6px 10px;font-size:14px}
+.issues .sev{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;padding-top:2px}
+.error{background:var(--errb)}.error .sev{color:var(--err)}.warn{background:var(--wrnb)}.warn .sev{color:var(--wrn)}.info{background:var(--infb)}.info .sev{color:var(--inf)}
+.issues code{overflow-wrap:anywhere}
+.decide{margin:0;padding-left:20px;display:grid;gap:4px}
+.tw{overflow-x:auto;background:var(--sf);border:1px solid var(--ln)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:500;white-space:nowrap}
+td{max-width:420px;min-width:80px;overflow-wrap:break-word}tr:last-child td{border-bottom:0}
+.mx td,.mx th{text-align:center}.mx td:first-child,.mx th:first-child{text-align:left}.mx td{font-variant-numeric:tabular-nums}
+.z{color:var(--mu)}
+footer{font-size:13px;color:var(--mu);display:grid;gap:4px;border-top:1px solid var(--ln);padding-top:10px}
+</style></head><body><main>
+<header style="display:grid;gap:8px"><h2>P2 · checkpoint · S01_buyer_master</h2><h1>CP2 Evidence</h1>
+<div class="meta"><span class="pill s-pending">pending</span><span>Approver: phase1-lead</span><span>Generated 2026-10-31T11:41:51Z</span>
+<span>1 errors · 0 warnings</span></div><p>Check that each fact the mapping needs has enough evidence, and that conflicts are handled.</p></header>
+<section><h2>Key numbers</h2><div class="tiles"><div class='tile'><b>5</b><span>Evidence claims</span></div><div class='tile'><b>4 / 1 / 0</b><span>High / medium / low+unknown</span></div><div class='tile'><b>3</b><span>Confirmed by bronze or corroborated</span></div><div class='tile'><b>0</b><span>Contradicted</span></div><div class='tile'><b>7</b><span>Client profiling rows · 0 low</span></div></div></section>
+<section><h2>Connections</h2><div class="box"><p style='font-size:13px;color:var(--mu);margin-bottom:8px'>Evidence claims by confidence (rows) and status (columns)</p><div class='tw'><table class='mx'><tr><th></th><th>unverified</th><th>corroborated</th><th>confirmed_by_bronze</th><th>contradicted</th><th>superseded</th></tr><tr><td><b>high</b></td><td class=''>2</td><td class=''>1</td><td class=''>1</td><td class='z'>0</td><td class='z'>0</td></tr><tr><td><b>medium</b></td><td class='z'>0</td><td class='z'>0</td><td class=''>1</td><td class='z'>0</td><td class='z'>0</td></tr><tr><td><b>low</b></td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td></tr><tr><td><b>unknown</b></td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td><td class='z'>0</td></tr></table></div></div></section>
+<section><h2>Needs attention</h2><ul class='issues'><li class='error'><span class='sev'>error</span><span><code>bronze</code> no bronze results: run tools/p2_2_discover.py</span></li></ul></section>
+<section><h2>Reviewer decides</h2><div class="box"><ol class="decide"><li>Are the table roles, grain keys, and business objects right (see lineage order)?</li><li>Is the scope right: no logs, audit, or staging data in silver, and personal data handled?</li><li>Is the evidence enough for every key, foreign key, grain, and business rule?</li><li>Are contradictions resolved, with bronze for structure and documents for meaning?</li><li>Are the open questions the right ones, and is &#x27;blocking&#x27; set correctly?</li></ol></div></section>
+<section><h2>Evidence</h2><div class='tw'><table><tr><th>evidence_id</th><th>claim</th><th>about_type</th><th>about</th><th>origin</th><th>file_id</th><th>location</th><th>confidence</th><th>status</th><th>corroborated_by</th><th>notes</th></tr><tr><td>E-0001</td><td>BUYER_ID identifies a buyer and is never re-used.</td><td>key</td><td>T_BUYER.BUYER_ID -&gt; Buyer</td><td>document</td><td>IF-0001</td><td>sheet T_BUYER row 2</td><td>high</td><td>corroborated</td><td>E-0002</td><td></td></tr><tr><td>E-0002</td><td>Client confirmed buyer ids are never re-used (Q-0002).</td><td>key</td><td>T_BUYER.BUYER_ID</td><td>client_answer</td><td></td><td>registry/open_questions.yaml Q-0002</td><td>high</td><td>confirmed_by_bronze</td><td>02_evidence/profiling/t_buyer.json</td><td>unique in bronze</td></tr><tr><td>E-0003</td><td>BUYER_NM is the buyer full name.</td><td>column</td><td>T_BUYER.BUYER_NM</td><td>document</td><td>IF-0001</td><td>sheet T_BUYER row 3</td><td>high</td><td>unverified</td><td></td><td></td></tr><tr><td>E-0004</td><td>DEPT_CD links a buyer to T_DEPT; DEPT_NM is the department name.</td><td>relationship</td><td>T_BUYER -&gt; T_DEPT (Department)</td><td>document</td><td>IF-0001</td><td>sheet T_DEPT rows 2-3</td><td>medium</td><td>confirmed_by_bronze</td><td>02_evidence/profiling/t_dept.json</td><td></td></tr><tr><td>E-0005</td><td>STATUS_CD A means active and I means inactive.</td><td>code_value</td><td>T_BUYER.STATUS_CD</td><td>document</td><td>IF-0002</td><td>slide 4</td><td>high</td><td>unverified</td><td></td><td></td></tr></table></div></section>
+<footer><span>Full lists: <code>CP2_evidence.xlsx</code> (Evidence, Bronze checks, Client profiling, Questions, Feedback). Machine-readable: <code>CP2_evidence.json</code>. Next: p4-1-sttm-author (reads evidence and bronze results).</span>
+
+<span>Feedback: <code>python tools/x_feedback.py new S01_buyer_master CP2_evidence --comment "..."</code></span></footer>
+</main></body></html>

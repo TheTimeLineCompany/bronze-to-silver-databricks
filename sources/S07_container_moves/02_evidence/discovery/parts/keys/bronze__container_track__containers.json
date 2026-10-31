@@ -1,0 +1,13 @@
+{
+  "table": "bronze.container_track.containers",
+  "keys": [
+    [
+      "CNTR_NO"
+    ]
+  ],
+  "checks": 1,
+  "best": [
+    "CNTR_NO"
+  ],
+  "declared_keys": []
+}

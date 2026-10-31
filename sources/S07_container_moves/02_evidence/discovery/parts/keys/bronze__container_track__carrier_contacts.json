@@ -1,0 +1,19 @@
+{
+  "table": "bronze.container_track.carrier_contacts",
+  "keys": [
+    [
+      "CONTACT_NAME"
+    ],
+    [
+      "EMAIL_ADDR"
+    ],
+    [
+      "TEL"
+    ]
+  ],
+  "checks": 3,
+  "best": [
+    "CONTACT_NAME"
+  ],
+  "declared_keys": []
+}

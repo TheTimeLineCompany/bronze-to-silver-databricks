@@ -1,0 +1,271 @@
+{
+  "checkpoint": "CP4_sttm",
+  "source_id": "S01_buyer_master",
+  "phase": "P4",
+  "title": "Source-to-target mapping",
+  "purpose": "Check the mapping from bronze to silver, column by column, back to evidence.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "Handover H1 (with CP4b) -> p5-1-pyspark-codegen",
+  "inputs": {
+    "sources/S01_buyer_master/04_mapping/sttm.yaml": "5f8935e64a8ecfc2d0a0e0b22c1a7fff6e4182a1",
+    "sources/S01_buyer_master/02_evidence/evidence_register.csv": "77f349f77a439dee7c53084591689ecce0a13a2d"
+  },
+  "metrics": [
+    {
+      "label": "Target tables",
+      "value": 1,
+      "note": ""
+    },
+    {
+      "label": "Columns",
+      "value": 8,
+      "note": ""
+    },
+    {
+      "label": "Foreign keys",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "Business-logic columns",
+      "value": 0,
+      "note": "need CP4b"
+    },
+    {
+      "label": "Low / unknown confidence",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "Validator",
+      "value": "PASS",
+      "note": "0 errors, 0 warnings"
+    },
+    {
+      "label": "Independent review",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "Business object -> silver table -> shared masters (relationship id)",
+    "flows": [
+      [
+        "Buyer",
+        "is stored as",
+        "slv_mst_buyer (master, scd2)",
+        ""
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "info",
+      "item": "review",
+      "text": "sttm_review.md: missing"
+    }
+  ],
+  "decide": [
+    "Is the grain right, and is the business key unique in bronze?",
+    "Does each foreign key follow a real business relationship?",
+    "Are the transforms exact, and does each column cite good evidence?"
+  ],
+  "key_table": "Columns",
+  "tables": {
+    "Tables": {
+      "columns": [
+        "target_table",
+        "business_object",
+        "data_class",
+        "grain",
+        "load_pattern",
+        "scd_type",
+        "business_key",
+        "sources"
+      ],
+      "rows": [
+        [
+          "slv_mst_buyer",
+          "Buyer",
+          "master",
+          "One row per buyer ID per validity period (SCD Type 2).",
+          "scd2",
+          2,
+          "buyer_id",
+          "bronze.buyer_mgmt.t_buyer, bronze.buyer_mgmt.t_dept"
+        ]
+      ]
+    },
+    "Columns": {
+      "columns": [
+        "table",
+        "column",
+        "type",
+        "key_role",
+        "rule",
+        "source",
+        "transform",
+        "evidence",
+        "confidence",
+        "business_rule",
+        "question"
+      ],
+      "rows": [
+        [
+          "slv_mst_buyer",
+          "buyer_sk",
+          "STRING",
+          "PK",
+          "technical",
+          null,
+          "sha2(concat_ws('|', buyer_id, effective_from), 256)",
+          "",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "buyer_id",
+          "STRING",
+          "BK",
+          "normalised_key",
+          "b.BUYER_ID",
+          "keys.normalise('buyer_id', b.BUYER_ID)",
+          "E-0001, E-0002",
+          "high",
+          null,
+          "Q-0002"
+        ],
+        [
+          "slv_mst_buyer",
+          "buyer_name",
+          "STRING",
+          "none",
+          "direct",
+          "b.BUYER_NM",
+          "trim(b.BUYER_NM)",
+          "E-0003",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "department_name",
+          "STRING",
+          "none",
+          "lookup",
+          "d.DEPT_NM",
+          "d.DEPT_NM via b.DEPT_CD",
+          "E-0004",
+          "medium",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "is_active",
+          "BOOLEAN",
+          "none",
+          "derived",
+          "b.STATUS_CD",
+          "b.STATUS_CD = 'A'",
+          "E-0005",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "effective_from",
+          "TIMESTAMP",
+          "none",
+          "technical",
+          null,
+          "scd2 from b.LAST_UPD_TS",
+          "",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "effective_to",
+          "TIMESTAMP",
+          "none",
+          "technical",
+          null,
+          "scd2",
+          "",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_mst_buyer",
+          "is_current",
+          "BOOLEAN",
+          "none",
+          "technical",
+          null,
+          "scd2",
+          "",
+          "high",
+          null,
+          null
+        ]
+      ]
+    },
+    "Foreign keys": {
+      "columns": [
+        "table",
+        "column",
+        "entity",
+        "entity_column",
+        "cardinality",
+        "orphan_policy",
+        "relationship"
+      ],
+      "rows": []
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "info": 1
+  }
+}

@@ -1,0 +1,118 @@
+# EXAMPLE STTM (master entity, SCD Type 2). Replace with the real source.
+source_id: S01_buyer_master
+source_system: BUYMGR
+version: "0.2"
+status: draft
+owner: phase1-analyst
+notes: Buyer master. Feeds the shared Buyer entity. One source table plus a department lookup.
+
+tables:
+  - target_table: slv_mst_buyer
+    business_object: Buyer          # registry/ontology/business.yaml
+    data_class: master              # registry/ontology/data.yaml
+    target_kind: master
+    conformed_entity: Buyer
+    grain: One row per buyer ID per validity period (SCD Type 2).
+    load_pattern: scd2
+    scd_type: 2
+    primary_key: [buyer_sk]
+    business_key: [buyer_id]
+    surrogate_key: {column: buyer_sk, method: hash, of: [buyer_id, effective_from]}
+    partition_by: null
+    sources:
+      - table: bronze.buyer_mgmt.t_buyer
+        alias: b
+        filter: "b.REC_STATUS <> 'D'"
+        dedup: "latest by b.LAST_UPD_TS per BUYER_ID"
+      - table: bronze.buyer_mgmt.t_dept
+        alias: d
+        filter: null
+        dedup: null
+    joins:
+      - {left: b, right: d, condition: "b.DEPT_CD = d.DEPT_CD", type: left, cardinality: "N:1"}
+    columns:
+      - target: buyer_sk
+        type: STRING
+        nullable: false
+        rule: technical
+        source: null
+        transform: "sha2(concat_ws('|', buyer_id, effective_from), 256)"
+        key_role: PK
+        description: Surrogate key for one version of a buyer.
+        provenance: null
+        confidence: high
+      - target: buyer_id
+        type: STRING
+        nullable: false
+        rule: normalised_key
+        source: b.BUYER_ID
+        transform: "keys.normalise('buyer_id', b.BUYER_ID)"
+        key_rule: buyer_id
+        key_role: BK
+        dq: [not_null, matches_key_pattern]
+        description: Buyer identifier from BUYMGR, normalised.
+        provenance: {evidence: [E-0001, E-0002], doc: null, ref: null, profiling: 02_evidence/profiling/t_buyer.json}
+        confidence: high
+        open_question: Q-0002
+      - target: buyer_name
+        type: STRING
+        nullable: true
+        rule: direct
+        source: b.BUYER_NM
+        transform: "trim(b.BUYER_NM)"
+        key_role: none
+        description: Full name of the buyer.
+        provenance: {evidence: [E-0003]}
+        confidence: high
+      - target: department_name
+        type: STRING
+        nullable: true
+        rule: lookup
+        source: d.DEPT_NM
+        transform: "d.DEPT_NM via b.DEPT_CD"
+        key_role: none
+        description: Department of the buyer, from the department lookup table.
+        provenance: {evidence: [E-0004], profiling: 02_evidence/profiling/t_dept.json}
+        confidence: medium
+      - target: is_active
+        type: BOOLEAN
+        nullable: false
+        rule: derived
+        source: b.STATUS_CD
+        transform: "b.STATUS_CD = 'A'"
+        business_logic: false
+        key_role: none
+        dq: [not_null]
+        description: True when the buyer status code is A (active).
+        provenance: {evidence: [E-0005], profiling: 02_evidence/profiling/t_buyer.json}
+        confidence: high
+      - target: effective_from
+        type: TIMESTAMP
+        nullable: false
+        rule: technical
+        source: null
+        transform: "scd2 from b.LAST_UPD_TS"
+        key_role: none
+        description: Start of validity for this version.
+        provenance: null
+        confidence: high
+      - target: effective_to
+        type: TIMESTAMP
+        nullable: true
+        rule: technical
+        source: null
+        transform: "scd2"
+        key_role: none
+        description: End of validity; null for the current version.
+        provenance: null
+        confidence: high
+      - target: is_current
+        type: BOOLEAN
+        nullable: false
+        rule: technical
+        source: null
+        transform: "scd2"
+        key_role: none
+        description: True for the current version of the buyer.
+        provenance: null
+        confidence: high

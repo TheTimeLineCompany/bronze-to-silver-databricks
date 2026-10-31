@@ -1,0 +1,22 @@
+# Privacy rules for silver (REPLACE with the client's governance rules).
+# Read by tools/p4_2_validate_sttm.py and lib/uc_publish.py.
+#
+# Discovery classes bronze columns as personal_data from names, content patterns (email, phone), and Unity Catalog
+# data-classification tags. Every silver column built from such a column must declare `privacy` in the STTM.
+
+tags:                                  # Unity Catalog tags written on silver columns with privacy
+  personal: {pii: "true", privacy_class: personal}
+  sensitive_personal: {pii: "true", privacy_class: sensitive_personal}
+  financial: {pii: "true", privacy_class: financial}
+  secret: {privacy_class: secret}
+
+# Column mask function (Unity Catalog) used for handling: mask. The governance team creates it, for example:
+#   CREATE FUNCTION governance.masks.mask_pii(v STRING) RETURN
+#     CASE WHEN is_account_group_member('pii_readers') THEN v ELSE '***' END;
+mask_function: governance.masks.mask_pii      # null = masks cannot be applied (publish reports it)
+
+defaults:                              # suggested handling per class (the STTM decides)
+  personal: keep_tagged                # business contacts (buyer, supplier contact) stay usable, tagged
+  sensitive_personal: mask
+  financial: mask
+  secret: never_map                    # passwords, tokens: never in silver

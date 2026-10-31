@@ -1,0 +1,53 @@
+table,column,type,family,null_pct,approx_distinct,stats_distinct,distinct_ratio,min,max,min_len,max_len,avg_len,patterns,top_values,uc_comment,uc_tags,masked,column_class,suggested_use,class_reasons,sample_rows
+bronze.container_track.locations,LOC_CD,string,str,0.0,10,,1.0,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",KRPUS:1; AEJEA:1; BEANR:1; GBFXT:1; USLAX:1; USNYC:1; DEHAM:1; NLRTM:1; CNSHA:1; SGSIN:1,,,False,,,,10
+bronze.container_track.locations,LOC_NAME,string,str,0.0,10,,1.0,Port AEJEA,Port USNYC,10,10,10.0,"[""Aaaa AAAAA""]",Port BEANR:1; Port AEJEA:1; Port KRPUS:1; Port GBFXT:1; Port USLAX:1; Port USNYC:1; Port DEHAM:1; Port NLRTM:1; Port SGSIN:1; Port CNSHA:1,,,False,,,,10
+bronze.container_track.locations,COUNTRY_CD,string,str,0.0,9,,0.9,AE,US,2,2,2.0,"[""AA""]",US:2; KR:1; AE:1; BE:1; GB:1; NL:1; DE:1; CN:1; SG:1,,,False,,,,10
+bronze.container_track.locations,TZ_NAME,string,str,0.0,10,,1.0,America/Los_Angeles,Europe/London,10,19,13.9,"[""Aaaaaa/Aaaaaa"", ""Aaaa/Aaaaa"", ""Aaaaaa/Aaaaaaaa""]",Asia/Dubai:1; Asia/Seoul:1; Europe/London:1; Europe/Brussels:1; America/New_York:1; America/Los_Angeles:1; Europe/Berlin:1; Europe/Amsterdam:1; Asia/Shanghai:1; Asia/Singapore:1,,,False,,,,10
+bronze.container_track.carrier_contacts,OWNER,string,str,0.0,3,,0.25,CMA,MSC,3,6,4.0,"[""AAA"", ""AAAAAA""]",MAERSK:4; CMA:4; MSC:4,,,False,,,,12
+bronze.container_track.carrier_contacts,CONTACT_NAME,string,str,0.0,12,,1.0,,,9,13,10.5,"[""Aaaa Aaaaa"", ""Aaaa Aaaaaa"", ""Aaa Aaaaaa""]",<redacted>:12,,,False,,,,12
+bronze.container_track.carrier_contacts,EMAIL_ADDR,string,str,0.0,12,,1.0,,,26,31,28.5,"[""aaaa.aaaaa@aaaaaa-aaaa.aaaaaaa"", ""aaaa.aaaaa@aaa-aaaa.aaaaaaa"", ""aaa.aaaaaa@aaaaaa-aaaa.aaaaaaa""]",<redacted>:12,,,False,,,,12
+bronze.container_track.carrier_contacts,TEL,string,str,0.0,12,,1.0,,,14,14,14.0,"[""+99 99 9999999""]",<redacted>:12,,,False,,,,12
+bronze.container_track.carrier_contacts,ROLE_TXT,string,str,0.0,1,,0.0833,dispatch,dispatch,8,8,8.0,"[""aaaaaaaa""]",dispatch:12,,,False,,,,12
+bronze.container_track.shipments,SHPMT_ID,string,str,0.0,1516,,1.0107,S000000,S001499,7,7,7.0,"[""A999999""]",,,,False,,,,1500
+bronze.container_track.shipments,BOOKING_DT,date,date,0.0,204,,0.136,2026-01-01,2026-07-20,,,,[],,,,False,,,,1500
+bronze.container_track.shipments,ORIGIN_LOC,string,str,0.0,10,,0.0067,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",KRPUS:170; CNSHA:168; DEHAM:157; USNYC:157; NLRTM:154; SGSIN:153; USLAX:144; GBFXT:140; BEANR:136; AEJEA:121,,,False,,,,1500
+bronze.container_track.shipments,DEST_LOC,string,str,0.0,10,,0.0067,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",BEANR:162; USLAX:158; NLRTM:156; KRPUS:155; CNSHA:153; SGSIN:152; GBFXT:148; AEJEA:145; USNYC:138; DEHAM:133,,,False,,,,1500
+bronze.container_track.shipments,CUSTOMER,string,str,0.0,4,,0.0027,ACME,UMBRELLA,4,8,6.3,"[""AAAAAA"", ""AAAAAAA"", ""AAAAAAAA""]",GLOBEX:432; INITECH:373; UMBRELLA:361; ACME:334,,,False,,,,1500
+bronze.container_track.shipments,BOOKED_FROM,string,str,0.0,1518,,1.012,,,9,14,12.8,"[""99.999.999.999"", ""99.999.999.99"", ""99.999.99.999""]",,,,False,,,,1500
+bronze.container_track.leg_daily_summary,DEP_DATE,date,date,0.0,227,,0.1445,2026-01-03,2026-08-31,,,,[],,,,False,,,,1571
+bronze.container_track.leg_daily_summary,FROM_LOC,string,str,0.0,10,,0.0064,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",DEHAM:167; CNSHA:161; KRPUS:160; BEANR:159; SGSIN:158; NLRTM:157; USNYC:157; USLAX:155; GBFXT:155; AEJEA:142,,,False,,,,1571
+bronze.container_track.leg_daily_summary,N_LEGS,bigint,int,0.0,7,,0.0045,1,7,,,,[],1:799; 2:492; 3:193; 4:65; 5:17; 6:4; 7:1,,,False,,,,1571
+bronze.container_track.leg_daily_summary,AVG_TRANSIT_DAYS,"decimal(32,11)",num,0.0,95,,0.0605,1.00000000000,20.00000000000,,,,[],,,,False,,,,1571
+bronze.container_track.legs_bkp_2025,CNTR_NO,string,str,0.0,168,,0.56,MSCU 222798-1,MSCU9925282,11,13,11.1,"[""AAAA9999999"", ""AAAA 999999-9""]",,,,False,,,,300
+bronze.container_track.legs_bkp_2025,SHPMT_ID,string,str,0.0,173,,0.5767,S000000,S000169,7,7,7.0,"[""A999999""]",,,,False,,,,300
+bronze.container_track.legs_bkp_2025,LEG_NO,int,int,0.0,3,,0.01,1,3,,,,[],1:170; 2:97; 3:33,,,False,,,,300
+bronze.container_track.legs_bkp_2025,FROM_LOC,string,str,0.0,13,,0.0433,AEJEA,krpus,5,5,5.0,"[""AAAAA"", ""aaaaa""]",CNSHA:40; GBFXT:36; KRPUS:30; DEHAM:29; SGSIN:28; BEANR:27; USNYC:27; USLAX:26; NLRTM:26; AEJEA:24,,,False,,,,300
+bronze.container_track.legs_bkp_2025,TO_LOC,string,str,0.0,10,,0.0333,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",BEANR:43; CNSHA:40; GBFXT:34; AEJEA:29; USLAX:28; USNYC:28; SGSIN:28; NLRTM:27; DEHAM:23; KRPUS:20,,,False,,,,300
+bronze.container_track.legs_bkp_2025,ATD_TS,bigint,int,0.0,301,,1.0033,1767445200,1787007600,,,,[],,,,False,,,,300
+bronze.container_track.legs_bkp_2025,ATA_TS,bigint,int,0.0,286,,0.9533,1767762000,1787353200,,,,[],,,,False,,,,300
+bronze.container_track.legs_bkp_2025,ETA_TS,string,str,0.0,300,,1.0,01/03/2026 13:00,30/05/2026 06:00,10,16,11.7,"[""9999999999"", ""99/99/9999 99:99""]",,,,False,,,,300
+bronze.container_track.legs_bkp_2025,IS_DELETED,string,str,0.0,1,,0.0033,N,N,1,1,1.0,"[""A""]",N:300,,,False,,,,300
+bronze.container_track.legs_bkp_2025,CARRIER_REF,string,str,54.667,128,,0.9412,CR123,CR996,5,5,5.0,"[""AA999""]",,,,False,,,,300
+bronze.container_track.legs_bkp_2025,_ingest_ts,timestamp,date,0.0,1,,0.0033,2026-09-01 05:30:00,2026-09-01 05:30:00,,,,[],,,,False,,,,300
+bronze.container_track.container_types,TYPE_CD,string,str,0.0,5,,1.0,20GP,45HC,4,4,4.0,"[""99AA""]",40HC:1; 20GP:1; 40GP:1; 45HC:1; 20RF:1,,,False,,,,5
+bronze.container_track.container_types,TYPE_DESC,string,str,0.0,5,,1.0,20ft general,45ft high cube,11,14,12.6,"[""99aa aaaa aaaa"", ""99aa aaaaaaa"", ""99aa aaaaaa""]",40ft high cube:1; 20ft general:1; 40ft general:1; 20ft reefer:1; 45ft high cube:1,,,False,,,,5
+bronze.container_track.containers,CNTR_NO,string,str,0.0,794,,0.9925,MSCU1014172,MSCU9996936,11,11,11.0,"[""AAAA9999999""]",,,,False,,,,800
+bronze.container_track.containers,TYPE_CD,string,str,0.0,5,,0.0063,20GP,45HC,4,4,4.0,"[""99AA""]",20RF:171; 20GP:168; 40GP:165; 40HC:158; 45HC:138,,,False,,,,800
+bronze.container_track.containers,OWNER,string,str,0.0,3,,0.0037,CMA,MSC,3,6,3.9,"[""AAA"", ""AAAAAA""]",CMA:296; MAERSK:252; MSC:252,,,False,,,,800
+bronze.container_track.containers,BUILD_YEAR,int,int,0.0,20,,0.025,2005,2024,,,,[],2016:57; 2022:52; 2009:48; 2021:46; 2013:46; 2007:46; 2015:43; 2020:42; 2023:40; 2010:37,,,False,,,,800
+bronze.container_track.legs,CNTR_NO,string,str,0.0,792,,0.2893,MSCU 103082-1,MSCU9996936,11,13,11.1,"[""AAAA9999999"", ""AAAA 999999-9""]",,,,False,,,,2738
+bronze.container_track.legs,SHPMT_ID,string,str,0.0,1516,,0.5537,S000000,S001499,7,7,7.0,"[""A999999""]",,,,False,,,,2738
+bronze.container_track.legs,LEG_NO,int,int,0.0,3,,0.0011,1,3,,,,[],1:1500; 2:916; 3:322,,,False,,,,2738
+bronze.container_track.legs,FROM_LOC,string,str,0.0,20,,0.0073,AEJEA,usnyc,5,5,5.0,"[""AAAAA"", ""aaaaa""]",KRPUS:298; CNSHA:287; DEHAM:279; NLRTM:272; BEANR:262; USNYC:262; SGSIN:259; GBFXT:259; USLAX:253; AEJEA:237,,,False,,,,2738
+bronze.container_track.legs,TO_LOC,string,str,0.0,10,,0.0037,AEJEA,USNYC,5,5,5.0,"[""AAAAA""]",BEANR:297; KRPUS:292; NLRTM:281; CNSHA:278; GBFXT:274; USLAX:272; AEJEA:266; SGSIN:266; DEHAM:260; USNYC:252,,,False,,,,2738
+bronze.container_track.legs,ATD_TS,bigint,int,0.0,2093,,0.7644,1767405600,1788152400,,,,[],,,,False,,,,2738
+bronze.container_track.legs,ATA_TS,bigint,int,0.0,2144,,0.7831,1767693600,1789534800,,,,[],,,,False,,,,2738
+bronze.container_track.legs,ETA_TS,string,str,0.0,2325,,0.8492,01/02/2026 11:00,31/07/2026 22:00,10,16,11.8,"[""9999999999"", ""99/99/9999 99:99""]",,,,False,,,,2738
+bronze.container_track.legs,IS_DELETED,string,str,0.0,1,,0.0004,N,N,1,1,1.0,"[""A""]",N:2738,,,False,,,,2738
+bronze.container_track.legs,CARRIER_REF,string,str,55.551,675,,0.5546,CR100,CR999,5,5,5.0,"[""AA999""]",,,,False,,,,2738
+bronze.container_track.legs,_ingest_ts,timestamp,date,0.0,1,,0.0004,2026-09-01 05:30:00,2026-09-01 05:30:00,,,,[],,,,False,,,,2738
+bronze.container_track.user_logins,USER_ID,string,str,0.0,61,,0.0305,U0001,U0060,5,5,5.0,"[""A9999""]",,,,False,,,,2000
+bronze.container_track.user_logins,LOGIN_TS,timestamp,date,0.0,1953,,0.9765,,,,,,[],,,,False,,,,2000
+bronze.container_track.user_logins,IP_ADDR,string,str,0.0,1969,,0.9845,,,11,15,14.1,"[""999.999.999.999"", ""999.999.99.999"", ""999.999.999.99""]",,,,False,,,,2000
+bronze.container_track.user_logins,USER_AGENT,string,str,0.0,3,,0.0015,,,12,61,36.4,[],<redacted>:2000,,,False,,,,2000
+bronze.container_track.user_logins,SESSION_ID,string,str,0.0,1972,,0.986,,,32,32,32.0,"[""99a99a9999999999aaa99a9aa99aa999"", ""9aa99999aa9999a9aa9a99a99aa99aaa"", ""a99aaaa9a9999a99a999a999a999999a""]",,,,False,,,,2000

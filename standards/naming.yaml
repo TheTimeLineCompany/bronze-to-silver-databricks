@@ -1,0 +1,19 @@
+# Machine-readable naming and structure rules.
+# REPLACE these example values with the client's naming guideline.
+# tools/p4_2_validate_sttm.py and the p5-1-pyspark-codegen skill read this file,
+# so a naming rule is enforced by code, not only by a document.
+
+table_pattern: "^slv_(mst|[a-z0-9]+)_[a-z0-9_]+$"   # e.g. slv_mst_part, slv_cnt_shipment_leg
+column_pattern: "^_?[a-z][a-z0-9_]*$"                  # snake_case; leading _ only for audit columns
+surrogate_key_suffix: "_sk"
+allowed_types: [STRING, INT, BIGINT, DECIMAL, DOUBLE, BOOLEAN, DATE, TIMESTAMP]
+
+# Every silver table must have these columns (added by the codegen template).
+audit_columns: [_src_system, _src_table, _ingest_ts, _load_ts, _batch_id]
+
+# Required when scd_type = 2.
+scd2_columns: [effective_from, effective_to, is_current]
+
+# Notebook and job naming (used by pyspark-codegen).
+notebook_name: "nb_slv_{source_id}_{target_table}"
+job_name: "job_slv_{source_id}"

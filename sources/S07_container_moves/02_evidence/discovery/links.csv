@@ -1,0 +1,14 @@
+dep_table,dep_column,ref_table,ref_column,status,cardinality,containment_raw,containment_norm,coverage,dep_distinct,ref_distinct,score,missing_examples,note
+bronze.container_track.containers,TYPE_CD,bronze.container_track.container_types,TYPE_CD,fk,N:1,1.0,1.0,1.0,5,5,1.2,,
+bronze.container_track.leg_daily_summary,FROM_LOC,bronze.container_track.locations,LOC_CD,fk,N:1,1.0,1.0,1.0,10,10,0.567,,
+bronze.container_track.legs,CNTR_NO,bronze.container_track.containers,CNTR_NO,fk,N:1,0.8545,1.0,0.8512,797,800,1.4,"MSCU 826369-7, MSCU 996457-0, MSCU 387801-5, MSCU 295171-8, MSCU 302014-8",matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule
+bronze.container_track.legs,SHPMT_ID,bronze.container_track.shipments,SHPMT_ID,fk,N:1,1.0,1.0,1.0,1500,1500,1.32,,
+bronze.container_track.legs,FROM_LOC,bronze.container_track.locations,LOC_CD,fk,N:1,0.5,1.0,1.0,20,10,0.567,"aejea, cnsha, gbfxt, krpus, usnyc",matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule
+bronze.container_track.legs,TO_LOC,bronze.container_track.locations,LOC_CD,fk,N:1,1.0,1.0,1.0,10,10,0.567,,
+bronze.container_track.shipments,ORIGIN_LOC,bronze.container_track.locations,LOC_CD,fk,N:1,1.0,1.0,1.0,10,10,0.567,,
+bronze.container_track.shipments,DEST_LOC,bronze.container_track.locations,LOC_CD,fk,N:1,1.0,1.0,1.0,10,10,0.567,,
+bronze.container_track.containers,CNTR_NO,bronze.container_track.shipments,BOOKED_FROM,no_link,,0.0,0.0,0.0,800,1500,0.314,"MSCU7536294, MSCU6538448, MSCU4189532, MSCU5685386, MSCU9760588",
+bronze.container_track.legs,CNTR_NO,bronze.container_track.shipments,BOOKED_FROM,no_link,,0.0,0.0,0.0,797,1500,0.314,"MSCU2600111, MSCU9608696, MSCU8327506, MSCU2564437, MSCU2296253",
+bronze.container_track.legs,SHPMT_ID,bronze.container_track.shipments,BOOKED_FROM,no_link,,0.0,0.0,0.0,1500,1500,0.314,"S000746, S000749, S000751, S000755, S000757",
+bronze.container_track.locations,LOC_NAME,bronze.container_track.locations,TZ_NAME,no_link,,0.0,0.0,0.0,10,10,0.329,"Port BEANR, Port AEJEA, Port KRPUS, Port GBFXT, Port USLAX",
+bronze.container_track.shipments,SHPMT_ID,bronze.container_track.shipments,BOOKED_FROM,no_link,,0.0,0.0,0.0,1500,1500,0.314,"S000751, S000755, S000757, S000758, S000760",

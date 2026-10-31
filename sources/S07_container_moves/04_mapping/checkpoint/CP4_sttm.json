@@ -1,0 +1,355 @@
+{
+  "checkpoint": "CP4_sttm",
+  "source_id": "S07_container_moves",
+  "phase": "P4",
+  "title": "Source-to-target mapping",
+  "purpose": "Check the mapping from bronze to silver, column by column, back to evidence.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:50Z",
+  "next_step": "Handover H1 (with CP4b) -> p5-1-pyspark-codegen",
+  "inputs": {
+    "sources/S07_container_moves/04_mapping/sttm.yaml": "b077d4ab4e4b0412c2ab7ccd273a035fd0bfb5ff",
+    "sources/S07_container_moves/02_evidence/evidence_register.csv": "e4541f42f2ee5c9351532eb83af5171d2328b328"
+  },
+  "metrics": [
+    {
+      "label": "Target tables",
+      "value": 1,
+      "note": ""
+    },
+    {
+      "label": "Columns",
+      "value": 10,
+      "note": ""
+    },
+    {
+      "label": "Foreign keys",
+      "value": 3,
+      "note": ""
+    },
+    {
+      "label": "Business-logic columns",
+      "value": 1,
+      "note": "need CP4b"
+    },
+    {
+      "label": "Low / unknown confidence",
+      "value": 1,
+      "note": ""
+    },
+    {
+      "label": "Validator",
+      "value": "PASS",
+      "note": "0 errors, 1 warnings"
+    },
+    {
+      "label": "Independent review",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "Business object -> silver table -> shared masters (relationship id)",
+    "flows": [
+      [
+        "ShipmentLeg",
+        "is stored as",
+        "slv_cnt_shipment_leg (event, merge)",
+        ""
+      ],
+      [
+        "slv_cnt_shipment_leg",
+        "container_sk N:1",
+        "Container",
+        "R10"
+      ],
+      [
+        "slv_cnt_shipment_leg",
+        "origin_location_sk N:1",
+        "Location",
+        "R11 | R12"
+      ],
+      [
+        "slv_cnt_shipment_leg",
+        "destination_location_sk N:1",
+        "Location",
+        "R11 | R12"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "Q-0001",
+      "text": "blocking question open: LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?"
+    },
+    {
+      "severity": "warn",
+      "item": "slv_cnt_shipment_leg.eta_ts",
+      "text": "low confidence; question Q-0001"
+    },
+    {
+      "severity": "info",
+      "item": "review",
+      "text": "sttm_review.md: missing"
+    }
+  ],
+  "decide": [
+    "Is the grain right, and is the business key unique in bronze?",
+    "Does each foreign key follow a real business relationship?",
+    "Are the transforms exact, and does each column cite good evidence?"
+  ],
+  "key_table": "Columns",
+  "tables": {
+    "Tables": {
+      "columns": [
+        "target_table",
+        "business_object",
+        "data_class",
+        "grain",
+        "load_pattern",
+        "scd_type",
+        "business_key",
+        "sources"
+      ],
+      "rows": [
+        [
+          "slv_cnt_shipment_leg",
+          "ShipmentLeg",
+          "event",
+          "One row per container per shipment leg (container_number + leg_seq).",
+          "merge",
+          null,
+          "container_number, shipment_id, leg_seq",
+          "bronze.container_track.legs"
+        ]
+      ]
+    },
+    "Columns": {
+      "columns": [
+        "table",
+        "column",
+        "type",
+        "key_role",
+        "rule",
+        "source",
+        "transform",
+        "evidence",
+        "confidence",
+        "business_rule",
+        "question"
+      ],
+      "rows": [
+        [
+          "slv_cnt_shipment_leg",
+          "shipment_leg_sk",
+          "STRING",
+          "PK",
+          "technical",
+          null,
+          "sha2(concat_ws('|', container_number, shipment_id, leg_seq), 256)",
+          "",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "container_number",
+          "STRING",
+          "BK",
+          "normalised_key",
+          "l.CNTR_NO",
+          "keys.normalise('container_number', l.CNTR_NO)",
+          "E-0001, E-0002",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "shipment_id",
+          "STRING",
+          "BK",
+          "direct",
+          "l.SHPMT_ID",
+          "trim(l.SHPMT_ID)",
+          "E-0003",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "leg_seq",
+          "INT",
+          "BK",
+          "direct",
+          "l.LEG_NO",
+          "cast(l.LEG_NO as int)",
+          "E-0004",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "container_sk",
+          "STRING",
+          "FK",
+          "lookup",
+          "l.CNTR_NO",
+          "lookup slv_mst_container.container_sk on normalised container_number (current version)",
+          "E-0001, E-0002",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "origin_location_sk",
+          "STRING",
+          "FK",
+          "lookup",
+          "l.FROM_LOC",
+          "lookup slv_mst_location.location_sk on keys.normalise('generic_code', l.FROM_LOC)",
+          "E-0005, E-0006",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "destination_location_sk",
+          "STRING",
+          "FK",
+          "lookup",
+          "l.TO_LOC",
+          "lookup slv_mst_location.location_sk on keys.normalise('generic_code', l.TO_LOC)",
+          "E-0005, E-0006",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "departure_date",
+          "DATE",
+          "none",
+          "derived",
+          "l.ATD_TS",
+          "to_date(from_unixtime(l.ATD_TS))",
+          "E-0007",
+          "high",
+          null,
+          null
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "eta_ts",
+          "TIMESTAMP",
+          "none",
+          "derived",
+          "l.ETA_TS",
+          "parse epoch or 'dd/MM/yyyy HH:mm' (time zone pending Q-0001)",
+          "E-0008",
+          "low",
+          null,
+          "Q-0001"
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "transit_days",
+          "DECIMAL(9,2)",
+          "none",
+          "derived",
+          "l.ATD_TS, l.ATA_TS",
+          "(l.ATA_TS - l.ATD_TS) / 86400.0",
+          "E-0009",
+          "medium",
+          "BR-LOGI-001",
+          null
+        ]
+      ]
+    },
+    "Foreign keys": {
+      "columns": [
+        "table",
+        "column",
+        "entity",
+        "entity_column",
+        "cardinality",
+        "orphan_policy",
+        "relationship"
+      ],
+      "rows": [
+        [
+          "slv_cnt_shipment_leg",
+          "container_sk",
+          "Container",
+          "container_sk",
+          "N:1",
+          "unknown_member",
+          "R10"
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "origin_location_sk",
+          "Location",
+          "location_sk",
+          "N:1",
+          "unknown_member",
+          "R11 | R12"
+        ],
+        [
+          "slv_cnt_shipment_leg",
+          "destination_location_sk",
+          "Location",
+          "location_sk",
+          "N:1",
+          "unknown_member",
+          "R11 | R12"
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 1,
+    "warn": 1,
+    "info": 1
+  }
+}

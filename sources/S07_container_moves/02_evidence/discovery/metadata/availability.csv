@@ -1,0 +1,10 @@
+section,available,rows,reason
+tables,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`tables` cannot be found. Verify the spelling and correctness of the schema and catalog.
+columns,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`columns` cannot be found. Verify the spelling and correctness of the schema and catalog.
+tags,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`table_tags` cannot be found. Verify the spelling and correctness of the schema and catalog.
+masks_and_filters,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`row_filters` cannot be found. Verify the spelling and correctness of the schema and catalog.
+constraints,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`table_constraints` cannot be found. Verify the spelling and correctness of the schema and catalog.
+detail_history,False,0,AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `DETAIL` cannot be found. Verify the spelling and correctness of the schema and catalog.
+column_stats,True,0,
+lineage,False,0,"AnalysisException: [REQUIRES_SINGLE_PART_NAMESPACE] spark_catalog requires a single-part namespace, but got `system`.`access`."
+column_lineage,False,0,"AnalysisException: [REQUIRES_SINGLE_PART_NAMESPACE] spark_catalog requires a single-part namespace, but got `system`.`access`."

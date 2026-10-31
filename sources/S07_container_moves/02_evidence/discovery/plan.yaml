@@ -1,0 +1,62 @@
+source_id: S07_container_moves
+bronze_schema: container_track
+budgets:
+  max_tables: 200
+  sample_rows: 200000
+  max_pattern_columns: 12
+  low_cardinality_max: 50
+  max_topk_columns: 15
+  topk: 20
+  key_pool_size: 8
+  max_key_size: 4
+  max_key_checks: 25
+  key_max_null_pct: 1.0
+  min_link_score: 0.3
+  max_link_checks: 400
+  link_batch_size: 25
+  max_fk_columns: 3
+  composite_min_name_score: 0.5
+  composite_options: 2
+  max_composite_link_checks: 100
+  link_dep_sample_rows: 500000
+  fk_containment_high: 0.98
+  fk_containment_low: 0.8
+  domain_jaccard_min: 0.6
+  reference_max_rows: 1000
+  card_max_columns: 30
+  lineage_days: 90
+  related_min_shared_keys: 2
+  related_min_score: 2.0
+  max_related: 20
+  related_value_checks: 5
+stages:
+- stage: catalog
+  runs: once
+  kind: code
+- stage: meta
+  runs: once (Unity Catalog metadata + lineage, no data read)
+  kind: code
+- stage: profile
+  runs: per table (parallel)
+  kind: code
+- stage: keys
+  runs: per table (parallel)
+  kind: code
+- stage: plan-links
+  runs: once
+  kind: code
+- stage: links
+  runs: per batch (parallel)
+  kind: code
+- stage: model
+  runs: once
+  kind: code
+- stage: wider
+  runs: once (tables outside the schema, value overlap)
+  kind: code
+- stage: cards
+  runs: once; then one agent per card (parallel)
+  kind: agent
+- stage: merge
+  runs: once after all cards answered
+  kind: code

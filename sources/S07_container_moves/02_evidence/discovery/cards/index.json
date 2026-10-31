@@ -1,0 +1,9 @@
+{
+  "bronze.container_track.carrier_contacts": "T-001",
+  "bronze.container_track.container_types": "T-002",
+  "bronze.container_track.locations": "T-003",
+  "bronze.container_track.containers": "T-004",
+  "bronze.container_track.leg_daily_summary": "T-005",
+  "bronze.container_track.legs": "T-006",
+  "bronze.container_track.shipments": "T-007"
+}

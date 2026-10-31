@@ -1,0 +1,25 @@
+# Triage (example, confirmed).
+source_id: S01_buyer_master
+generated: '2026-10-31'
+budget_override: null
+files:
+- file_id: IF-0001
+  path: 00_inbox/Docs/BUYMGR_data_dictionary.xlsx
+  doc_type: data_dictionary
+  relevance: core
+  status: confirmed
+  reason: field definitions and keys
+  read_plan:
+    sheets:
+    - T_BUYER
+    - T_DEPT
+- file_id: IF-0002
+  path: 00_inbox/Docs/buyer_system_overview.pptx
+  doc_type: system_overview
+  relevance: core
+  status: confirmed
+  reason: status codes and id policy
+  read_plan:
+    sections:
+    - slide 4 status codes
+    - slide 6 buyer ids

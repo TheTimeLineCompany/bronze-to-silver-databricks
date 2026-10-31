@@ -1,0 +1,19 @@
+erDiagram
+  legs }o--|| containers : "CNTR_NO"
+  legs }o--|| shipments : "SHPMT_ID"
+  containers }o--|| container_types : "TYPE_CD"
+  leg_daily_summary }o--|| locations : "FROM_LOC"
+  legs }o--|| locations : "FROM_LOC"
+  legs }o--|| locations : "TO_LOC"
+  shipments }o--|| locations : "ORIGIN_LOC"
+  shipments }o--|| locations : "DEST_LOC"
+  leg_daily_summary }o..o{ legs : "derived from"
+  carrier_contacts { string role "master" }
+  container_types { string role "reference" }
+  locations { string role "reference" }
+  user_logins { string role "technical" }
+  containers { string role "master" }
+  leg_daily_summary { string role "aggregate" }
+  shipments { string role "transaction_header" }
+  legs { string role "transaction_line" }
+  legs_bkp_2025 { string role "staging" }

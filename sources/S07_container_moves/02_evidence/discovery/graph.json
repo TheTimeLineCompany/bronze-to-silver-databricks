@@ -1,0 +1,121 @@
+{
+  "nodes": [
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "role": "master",
+      "level": 0,
+      "business_object": "Department"
+    },
+    {
+      "table": "bronze.container_track.container_types",
+      "role": "reference",
+      "level": 0,
+      "business_object": "Container"
+    },
+    {
+      "table": "bronze.container_track.locations",
+      "role": "reference",
+      "level": 0,
+      "business_object": "Location"
+    },
+    {
+      "table": "bronze.container_track.user_logins",
+      "role": "technical",
+      "level": 0,
+      "business_object": ""
+    },
+    {
+      "table": "bronze.container_track.containers",
+      "role": "master",
+      "level": 1,
+      "business_object": "Container"
+    },
+    {
+      "table": "bronze.container_track.leg_daily_summary",
+      "role": "aggregate",
+      "level": 1,
+      "business_object": "ShipmentLeg"
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "role": "transaction_header",
+      "level": 1,
+      "business_object": "Shipment"
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "role": "transaction_line",
+      "level": 2,
+      "business_object": "ShipmentLeg"
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "role": "staging",
+      "level": "-",
+      "business_object": ""
+    }
+  ],
+  "edges": [
+    {
+      "from": "bronze.container_track.legs.CNTR_NO",
+      "to": "bronze.container_track.containers.CNTR_NO",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.legs.SHPMT_ID",
+      "to": "bronze.container_track.shipments.SHPMT_ID",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.containers.TYPE_CD",
+      "to": "bronze.container_track.container_types.TYPE_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.leg_daily_summary.FROM_LOC",
+      "to": "bronze.container_track.locations.LOC_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.legs.FROM_LOC",
+      "to": "bronze.container_track.locations.LOC_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.legs.TO_LOC",
+      "to": "bronze.container_track.locations.LOC_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.shipments.ORIGIN_LOC",
+      "to": "bronze.container_track.locations.LOC_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.shipments.DEST_LOC",
+      "to": "bronze.container_track.locations.LOC_CD",
+      "kind": "fk",
+      "cardinality": "N:1",
+      "containment": 1.0
+    },
+    {
+      "from": "bronze.container_track.leg_daily_summary",
+      "to": "bronze.container_track.legs",
+      "kind": "derived_from"
+    }
+  ]
+}

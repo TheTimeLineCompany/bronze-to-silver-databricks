@@ -1,0 +1,102 @@
+# Triage for this source. The agent (skill p1-2-triage) confirms each line; a person approves at CP1.
+# relevance: core | supporting | background | ignore.  status: suggested | confirmed
+# read_plan: which pages/sheets/sections to read (required for core and supporting).
+source_id: S07_container_moves
+generated: '2026-10-31'
+budget_override: null
+files:
+- file_id: IF-0001
+  path: 00_inbox/01_Overview/CNTRK_solution_overview.docx
+  doc_type: system_overview
+  relevance: core
+  status: confirmed
+  reason: 'needed for mapping LEGS: grain, tables, legs'
+  read_plan:
+    sections:
+    - 2 Scope
+    - 3 Data model
+    - 3.2 Leg sequence
+    why: grain, tables, legs
+- file_id: IF-0002
+  path: 00_inbox/01_Overview/KPI definitions logistics.docx
+  doc_type: business_rules_doc
+  relevance: core
+  status: confirmed
+  reason: 'needed for mapping LEGS: transit time formula'
+  read_plan:
+    sections:
+    - 5 KPI definitions
+    why: transit time formula
+- file_id: IF-0003
+  path: 00_inbox/02_Profiling/CNTRK_profile_report.html
+  doc_type: profiling_html
+  relevance: supporting
+  status: confirmed
+  reason: 'needed for mapping LEGS: cross-check only where workbook confidence is
+    medium/low'
+  read_plan:
+    sections:
+    - LEGS summary table
+    why: cross-check only where workbook confidence is medium/low
+- file_id: IF-0004
+  path: 00_inbox/02_Profiling/CNTRK_profiling_v3_FINAL.xlsx
+  doc_type: profiling_workbook
+  relevance: core
+  status: confirmed
+  reason: 'needed for mapping LEGS: column-level profile with client confidence'
+  read_plan:
+    sheets:
+    - LEGS
+    why: column-level profile with client confidence
+- file_id: IF-0005
+  path: 00_inbox/02_Profiling/cntrk_schema_export.sql
+  doc_type: schema_ddl
+  relevance: core
+  status: confirmed
+  reason: 'needed for mapping LEGS: column list and types'
+  read_plan:
+    sections:
+    - CREATE TABLE LEGS
+    why: column list and types
+- file_id: IF-0006
+  path: 00_inbox/03_Workshops/RE_ ETA timezone question.eml
+  doc_type: email_or_chat
+  relevance: background
+  status: confirmed
+  reason: 'background: read only if Q-0001 (ETA time zone) needs it'
+  read_plan: null
+- file_id: IF-0007
+  path: 00_inbox/03_Workshops/Workshop minutes 2026-09-12.txt
+  doc_type: meeting_notes
+  relevance: background
+  status: confirmed
+  reason: 'background: read only if Q-0001 (ETA time zone) needs it'
+  read_plan: null
+- file_id: IF-0008
+  path: 00_inbox/Archive/old_drafts/CNTRK_profiling_v1.xlsx
+  doc_type: draft_or_superseded
+  relevance: ignore
+  status: confirmed
+  reason: duplicate or older version
+  read_plan: null
+- file_id: IF-0009
+  path: 00_inbox/Archive/old_drafts/CNTRK_solution_overview_draft.docx
+  doc_type: draft_or_superseded
+  relevance: ignore
+  status: confirmed
+  reason: duplicate or older version
+  read_plan: null
+- file_id: IF-0010
+  path: 00_inbox/Misc/Copy of CNTRK_profiling_v3_FINAL.xlsx
+  doc_type: draft_or_superseded
+  relevance: ignore
+  status: confirmed
+  reason: duplicate or older version
+  read_plan: null
+- file_id: IF-0011
+  path: 00_inbox/Misc/company_logo.png
+  doc_type: unrelated
+  relevance: ignore
+  status: confirmed
+  reason: suggested by inventory signals
+  read_plan: null

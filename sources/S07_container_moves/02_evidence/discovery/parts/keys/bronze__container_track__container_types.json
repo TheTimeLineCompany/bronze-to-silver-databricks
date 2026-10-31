@@ -1,0 +1,16 @@
+{
+  "table": "bronze.container_track.container_types",
+  "keys": [
+    [
+      "TYPE_CD"
+    ],
+    [
+      "TYPE_DESC"
+    ]
+  ],
+  "checks": 2,
+  "best": [
+    "TYPE_CD"
+  ],
+  "declared_keys": []
+}

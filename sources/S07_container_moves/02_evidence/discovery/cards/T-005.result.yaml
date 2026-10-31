@@ -1,0 +1,17 @@
+card: T-005
+role: aggregate
+business_object: none
+grain_key:
+- DEP_DATE
+- FROM_LOC
+accept_links:
+- leg_daily_summary.FROM_LOC -> locations.LOC_CD
+reject_links: []
+load_to_silver: derive_instead
+reason: Daily count and average transit per departure port, computed from legs. Silver
+  keeps the detail (legs); gold can rebuild this summary. Loading it would duplicate
+  BR-LOGI-001 logic.
+evidence:
+- discovery/derived.csv leg_daily_summary
+- discovery/columns.csv N_LEGS AVG_TRANSIT_DAYS
+raise_upstream: null

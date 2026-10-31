@@ -1,0 +1,53 @@
+table,column,column_class,scope,reason,decided_by
+bronze.container_track.locations,LOC_CD,key,in_scope,part of the table's unique key,code
+bronze.container_track.locations,LOC_NAME,business_attribute,in_scope,descriptive value,code
+bronze.container_track.locations,COUNTRY_CD,business_attribute,in_scope,descriptive value,code
+bronze.container_track.locations,TZ_NAME,business_attribute,in_scope,descriptive value,code
+bronze.container_track.carrier_contacts,OWNER,business_attribute,in_scope,descriptive value,code
+bronze.container_track.carrier_contacts,CONTACT_NAME,personal_data,in_scope,keep (card T-001),card T-001
+bronze.container_track.carrier_contacts,EMAIL_ADDR,personal_data,in_scope_masked,mask (card T-001),card T-001
+bronze.container_track.carrier_contacts,TEL,personal_data,in_scope_masked,mask (card T-001),card T-001
+bronze.container_track.carrier_contacts,ROLE_TXT,constant,out_of_scope,out_of_scope (card T-001),card T-001
+bronze.container_track.shipments,SHPMT_ID,key,in_scope,part of the table's unique key,code
+bronze.container_track.shipments,BOOKING_DT,business_date,in_scope,date or time,code
+bronze.container_track.shipments,ORIGIN_LOC,foreign_key,in_scope,links to another table,code
+bronze.container_track.shipments,DEST_LOC,foreign_key,in_scope,links to another table,code
+bronze.container_track.shipments,CUSTOMER,business_attribute,in_scope,descriptive value,code
+bronze.container_track.shipments,BOOKED_FROM,application_log,out_of_scope,out_of_scope (card T-007),card T-007
+bronze.container_track.leg_daily_summary,DEP_DATE,key,in_scope,part of the table's unique key,code
+bronze.container_track.leg_daily_summary,FROM_LOC,key,in_scope,part of the table's unique key,code
+bronze.container_track.leg_daily_summary,N_LEGS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.leg_daily_summary,AVG_TRANSIT_DAYS,measure,in_scope,numeric value,code
+bronze.container_track.legs_bkp_2025,CNTR_NO,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,SHPMT_ID,key,in_scope,part of the table's unique key,code
+bronze.container_track.legs_bkp_2025,LEG_NO,key,in_scope,part of the table's unique key,code
+bronze.container_track.legs_bkp_2025,FROM_LOC,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,TO_LOC,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,ATD_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,ATA_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,ETA_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,IS_DELETED,constant,out_of_scope,one value only,code
+bronze.container_track.legs_bkp_2025,CARRIER_REF,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs_bkp_2025,_ingest_ts,audit_metadata,technical,"who/when a record was written, not business data",code
+bronze.container_track.container_types,TYPE_CD,key,in_scope,part of the table's unique key,code
+bronze.container_track.container_types,TYPE_DESC,business_attribute,in_scope,descriptive value,code
+bronze.container_track.containers,CNTR_NO,key,in_scope,part of the table's unique key,code
+bronze.container_track.containers,TYPE_CD,foreign_key,in_scope,links to another table,code
+bronze.container_track.containers,OWNER,business_attribute,in_scope,descriptive value,code
+bronze.container_track.containers,BUILD_YEAR,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs,CNTR_NO,foreign_key,in_scope,links to another table,code
+bronze.container_track.legs,SHPMT_ID,key,in_scope,part of the table's unique key,code
+bronze.container_track.legs,LEG_NO,key,in_scope,part of the table's unique key,code
+bronze.container_track.legs,FROM_LOC,foreign_key,in_scope,links to another table,code
+bronze.container_track.legs,TO_LOC,foreign_key,in_scope,links to another table,code
+bronze.container_track.legs,ATD_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs,ATA_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs,ETA_TS,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs,IS_DELETED,constant,out_of_scope,one value only,code
+bronze.container_track.legs,CARRIER_REF,business_attribute,in_scope,descriptive value,code
+bronze.container_track.legs,_ingest_ts,audit_metadata,technical,"who/when a record was written, not business data",code
+bronze.container_track.user_logins,USER_ID,business_attribute,in_scope,descriptive value,code
+bronze.container_track.user_logins,LOGIN_TS,application_log,out_of_scope,"name looks like an application log field, and the table has 4 such columns",code
+bronze.container_track.user_logins,IP_ADDR,application_log,out_of_scope,content looks like ip 100%,code
+bronze.container_track.user_logins,USER_AGENT,application_log,out_of_scope,content looks like user_agent 100%,code
+bronze.container_track.user_logins,SESSION_ID,key,in_scope,part of the table's unique key,code

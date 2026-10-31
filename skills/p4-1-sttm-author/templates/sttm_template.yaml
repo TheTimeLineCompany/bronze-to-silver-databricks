@@ -1,0 +1,82 @@
+# STTM template. Copy to sources/<id>/04_mapping/sttm.yaml. Structure: schemas/sttm.schema.json
+# NOTE: in YAML, do not use the key name `on` (YAML reads it as true). Joins use `condition`.
+source_id: S00_example            # must equal the folder name
+source_system: <SYSTEM_CODE>
+version: "0.1"
+status: draft                     # draft | in_review | approved (approved only after review)
+owner: <name>
+notes: <one or two sentences>
+
+tables:
+  - target_table: slv_<area>_<name>      # see standards/naming.yaml
+    business_object: <Object>            # registry/ontology/business.yaml
+    data_class: event                    # registry/ontology/data.yaml: master|reference|event|agreement|measure|snapshot|bridge
+    target_kind: process                 # master | process
+    conformed_entity: null               # entity name from registry for masters
+    grain: One row per <thing> per <thing>.
+    load_pattern: append                 # must be allowed for the data_class
+    scd_type: null                       # 0 | 1 | 2 | null
+    primary_key: [<name>_sk]
+    business_key: [<bk_col>]
+    surrogate_key: {column: <name>_sk, method: hash, of: [<bk_col>]}
+    partition_by: null
+    sources:
+      - table: bronze.<schema>.<table>
+        alias: a
+        filter: null                     # e.g. "a.IS_DELETED = 'N'"
+        dedup: null                      # e.g. "latest by a.UPD_TS per KEY_COL"
+    joins: null
+    #  - {left: a, right: b, condition: "a.X = b.X", type: left, cardinality: "N:1"}
+    columns:
+      - target: <name>_sk
+        type: STRING
+        nullable: false
+        rule: technical
+        source: null
+        transform: "sha2(concat_ws('|', <bk_col>), 256)"
+        key_role: PK
+        description: Surrogate key.
+        provenance: null
+        confidence: high
+      - target: <bk_col>
+        type: STRING
+        nullable: false
+        rule: normalised_key
+        source: a.<SRC_COL>
+        transform: "keys.normalise('<rule>', a.<SRC_COL>)"
+        key_rule: <rule>
+        key_role: BK
+        dq: [not_null, matches_key_pattern]
+        description: <meaning>
+        provenance: {evidence: [E-0001, E-0002], profiling: 02_evidence/profiling/<table>.json}
+        confidence: high
+        open_question: null
+      - target: <entity>_sk
+        type: STRING
+        nullable: false
+        rule: lookup
+        source: a.<SRC_CODE>
+        transform: "lookup slv_mst_<entity>.<entity>_sk on keys.normalise('<rule>', a.<SRC_CODE>)"
+        key_role: FK
+        fk:
+          entity: <Entity>                 # or table: <target_table in this STTM> (process FK, e.g. line -> header)
+          column: <entity>_sk              # the parent's surrogate key
+          cardinality: "N:1"
+          orphan_policy: unknown_member    # masters only; reject | allow_null for same-source tables
+          lookup_on: [{expr: a.<SRC_CODE>, key_rule: <rule>}]   # one item per parent business-key column, in order
+        description: Link to the shared <Entity> master.
+        provenance: {evidence: [E-0003], profiling: 02_evidence/profiling/<table>.json}
+        confidence: high
+      - target: <kpi_name>
+        type: DECIMAL(18,4)
+        nullable: true
+        rule: derived
+        source: a.<COL_X>, a.<COL_Y>
+        transform: "<exact formula, e.g. datediff(a.ATA, a.ATD)>"
+        key_role: none
+        business_logic: true             # needs checkpoint CP4b_business_logic
+        business_rule: BR-<DOM>-001      # registry/ontology/business.yaml business_rules
+        description: <business meaning>
+        provenance: {evidence: [E-0009]}
+        confidence: high
+        open_question: null

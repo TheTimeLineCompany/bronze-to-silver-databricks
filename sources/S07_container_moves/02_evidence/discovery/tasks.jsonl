@@ -1,0 +1,42 @@
+{"ts": "2026-10-31T10:55:51Z", "task": "catalog", "status": "done", "note": "9 tables"}
+{"ts": "2026-10-31T10:55:52Z", "task": "meta", "status": "done", "note": "tables=n/a, columns=n/a, tags=n/a, masks_and_filters=n/a, constraints=n/a, detail_history=n/a, column_stats=ok, lineage=n/a, column_lineage=n/a"}
+{"ts": "2026-10-31T10:56:02Z", "task": "profile:bronze.container_track.carrier_contacts", "status": "done", "note": "12 sample rows"}
+{"ts": "2026-10-31T10:56:04Z", "task": "keys:bronze.container_track.carrier_contacts", "status": "done", "note": "best=['CONTACT_NAME'] checks=3"}
+{"ts": "2026-10-31T10:56:07Z", "task": "profile:bronze.container_track.container_types", "status": "done", "note": "5 sample rows"}
+{"ts": "2026-10-31T10:56:08Z", "task": "keys:bronze.container_track.container_types", "status": "done", "note": "best=['TYPE_CD'] checks=2"}
+{"ts": "2026-10-31T10:56:12Z", "task": "profile:bronze.container_track.containers", "status": "done", "note": "800 sample rows"}
+{"ts": "2026-10-31T10:56:13Z", "task": "keys:bronze.container_track.containers", "status": "done", "note": "best=['CNTR_NO'] checks=1"}
+{"ts": "2026-10-31T10:56:15Z", "task": "profile:bronze.container_track.leg_daily_summary", "status": "done", "note": "1571 sample rows"}
+{"ts": "2026-10-31T10:56:17Z", "task": "keys:bronze.container_track.leg_daily_summary", "status": "done", "note": "best=['DEP_DATE', 'FROM_LOC'] checks=2"}
+{"ts": "2026-10-31T10:56:24Z", "task": "profile:bronze.container_track.legs", "status": "done", "note": "2738 sample rows"}
+{"ts": "2026-10-31T10:56:37Z", "task": "keys:bronze.container_track.legs", "status": "done", "note": "best=['SHPMT_ID', 'LEG_NO'] checks=24"}
+{"ts": "2026-10-31T10:56:41Z", "task": "profile:bronze.container_track.legs_bkp_2025", "status": "done", "note": "300 sample rows"}
+{"ts": "2026-10-31T10:56:54Z", "task": "keys:bronze.container_track.legs_bkp_2025", "status": "done", "note": "best=['SHPMT_ID', 'LEG_NO'] checks=25"}
+{"ts": "2026-10-31T10:56:59Z", "task": "profile:bronze.container_track.locations", "status": "done", "note": "10 sample rows"}
+{"ts": "2026-10-31T10:57:01Z", "task": "keys:bronze.container_track.locations", "status": "done", "note": "best=['LOC_CD'] checks=3"}
+{"ts": "2026-10-31T10:57:05Z", "task": "profile:bronze.container_track.shipments", "status": "done", "note": "1500 sample rows"}
+{"ts": "2026-10-31T10:57:07Z", "task": "keys:bronze.container_track.shipments", "status": "done", "note": "best=['SHPMT_ID'] checks=4"}
+{"ts": "2026-10-31T10:57:10Z", "task": "profile:bronze.container_track.user_logins", "status": "done", "note": "2000 sample rows"}
+{"ts": "2026-10-31T10:57:14Z", "task": "keys:bronze.container_track.user_logins", "status": "done", "note": "best=['SESSION_ID'] checks=8"}
+{"ts": "2026-10-31T10:57:14Z", "task": "plan-links", "status": "done", "note": "37 candidates in 2 batches"}
+{"ts": "2026-10-31T10:58:08Z", "task": "links:0", "status": "done", "note": "25 checked"}
+{"ts": "2026-10-31T10:58:33Z", "task": "links:1", "status": "done", "note": "12 checked"}
+{"ts": "2026-10-31T10:58:33Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T10:58:33Z", "task": "wider", "status": "done", "note": "0 related candidates; search n/a: no catalog: give bronze_schema as catalog.schema or discovery.search_catalogs"}
+{"ts": "2026-10-31T10:58:33Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T10:58:33Z", "task": "cards", "status": "done", "note": "6 cards"}
+{"ts": "2026-10-31T10:59:13Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T10:59:13Z", "task": "wider", "status": "done", "note": "0 related candidates; search n/a: AttributeError: 'NoneType' object has no attribute 'sql'"}
+{"ts": "2026-10-31T10:59:14Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T10:59:14Z", "task": "cards", "status": "done", "note": "7 cards"}
+{"ts": "2026-10-31T10:59:51Z", "task": "merge", "status": "done", "note": "applied ['T-001', 'T-002', 'T-003', 'T-004', 'T-005', 'T-007', 'T-006']; raised ['FB-GLB-n9xw']"}
+{"ts": "2026-10-31T11:02:32Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T11:02:32Z", "task": "wider", "status": "done", "note": "0 related candidates; search n/a: AttributeError: 'NoneType' object has no attribute 'sql'"}
+{"ts": "2026-10-31T11:02:32Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T11:02:32Z", "task": "cards", "status": "done", "note": "7 cards"}
+{"ts": "2026-10-31T11:02:32Z", "task": "merge", "status": "done", "note": "applied ['T-001', 'T-002', 'T-003', 'T-005', 'T-007', 'T-006']; raised []"}
+{"ts": "2026-10-31T11:09:59Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T11:09:59Z", "task": "wider", "status": "done", "note": "0 related candidates; search n/a: AttributeError: 'NoneType' object has no attribute 'sql'"}
+{"ts": "2026-10-31T11:09:59Z", "task": "model", "status": "done", "note": "9 tables, 8 links, 0 doc gaps, 0 cross-source overlaps"}
+{"ts": "2026-10-31T11:09:59Z", "task": "cards", "status": "done", "note": "7 cards"}
+{"ts": "2026-10-31T11:09:59Z", "task": "merge", "status": "done", "note": "applied ['T-001', 'T-002', 'T-003', 'T-005', 'T-007', 'T-006']; raised []"}

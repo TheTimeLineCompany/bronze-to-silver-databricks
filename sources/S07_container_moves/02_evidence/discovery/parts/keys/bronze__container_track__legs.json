@@ -1,0 +1,39 @@
+{
+  "table": "bronze.container_track.legs",
+  "keys": [
+    [
+      "SHPMT_ID",
+      "LEG_NO"
+    ],
+    [
+      "SHPMT_ID",
+      "ETA_TS"
+    ],
+    [
+      "SHPMT_ID",
+      "FROM_LOC"
+    ],
+    [
+      "SHPMT_ID",
+      "TO_LOC"
+    ],
+    [
+      "SHPMT_ID",
+      "ATA_TS"
+    ],
+    [
+      "SHPMT_ID",
+      "ATD_TS"
+    ],
+    [
+      "CNTR_NO",
+      "ETA_TS"
+    ]
+  ],
+  "checks": 24,
+  "best": [
+    "SHPMT_ID",
+    "LEG_NO"
+  ],
+  "declared_keys": []
+}

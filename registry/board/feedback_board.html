@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>feedback_board all sources</title><style>
+:root{--bg:#f4f6f7;--sf:#fff;--ink:#18232b;--mu:#5b6a74;--ln:#d5dde2;--err:#a3202f;--errb:#f8e6e8;--wrn:#8a5a00;--wrnb:#fbf0d9;--inf:#3d4f9c;--infb:#e7eaf7;--ok:#0f7c78;--okb:#e3f3f1;
+--sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}
+*{box-sizing:border-box}main>*,section,header{min-width:0}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+main{max-width:1040px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+h1{font-size:28px;line-height:1.15;margin:0;text-wrap:balance}h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:0 0 8px;font-weight:500}
+p{margin:0;max-width:70ch}code{font-family:var(--mono);font-size:.86em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mu)}
+.pill{display:inline-block;padding:1px 8px;font-family:var(--mono);font-size:12px;border:1px solid currentColor}
+.s-approved,.s-not_required{color:var(--ok)}.s-pending{color:var(--mu)}.s-in_review{color:var(--inf)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tile{background:var(--sf);border:1px solid var(--ln);padding:10px 12px;display:grid;gap:2px;align-content:start}
+.tile b{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1;overflow-wrap:anywhere}.tile span{font-size:13px;color:var(--mu)}
+.box{background:var(--sf);border:1px solid var(--ln);padding:14px 16px;min-width:0}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px 10px;align-items:center;font-size:14px}
+.node{border:1px solid var(--ln);padding:4px 8px;font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;background:var(--bg)}
+.edge{color:var(--mu);font-size:12.5px;white-space:nowrap}.edge::after{content:" \2192"}.rid{font-family:var(--mono);font-size:11.5px;color:var(--mu);overflow-wrap:anywhere}
+@media (max-width:620px){.flow{grid-template-columns:1fr}.edge{white-space:normal}}
+.funnel{display:grid;gap:4px}.fs{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 12px;background:var(--infb);margin-inline:calc(var(--i)*3%)}
+.fs b{font-weight:600}.fs span{font-family:var(--mono);font-size:12.5px;color:var(--inf)}
+.chain{display:flex;flex-wrap:wrap;gap:6px}.ch{padding:6px 10px;border:1px solid var(--ln);font-family:var(--mono);font-size:12.5px;display:grid}
+.ch small{font-size:11px}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.issues li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:6px 10px;font-size:14px}
+.issues .sev{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;padding-top:2px}
+.error{background:var(--errb)}.error .sev{color:var(--err)}.warn{background:var(--wrnb)}.warn .sev{color:var(--wrn)}.info{background:var(--infb)}.info .sev{color:var(--inf)}
+.issues code{overflow-wrap:anywhere}
+.decide{margin:0;padding-left:20px;display:grid;gap:4px}
+.tw{overflow-x:auto;background:var(--sf);border:1px solid var(--ln)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:500;white-space:nowrap}
+td{max-width:420px;min-width:80px;overflow-wrap:break-word}tr:last-child td{border-bottom:0}
+.mx td,.mx th{text-align:center}.mx td:first-child,.mx th:first-child{text-align:left}.mx td{font-variant-numeric:tabular-nums}
+.z{color:var(--mu)}
+footer{font-size:13px;color:var(--mu);display:grid;gap:4px;border-top:1px solid var(--ln);padding-top:10px}
+</style></head><body><main>
+<header style="display:grid;gap:8px"><h2>X · checkpoint · all sources</h2><h1>feedback Feedback and upstream issues</h1>
+<div class="meta"><span class="pill s-4 unresolved">4 unresolved</span><span>Approver: each item&#x27;s checkpoint approver</span><span>Generated 2026-10-31T11:41:53Z</span>
+<span>0 errors · 3 warnings</span></div><p>All human feedback and all agent-raised upstream issues, with what each one blocks.</p></header>
+<section><h2>Key numbers</h2><div class="tiles"><div class='tile'><b>4</b><span>Items</span></div><div class='tile'><b>3</b><span>Proposed by agents (to triage) · accept or reject</span></div><div class='tile'><b>1 / 0 / 0</b><span>Open / in progress / applied</span></div><div class='tile'><b>0 / 0</b><span>Verified / rejected</span></div></div></section>
+<section><h2>Connections</h2><div class="box"><p style='font-size:13px;color:var(--mu);margin-bottom:8px'>Who raised it -&gt; at which checkpoint (status) -&gt; what it blocks</p><div class='flow'><div class='node'>agent:p2-2-bronze-discovery</div><div class='edge'>FB-0002 proposed</div><div class='node'>global CP3_central_model</div><div class='rid'></div><div class='node'>agent:p2-2-bronze-discovery</div><div class='edge'>FB-GLB-n9xw proposed</div><div class='node'>global CP3_central_model</div><div class='rid'></div><div class='node'>agent:p2-2-bronze-discovery</div><div class='edge'>FB-0003 proposed</div><div class='node'>S07_container_moves CP1_source_brief</div><div class='rid'>blocks CP2_evidence</div><div class='node'>reviewer1</div><div class='edge'>FB-0001 open</div><div class='node'>S07_container_moves CP2_evidence</div><div class='rid'></div></div></div></section>
+<section><h2>Needs attention</h2><ul class='issues'><li class='warn'><span class='sev'>warn</span><span><code>FB-0002</code> proposed by agent:p2-2-bronze-discovery at CP3_central_model: a person must accept or reject</span></li><li class='warn'><span class='sev'>warn</span><span><code>FB-GLB-n9xw</code> proposed by agent:p2-2-bronze-discovery at CP3_central_model: a person must accept or reject</span></li><li class='warn'><span class='sev'>warn</span><span><code>FB-0003</code> proposed by agent:p2-2-bronze-discovery at CP1_source_brief: a person must accept or reject</span></li></ul></section>
+<section><h2>Reviewer decides</h2><div class="box"><ol class="decide"><li>Accept or reject each proposed item.</li><li>Verify each applied item.</li><li>Stop loops: decide items that came back a third time.</li></ol></div></section>
+<section><h2>Items</h2><div class='tw'><table><tr><th>id</th><th>source</th><th>checkpoint</th><th>status</th><th>raised_by</th><th>blocks</th><th>related</th><th>kinds</th><th>comment</th><th>file</th></tr><tr><td>FB-0002</td><td>global</td><td>CP3_central_model</td><td>proposed</td><td>agent:p2-2-bronze-discovery</td><td></td><td></td><td>comment</td><td>T-001: new business object &#x27;ContainerType&#x27; proposed for bronze.container_track.container_types. 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers; it is not the Container object. No classification object exi</td><td>registry/feedback/CP3_central_model/FB-0002.yaml</td></tr><tr><td>FB-GLB-n9xw</td><td>global</td><td>CP3_central_model</td><td>proposed</td><td>agent:p2-2-bronze-discovery</td><td></td><td></td><td>comment</td><td>T-001: new business object &#x27;CarrierContact&#x27; proposed for bronze.container_track.carrier_contacts. Dispatch contacts of each carrier. Needed by operations to call the carrier. Personal data; no object in business.yaml for carrier contacts.</td><td>registry/feedback/CP3_central_model/FB-GLB-n9xw.yaml</td></tr><tr><td>FB-0003</td><td>S07_container_moves</td><td>CP1_source_brief</td><td>proposed</td><td>agent:p2-2-bronze-discovery</td><td>CP2_evidence</td><td></td><td>comment</td><td>T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm with the client which one defines a leg.</td><td>sources/S07_container_moves/01_intake/feedback/CP1_source_brief/FB-0003.yaml</td></tr><tr><td>FB-0001</td><td>S07_container_moves</td><td>CP2_evidence</td><td>open</td><td>reviewer1</td><td></td><td></td><td>comment, include_paths, data</td><td>ETA_TS: the workshop notes say the text format comes from the manual entry screen in local port time. Use the port time zone from the locations table.</td><td>sources/S07_container_moves/02_evidence/feedback/CP2_evidence/FB-0001.yaml</td></tr></table></div></section>
+<footer><span>Full lists: <code>feedback_board.xlsx</code> (Items). Machine-readable: <code>feedback_board.json</code>. Next: x-feedback-rerun.</span>
+
+<span>Feedback: <code>python tools/x_feedback.py new all sources feedback_board --comment "..."</code></span></footer>
+</main></body></html>

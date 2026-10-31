@@ -1,0 +1,22 @@
+card: T-006
+role: event
+business_object: ShipmentLeg
+grain_key:
+- SHPMT_ID
+- LEG_NO
+accept_links:
+- legs.CNTR_NO -> containers.CNTR_NO
+- legs.SHPMT_ID -> shipments.SHPMT_ID
+- legs.FROM_LOC -> locations.LOC_CD
+- legs.TO_LOC -> locations.LOC_CD
+reject_links: []
+load_to_silver: true
+reason: Time-stamped leg movements. Bronze shows SHPMT_ID + LEG_NO is already unique;
+  the documents use CNTR_NO + SHPMT_ID + LEG_NO. Both are valid; the brief must state
+  which one is the grain.
+evidence:
+- discovery/keys.csv legs
+- 01_intake/source_brief.md Grain (E-0004)
+raise_upstream: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID
+  + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm
+  with the client which one defines a leg.

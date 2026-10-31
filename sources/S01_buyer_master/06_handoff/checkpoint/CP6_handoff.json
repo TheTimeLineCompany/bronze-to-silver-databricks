@@ -1,0 +1,224 @@
+{
+  "checkpoint": "CP6_handoff",
+  "source_id": "S01_buyer_master",
+  "phase": "P6",
+  "title": "Handoff",
+  "purpose": "Check that the deployment package is complete.",
+  "approver": "deployment-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "Handover H2 -> deployment team",
+  "inputs": {
+    "registry/sources.yaml": "05ddcee8287a1fb38ce5695e22fd544d1de149d6"
+  },
+  "metrics": [
+    {
+      "label": "Checkpoints approved",
+      "value": "1 / 8",
+      "note": ""
+    },
+    {
+      "label": "Deliverables present",
+      "value": "1 / 7",
+      "note": ""
+    },
+    {
+      "label": "Feedback items (all)",
+      "value": 0,
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "chain",
+    "caption": "Checkpoint status for this source",
+    "steps": [
+      [
+        "CP1",
+        "pending"
+      ],
+      [
+        "CP2",
+        "pending"
+      ],
+      [
+        "CP3",
+        "pending"
+      ],
+      [
+        "CP3b",
+        "pending"
+      ],
+      [
+        "CP4",
+        "pending"
+      ],
+      [
+        "CP4b",
+        "not_required"
+      ],
+      [
+        "CP5",
+        "pending"
+      ],
+      [
+        "CP6",
+        "pending"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "04_mapping/exports/sttm.xlsx",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "04_mapping/exports/er.mmd",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "05_build/qa_results/summary.json",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "04_mapping/reviews/sttm_review.md",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "05_build/reviews/code_review.md",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "06_handoff/readiness.md",
+      "text": "missing"
+    }
+  ],
+  "decide": [
+    "Can the deployment team run the job from this package alone?",
+    "Are known limits and non-blocking questions acceptable for go-live?",
+    "Are grants and parameters per environment clear?"
+  ],
+  "key_table": "Deliverables",
+  "tables": {
+    "Checkpoints": {
+      "columns": [
+        "checkpoint",
+        "status"
+      ],
+      "rows": [
+        [
+          "CP1_source_brief",
+          "pending"
+        ],
+        [
+          "CP2_evidence",
+          "pending"
+        ],
+        [
+          "CP3_central_model",
+          "pending"
+        ],
+        [
+          "CP3b_key_rules",
+          "pending"
+        ],
+        [
+          "CP4_sttm",
+          "pending"
+        ],
+        [
+          "CP4b_business_logic",
+          "not_required"
+        ],
+        [
+          "CP5_code_qa",
+          "pending"
+        ],
+        [
+          "CP6_handoff",
+          "pending"
+        ]
+      ]
+    },
+    "Deliverables": {
+      "columns": [
+        "deliverable",
+        "present"
+      ],
+      "rows": [
+        [
+          "04_mapping/sttm.yaml",
+          true
+        ],
+        [
+          "04_mapping/exports/sttm.xlsx",
+          false
+        ],
+        [
+          "04_mapping/exports/er.mmd",
+          false
+        ],
+        [
+          "05_build/qa_results/summary.json",
+          false
+        ],
+        [
+          "04_mapping/reviews/sttm_review.md",
+          false
+        ],
+        [
+          "05_build/reviews/code_review.md",
+          false
+        ],
+        [
+          "06_handoff/readiness.md",
+          false
+        ]
+      ]
+    },
+    "Feedback history": {
+      "columns": [],
+      "rows": []
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 6
+  }
+}

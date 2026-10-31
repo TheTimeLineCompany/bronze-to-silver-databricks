@@ -1,0 +1,8 @@
+profile_id,file_id,file,sheet,row,table,column,data_type,null_pct,distinct,pk_candidate,description,sample,raw_confidence,confidence,comment
+DP-00001,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_BUYER,2,T_BUYER,BUYER_ID,VARCHAR(12),,,Y,"Buyer identifier, never re-used",,High,high,
+DP-00002,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_BUYER,3,T_BUYER,BUYER_NM,VARCHAR(100),,,N,Buyer full name,,High,high,
+DP-00003,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_BUYER,4,T_BUYER,DEPT_CD,VARCHAR(6),,,N,Department code,,Medium,medium,
+DP-00004,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_BUYER,5,T_BUYER,STATUS_CD,CHAR(1),,,N,"A=active, I=inactive",,High,high,
+DP-00005,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_BUYER,6,T_BUYER,LAST_UPD_TS,TIMESTAMP,,,N,Last update,,High,high,
+DP-00006,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_DEPT,2,T_DEPT,DEPT_CD,VARCHAR(6),,,Y,Department code,,High,high,
+DP-00007,IF-0001,00_inbox/Docs/BUYMGR_data_dictionary.xlsx,T_DEPT,3,T_DEPT,DEPT_NM,VARCHAR(60),,,N,Department name,,Medium,medium,

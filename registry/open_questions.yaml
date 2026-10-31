@@ -1,0 +1,30 @@
+# Open questions for the client (escalation log).
+# Rule: a question with blocking: true and status: open STOPS STTM approval (CP4_sttm) and CP6_handoff
+# for its source. tools/p4_2_validate_sttm.py and tools/x_validate_gate.py check this.
+#
+# status: open | answered | withdrawn
+
+questions:
+  - id: Q-0001
+    source_id: S07_container_moves
+    blocking: true
+    status: open
+    raised_by: phase1
+    owner: client-logistics-sme
+    question: >
+      LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI').
+      Which time zone does the text format use?
+    evidence: sources/S07_container_moves/02_evidence/profiling/legs.json (eta_ts pattern check)
+    answer: null
+    answered_on: null
+
+  - id: Q-0002
+    source_id: S01_buyer_master
+    blocking: false
+    status: answered
+    raised_by: phase1
+    owner: client-procurement-sme
+    question: Is BUYER_ID re-used after a buyer leaves the company?
+    evidence: docs/buyer_system_overview.pptx slide 6
+    answer: No. IDs are never re-used.
+    answered_on: 2026-11-05

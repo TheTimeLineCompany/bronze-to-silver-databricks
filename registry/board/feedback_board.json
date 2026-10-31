@@ -1,0 +1,156 @@
+{
+  "checkpoint": "feedback_board",
+  "source_id": "all sources",
+  "phase": "X",
+  "title": "Feedback and upstream issues",
+  "purpose": "All human feedback and all agent-raised upstream issues, with what each one blocks.",
+  "approver": "each item's checkpoint approver",
+  "status": "4 unresolved",
+  "generated_at": "2026-10-31T11:41:53Z",
+  "next_step": "x-feedback-rerun",
+  "inputs": {},
+  "metrics": [
+    {
+      "label": "Items",
+      "value": 4,
+      "note": ""
+    },
+    {
+      "label": "Proposed by agents (to triage)",
+      "value": 3,
+      "note": "accept or reject"
+    },
+    {
+      "label": "Open / in progress / applied",
+      "value": "1 / 0 / 0",
+      "note": ""
+    },
+    {
+      "label": "Verified / rejected",
+      "value": "0 / 0",
+      "note": ""
+    }
+  ],
+  "issues": [
+    {
+      "severity": "warn",
+      "item": "FB-0002",
+      "text": "proposed by agent:p2-2-bronze-discovery at CP3_central_model: a person must accept or reject"
+    },
+    {
+      "severity": "warn",
+      "item": "FB-GLB-n9xw",
+      "text": "proposed by agent:p2-2-bronze-discovery at CP3_central_model: a person must accept or reject"
+    },
+    {
+      "severity": "warn",
+      "item": "FB-0003",
+      "text": "proposed by agent:p2-2-bronze-discovery at CP1_source_brief: a person must accept or reject"
+    }
+  ],
+  "tables": {
+    "Items": {
+      "columns": [
+        "id",
+        "source",
+        "checkpoint",
+        "status",
+        "raised_by",
+        "blocks",
+        "related",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": [
+        [
+          "FB-0002",
+          "global",
+          "CP3_central_model",
+          "proposed",
+          "agent:p2-2-bronze-discovery",
+          null,
+          null,
+          "comment",
+          "T-001: new business object 'ContainerType' proposed for bronze.container_track.container_types. 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers; it is not the Container object. No classification object exi",
+          "registry/feedback/CP3_central_model/FB-0002.yaml"
+        ],
+        [
+          "FB-GLB-n9xw",
+          "global",
+          "CP3_central_model",
+          "proposed",
+          "agent:p2-2-bronze-discovery",
+          null,
+          null,
+          "comment",
+          "T-001: new business object 'CarrierContact' proposed for bronze.container_track.carrier_contacts. Dispatch contacts of each carrier. Needed by operations to call the carrier. Personal data; no object in business.yaml for carrier contacts.",
+          "registry/feedback/CP3_central_model/FB-GLB-n9xw.yaml"
+        ],
+        [
+          "FB-0003",
+          "S07_container_moves",
+          "CP1_source_brief",
+          "proposed",
+          "agent:p2-2-bronze-discovery",
+          "CP2_evidence",
+          null,
+          "comment",
+          "T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm with the client which one defines a leg.",
+          "sources/S07_container_moves/01_intake/feedback/CP1_source_brief/FB-0003.yaml"
+        ],
+        [
+          "FB-0001",
+          "S07_container_moves",
+          "CP2_evidence",
+          "open",
+          "reviewer1",
+          null,
+          null,
+          "comment, include_paths, data",
+          "ETA_TS: the workshop notes say the text format comes from the manual entry screen in local port time. Use the port time zone from the locations table.",
+          "sources/S07_container_moves/02_evidence/feedback/CP2_evidence/FB-0001.yaml"
+        ]
+      ]
+    }
+  },
+  "key_table": "Items",
+  "connections": {
+    "kind": "flows",
+    "caption": "Who raised it -> at which checkpoint (status) -> what it blocks",
+    "flows": [
+      [
+        "agent:p2-2-bronze-discovery",
+        "FB-0002 proposed",
+        "global CP3_central_model",
+        ""
+      ],
+      [
+        "agent:p2-2-bronze-discovery",
+        "FB-GLB-n9xw proposed",
+        "global CP3_central_model",
+        ""
+      ],
+      [
+        "agent:p2-2-bronze-discovery",
+        "FB-0003 proposed",
+        "S07_container_moves CP1_source_brief",
+        "blocks CP2_evidence"
+      ],
+      [
+        "reviewer1",
+        "FB-0001 open",
+        "S07_container_moves CP2_evidence",
+        ""
+      ]
+    ]
+  },
+  "decide": [
+    "Accept or reject each proposed item.",
+    "Verify each applied item.",
+    "Stop loops: decide items that came back a third time."
+  ],
+  "counts": {
+    "warn": 3
+  }
+}

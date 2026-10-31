@@ -1,0 +1,265 @@
+{
+  "checkpoint": "CP3b_key_rules",
+  "source_id": "global",
+  "phase": "P3",
+  "title": "Key rules",
+  "purpose": "Check the key formats and which source wins for shared attributes.",
+  "approver": "data-architect",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:52Z",
+  "next_step": "p4-1-sttm-author, lib/keys.py",
+  "inputs": {
+    "registry/ontology/business.yaml": "db15071448a251edde91d64a110ca8ef6626aa31",
+    "registry/ontology/data.yaml": "ba3fbf61f9253132cf2f0a93a75fd5251aef59b6",
+    "registry/entities.yaml": "22aa7cad501a4d650bbd059b4560522fad0bdf3e",
+    "registry/key_normalisation.yaml": "a69bd3fbb3c0be0e1ef72383659ca1a1cae0df69"
+  },
+  "metrics": [
+    {
+      "label": "Business objects",
+      "value": 15,
+      "note": ""
+    },
+    {
+      "label": "Relationships",
+      "value": 17,
+      "note": ""
+    },
+    {
+      "label": "Entities approved / proposed",
+      "value": "0 / 6",
+      "note": ""
+    },
+    {
+      "label": "Key rules",
+      "value": 5,
+      "note": ""
+    },
+    {
+      "label": "Business rules",
+      "value": 3,
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "Key rule -> shared entity that uses it",
+    "flows": [
+      [
+        "part_number",
+        "normalises",
+        "Part"
+      ],
+      [
+        "supplier_code",
+        "normalises",
+        "Supplier"
+      ],
+      [
+        "buyer_id",
+        "normalises",
+        "Buyer"
+      ],
+      [
+        "container_number",
+        "normalises",
+        "Container"
+      ],
+      [
+        "generic_code",
+        "normalises",
+        "Material, Location"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object PartMaterialContent is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object MaterialIndex is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object PartPrice is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object Shipment is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object SavingsInitiative is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object SavingsTarget is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "business object SavingsActual is not yet covered by any source, entity, or STTM"
+    },
+    {
+      "severity": "warn",
+      "item": "ontology",
+      "text": "survivorship Part: source S03_part_catalogue is not in registry/sources.yaml (yet)"
+    }
+  ],
+  "decide": [
+    "Does each rule produce the same key from every source format?",
+    "Is the pattern strict enough to catch bad keys?",
+    "Is survivorship (which source wins) agreed for shared attributes?"
+  ],
+  "key_table": "Key rules",
+  "tables": {
+    "Entities": {
+      "columns": [
+        "name",
+        "business_object",
+        "data_class",
+        "target_table",
+        "business_key",
+        "key_rule",
+        "scd_type",
+        "status"
+      ],
+      "rows": [
+        [
+          "Part",
+          "Part",
+          "master",
+          "slv_mst_part",
+          "part_number",
+          "part_number",
+          2,
+          "proposed"
+        ],
+        [
+          "Supplier",
+          "Supplier",
+          "master",
+          "slv_mst_supplier",
+          "supplier_code",
+          "supplier_code",
+          2,
+          "proposed"
+        ],
+        [
+          "Buyer",
+          "Buyer",
+          "master",
+          "slv_mst_buyer",
+          "buyer_id",
+          "buyer_id",
+          2,
+          "proposed"
+        ],
+        [
+          "Material",
+          "Material",
+          "reference",
+          "slv_mst_material",
+          "material_code",
+          "generic_code",
+          1,
+          "proposed"
+        ],
+        [
+          "Location",
+          "Location",
+          "master",
+          "slv_mst_location",
+          "location_code",
+          "generic_code",
+          1,
+          "proposed"
+        ],
+        [
+          "Container",
+          "Container",
+          "master",
+          "slv_mst_container",
+          "container_number",
+          "container_number",
+          1,
+          "proposed"
+        ]
+      ]
+    },
+    "Key rules": {
+      "columns": [
+        "rule",
+        "case",
+        "lpad",
+        "pattern",
+        "remove_chars",
+        "trim"
+      ],
+      "rows": [
+        [
+          "part_number",
+          "upper",
+          null,
+          "^[A-Z0-9]{3,20}$",
+          "[\" \", \"-\"]",
+          true
+        ],
+        [
+          "supplier_code",
+          "upper",
+          "{\"length\": 8, \"char\": \"0\"}",
+          "^[A-Z0-9]{8}$",
+          "[\" \"]",
+          true
+        ],
+        [
+          "buyer_id",
+          "upper",
+          null,
+          "^[A-Z0-9]{2,12}$",
+          "[]",
+          true
+        ],
+        [
+          "container_number",
+          "upper",
+          null,
+          "^[A-Z]{4}[0-9]{7}$",
+          "[\" \", \"-\"]",
+          true
+        ],
+        [
+          "generic_code",
+          "upper",
+          null,
+          null,
+          "[]",
+          true
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "counts": {
+    "warn": 8
+  }
+}

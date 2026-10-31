@@ -1,0 +1,24 @@
+erDiagram
+  slv_cnt_shipment_leg {
+    string shipment_leg_sk PK
+    string container_number UK
+    string shipment_id UK
+    int leg_seq UK
+    string container_sk FK
+    string origin_location_sk FK
+    string destination_location_sk FK
+    date departure_date
+    timestamp eta_ts
+    decimal transit_days
+  }
+  slv_cnt_shipment_leg }o--|| slv_mst_container : "container_sk"
+  slv_cnt_shipment_leg }o--|| slv_mst_location : "origin_location_sk"
+  slv_cnt_shipment_leg }o--|| slv_mst_location : "destination_location_sk"
+  slv_mst_container {
+    string container_sk PK
+    string container_number UK
+  }
+  slv_mst_location {
+    string location_sk PK
+    string location_code UK
+  }

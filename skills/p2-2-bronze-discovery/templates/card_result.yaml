@@ -1,0 +1,11 @@
+# Example answer for one discovery card. Save as cards/T-xxx.result.yaml next to the card.
+card: T-001
+role: reference                  # master | reference | transaction_header | transaction_line | event | snapshot | bridge | aggregate | staging
+business_object: NEW:ContainerType   # a name from registry/ontology/business.yaml, NEW:<Name>, or none
+grain_key: [TYPE_CD]
+accept_links: [containers.TYPE_CD -> container_types.TYPE_CD]
+reject_links: []
+load_to_silver: yes              # yes | no | derive_instead
+reason: 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers; it is not the Container object.
+evidence: [discovery/columns.csv container_types.TYPE_CD top values, discovery/links.csv containers.TYPE_CD]
+raise_upstream: null             # or a short text for an earlier checkpoint

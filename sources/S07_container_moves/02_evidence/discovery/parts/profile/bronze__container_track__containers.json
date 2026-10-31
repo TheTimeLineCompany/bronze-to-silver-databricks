@@ -1,0 +1,201 @@
+{
+  "table": "bronze.container_track.containers",
+  "row_count": 800,
+  "sample_rows": 800,
+  "profiled_at": "2026-10-31T10:56:12.629166+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.containers",
+      "column": "CNTR_NO",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 800,
+      "null_pct": 0.0,
+      "approx_distinct": 794,
+      "distinct_ratio": 0.9925,
+      "min": "MSCU1014172",
+      "max": "MSCU9996936",
+      "min_len": 11,
+      "max_len": 11,
+      "avg_len": 11.0,
+      "patterns": [
+        "AAAA9999999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.containers",
+      "column": "TYPE_CD",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 800,
+      "null_pct": 0.0,
+      "approx_distinct": 5,
+      "distinct_ratio": 0.0063,
+      "min": "20GP",
+      "max": "45HC",
+      "min_len": 4,
+      "max_len": 4,
+      "avg_len": 4.0,
+      "patterns": [
+        "99AA"
+      ],
+      "topk": [
+        [
+          "20RF",
+          171
+        ],
+        [
+          "20GP",
+          168
+        ],
+        [
+          "40GP",
+          165
+        ],
+        [
+          "40HC",
+          158
+        ],
+        [
+          "45HC",
+          138
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.containers",
+      "column": "OWNER",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 800,
+      "null_pct": 0.0,
+      "approx_distinct": 3,
+      "distinct_ratio": 0.0037,
+      "min": "CMA",
+      "max": "MSC",
+      "min_len": 3,
+      "max_len": 6,
+      "avg_len": 3.9,
+      "patterns": [
+        "AAA",
+        "AAAAAA"
+      ],
+      "topk": [
+        [
+          "CMA",
+          296
+        ],
+        [
+          "MAERSK",
+          252
+        ],
+        [
+          "MSC",
+          252
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.containers",
+      "column": "BUILD_YEAR",
+      "type": "int",
+      "family": "int",
+      "sample_rows": 800,
+      "null_pct": 0.0,
+      "approx_distinct": 20,
+      "distinct_ratio": 0.025,
+      "min": "2005",
+      "max": "2024",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": [
+        [
+          "2016",
+          57
+        ],
+        [
+          "2022",
+          52
+        ],
+        [
+          "2009",
+          48
+        ],
+        [
+          "2021",
+          46
+        ],
+        [
+          "2013",
+          46
+        ],
+        [
+          "2007",
+          46
+        ],
+        [
+          "2015",
+          43
+        ],
+        [
+          "2020",
+          42
+        ],
+        [
+          "2023",
+          40
+        ],
+        [
+          "2010",
+          37
+        ],
+        [
+          "2005",
+          37
+        ],
+        [
+          "2008",
+          36
+        ],
+        [
+          "2019",
+          36
+        ],
+        [
+          "2011",
+          36
+        ],
+        [
+          "2017",
+          36
+        ],
+        [
+          "2024",
+          35
+        ],
+        [
+          "2012",
+          35
+        ],
+        [
+          "2018",
+          33
+        ],
+        [
+          "2014",
+          30
+        ],
+        [
+          "2006",
+          29
+        ]
+      ]
+    }
+  ]
+}

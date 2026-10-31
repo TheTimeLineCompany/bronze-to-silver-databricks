@@ -1,0 +1,333 @@
+{
+  "checkpoint": "CP2_evidence",
+  "source_id": "S01_buyer_master",
+  "phase": "P2",
+  "title": "Evidence",
+  "purpose": "Check that each fact the mapping needs has enough evidence, and that conflicts are handled.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "p4-1-sttm-author (reads evidence and bronze results)",
+  "inputs": {
+    "sources/S01_buyer_master/02_evidence/evidence_register.csv": "77f349f77a439dee7c53084591689ecce0a13a2d",
+    "sources/S01_buyer_master/02_evidence/profiling/doc_profiles.csv": "2eaaea90b65b0ac3c162e62e1a96d19e8d851ec2"
+  },
+  "metrics": [
+    {
+      "label": "Evidence claims",
+      "value": 5,
+      "note": ""
+    },
+    {
+      "label": "High / medium / low+unknown",
+      "value": "4 / 1 / 0",
+      "note": ""
+    },
+    {
+      "label": "Confirmed by bronze or corroborated",
+      "value": 3,
+      "note": ""
+    },
+    {
+      "label": "Contradicted",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "Client profiling rows",
+      "value": 7,
+      "note": "0 low"
+    }
+  ],
+  "connections": {
+    "kind": "matrix",
+    "rows": [
+      "high",
+      "medium",
+      "low",
+      "unknown"
+    ],
+    "cols": [
+      "unverified",
+      "corroborated",
+      "confirmed_by_bronze",
+      "contradicted",
+      "superseded"
+    ],
+    "cells": [
+      [
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "caption": "Evidence claims by confidence (rows) and status (columns)"
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "bronze",
+      "text": "no bronze results: run tools/p2_2_discover.py"
+    }
+  ],
+  "decide": [
+    "Are the table roles, grain keys, and business objects right (see lineage order)?",
+    "Is the scope right: no logs, audit, or staging data in silver, and personal data handled?",
+    "Is the evidence enough for every key, foreign key, grain, and business rule?",
+    "Are contradictions resolved, with bronze for structure and documents for meaning?",
+    "Are the open questions the right ones, and is 'blocking' set correctly?"
+  ],
+  "key_table": "Evidence",
+  "tables": {
+    "Evidence": {
+      "columns": [
+        "evidence_id",
+        "claim",
+        "about_type",
+        "about",
+        "origin",
+        "file_id",
+        "location",
+        "confidence",
+        "status",
+        "corroborated_by",
+        "notes"
+      ],
+      "rows": [
+        [
+          "E-0001",
+          "BUYER_ID identifies a buyer and is never re-used.",
+          "key",
+          "T_BUYER.BUYER_ID -> Buyer",
+          "document",
+          "IF-0001",
+          "sheet T_BUYER row 2",
+          "high",
+          "corroborated",
+          "E-0002",
+          ""
+        ],
+        [
+          "E-0002",
+          "Client confirmed buyer ids are never re-used (Q-0002).",
+          "key",
+          "T_BUYER.BUYER_ID",
+          "client_answer",
+          "",
+          "registry/open_questions.yaml Q-0002",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/t_buyer.json",
+          "unique in bronze"
+        ],
+        [
+          "E-0003",
+          "BUYER_NM is the buyer full name.",
+          "column",
+          "T_BUYER.BUYER_NM",
+          "document",
+          "IF-0001",
+          "sheet T_BUYER row 3",
+          "high",
+          "unverified",
+          "",
+          ""
+        ],
+        [
+          "E-0004",
+          "DEPT_CD links a buyer to T_DEPT; DEPT_NM is the department name.",
+          "relationship",
+          "T_BUYER -> T_DEPT (Department)",
+          "document",
+          "IF-0001",
+          "sheet T_DEPT rows 2-3",
+          "medium",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/t_dept.json",
+          ""
+        ],
+        [
+          "E-0005",
+          "STATUS_CD A means active and I means inactive.",
+          "code_value",
+          "T_BUYER.STATUS_CD",
+          "document",
+          "IF-0002",
+          "slide 4",
+          "high",
+          "unverified",
+          "",
+          ""
+        ]
+      ]
+    },
+    "Bronze checks": {
+      "columns": [
+        "table",
+        "check",
+        "status",
+        "evidence",
+        "file"
+      ],
+      "rows": []
+    },
+    "Client profiling": {
+      "columns": [
+        "profile_id",
+        "table",
+        "column",
+        "data_type",
+        "null_pct",
+        "distinct",
+        "pk_candidate",
+        "raw_confidence",
+        "confidence",
+        "description"
+      ],
+      "rows": [
+        [
+          "DP-00001",
+          "T_BUYER",
+          "BUYER_ID",
+          "VARCHAR(12)",
+          "",
+          "",
+          "Y",
+          "High",
+          "high",
+          "Buyer identifier, never re-used"
+        ],
+        [
+          "DP-00002",
+          "T_BUYER",
+          "BUYER_NM",
+          "VARCHAR(100)",
+          "",
+          "",
+          "N",
+          "High",
+          "high",
+          "Buyer full name"
+        ],
+        [
+          "DP-00003",
+          "T_BUYER",
+          "DEPT_CD",
+          "VARCHAR(6)",
+          "",
+          "",
+          "N",
+          "Medium",
+          "medium",
+          "Department code"
+        ],
+        [
+          "DP-00004",
+          "T_BUYER",
+          "STATUS_CD",
+          "CHAR(1)",
+          "",
+          "",
+          "N",
+          "High",
+          "high",
+          "A=active, I=inactive"
+        ],
+        [
+          "DP-00005",
+          "T_BUYER",
+          "LAST_UPD_TS",
+          "TIMESTAMP",
+          "",
+          "",
+          "N",
+          "High",
+          "high",
+          "Last update"
+        ],
+        [
+          "DP-00006",
+          "T_DEPT",
+          "DEPT_CD",
+          "VARCHAR(6)",
+          "",
+          "",
+          "Y",
+          "High",
+          "high",
+          "Department code"
+        ],
+        [
+          "DP-00007",
+          "T_DEPT",
+          "DEPT_NM",
+          "VARCHAR(60)",
+          "",
+          "",
+          "N",
+          "Medium",
+          "medium",
+          "Department name"
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 1
+  }
+}

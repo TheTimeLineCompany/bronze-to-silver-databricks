@@ -1,0 +1,123 @@
+{
+  "checkpoint": "CP4b_business_logic",
+  "source_id": "S07_container_moves",
+  "phase": "P4",
+  "title": "Business logic",
+  "purpose": "The business expert checks each calculated value and its formula.",
+  "approver": "client-sme",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:50Z",
+  "next_step": "Handover H1 -> p5-1-pyspark-codegen",
+  "inputs": {
+    "sources/S07_container_moves/04_mapping/sttm.yaml": "b077d4ab4e4b0412c2ab7ccd273a035fd0bfb5ff",
+    "sources/S07_container_moves/02_evidence/evidence_register.csv": "e4541f42f2ee5c9351532eb83af5171d2328b328",
+    "registry/ontology/business.yaml": "db15071448a251edde91d64a110ca8ef6626aa31"
+  },
+  "metrics": [
+    {
+      "label": "Business-logic columns",
+      "value": 1,
+      "note": ""
+    },
+    {
+      "label": "Rules still 'proposed'",
+      "value": 1,
+      "note": ""
+    },
+    {
+      "label": "SME sign-off",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "Business rule -> silver column -> formula",
+    "flows": [
+      [
+        "BR-LOGI-001",
+        "computes",
+        "slv_cnt_shipment_leg.transit_days",
+        "(l.ATA_TS - l.ATD_TS) / 86400.0"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "info",
+      "item": "BR-LOGI-001",
+      "text": "rule is 'proposed' in business.yaml; set 'approved' with the sign-off"
+    }
+  ],
+  "decide": [
+    "Is each formula the one the business uses (units, rounding, time zone)?",
+    "Are the inputs the right fields?",
+    "Who owns each rule after go-live?"
+  ],
+  "key_table": "Business logic",
+  "tables": {
+    "Business logic": {
+      "columns": [
+        "business_rule",
+        "rule_text",
+        "rule_status",
+        "owner",
+        "table",
+        "column",
+        "formula",
+        "inputs",
+        "evidence",
+        "evidence_claims"
+      ],
+      "rows": [
+        [
+          "BR-LOGI-001",
+          "Transit days = (actual arrival - actual departure) in days",
+          "proposed",
+          "client-logistics-sme",
+          "slv_cnt_shipment_leg",
+          "transit_days",
+          "(l.ATA_TS - l.ATD_TS) / 86400.0",
+          "l.ATD_TS, l.ATA_TS",
+          "E-0009",
+          "Transit days = actual arrival minus actual departure in days."
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "info": 1
+  }
+}

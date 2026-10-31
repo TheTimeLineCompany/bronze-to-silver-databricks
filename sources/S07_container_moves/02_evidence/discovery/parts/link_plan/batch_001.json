@@ -1,0 +1,98 @@
+[
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+FROM_LOC",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+FROM_LOC",
+    "score": 1.133,
+    "name_similarity": 0.833
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+TO_LOC",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+TO_LOC",
+    "score": 1.133,
+    "name_similarity": 0.833
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "FROM_LOC+ATD_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "FROM_LOC+ATD_TS",
+    "score": 1.133,
+    "name_similarity": 0.833
+  },
+  {
+    "dep_table": "bronze.container_track.legs_bkp_2025",
+    "dep_column": "SHPMT_ID+LEG_NO",
+    "ref_table": "bronze.container_track.legs",
+    "ref_column": "SHPMT_ID+LEG_NO",
+    "score": 1.133,
+    "name_similarity": 0.833
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "CNTR_NO+ETA_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "CNTR_NO+ETA_TS",
+    "score": 1.114,
+    "name_similarity": 0.814
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "CNTR_NO+ATD_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "CNTR_NO+ATD_TS",
+    "score": 1.114,
+    "name_similarity": 0.814
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "CNTR_NO+ATA_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "CNTR_NO+ATA_TS",
+    "score": 1.114,
+    "name_similarity": 0.814
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+ETA_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+ETA_TS",
+    "score": 1.1,
+    "name_similarity": 0.8
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+ATD_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+ATD_TS",
+    "score": 1.1,
+    "name_similarity": 0.8
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+ATA_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+ATA_TS",
+    "score": 1.1,
+    "name_similarity": 0.8
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "ATD_TS+ETA_TS",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "ATD_TS+ETA_TS",
+    "score": 1.1,
+    "name_similarity": 0.8
+  },
+  {
+    "dep_table": "bronze.container_track.legs",
+    "dep_column": "SHPMT_ID+LEG_NO",
+    "ref_table": "bronze.container_track.legs_bkp_2025",
+    "ref_column": "SHPMT_ID+LEG_NO",
+    "score": 1.067,
+    "name_similarity": 0.767
+  }
+]

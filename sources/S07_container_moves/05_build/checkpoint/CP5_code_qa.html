@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CP5_code_qa S07_container_moves</title><style>
+:root{--bg:#f4f6f7;--sf:#fff;--ink:#18232b;--mu:#5b6a74;--ln:#d5dde2;--err:#a3202f;--errb:#f8e6e8;--wrn:#8a5a00;--wrnb:#fbf0d9;--inf:#3d4f9c;--infb:#e7eaf7;--ok:#0f7c78;--okb:#e3f3f1;
+--sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}
+*{box-sizing:border-box}main>*,section,header{min-width:0}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+main{max-width:1040px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+h1{font-size:28px;line-height:1.15;margin:0;text-wrap:balance}h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:0 0 8px;font-weight:500}
+p{margin:0;max-width:70ch}code{font-family:var(--mono);font-size:.86em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mu)}
+.pill{display:inline-block;padding:1px 8px;font-family:var(--mono);font-size:12px;border:1px solid currentColor}
+.s-approved,.s-not_required{color:var(--ok)}.s-pending{color:var(--mu)}.s-in_review{color:var(--inf)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tile{background:var(--sf);border:1px solid var(--ln);padding:10px 12px;display:grid;gap:2px;align-content:start}
+.tile b{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1;overflow-wrap:anywhere}.tile span{font-size:13px;color:var(--mu)}
+.box{background:var(--sf);border:1px solid var(--ln);padding:14px 16px;min-width:0}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px 10px;align-items:center;font-size:14px}
+.node{border:1px solid var(--ln);padding:4px 8px;font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;background:var(--bg)}
+.edge{color:var(--mu);font-size:12.5px;white-space:nowrap}.edge::after{content:" \2192"}.rid{font-family:var(--mono);font-size:11.5px;color:var(--mu);overflow-wrap:anywhere}
+@media (max-width:620px){.flow{grid-template-columns:1fr}.edge{white-space:normal}}
+.funnel{display:grid;gap:4px}.fs{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 12px;background:var(--infb);margin-inline:calc(var(--i)*3%)}
+.fs b{font-weight:600}.fs span{font-family:var(--mono);font-size:12.5px;color:var(--inf)}
+.chain{display:flex;flex-wrap:wrap;gap:6px}.ch{padding:6px 10px;border:1px solid var(--ln);font-family:var(--mono);font-size:12.5px;display:grid}
+.ch small{font-size:11px}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.issues li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:6px 10px;font-size:14px}
+.issues .sev{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;padding-top:2px}
+.error{background:var(--errb)}.error .sev{color:var(--err)}.warn{background:var(--wrnb)}.warn .sev{color:var(--wrn)}.info{background:var(--infb)}.info .sev{color:var(--inf)}
+.issues code{overflow-wrap:anywhere}
+.decide{margin:0;padding-left:20px;display:grid;gap:4px}
+.tw{overflow-x:auto;background:var(--sf);border:1px solid var(--ln)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:500;white-space:nowrap}
+td{max-width:420px;min-width:80px;overflow-wrap:break-word}tr:last-child td{border-bottom:0}
+.mx td,.mx th{text-align:center}.mx td:first-child,.mx th:first-child{text-align:left}.mx td{font-variant-numeric:tabular-nums}
+.z{color:var(--mu)}
+footer{font-size:13px;color:var(--mu);display:grid;gap:4px;border-top:1px solid var(--ln);padding-top:10px}
+</style></head><body><main>
+<header style="display:grid;gap:8px"><h2>P5 · checkpoint · S07_container_moves</h2><h1>CP5 Code and QA</h1>
+<div class="meta"><span class="pill s-pending">pending</span><span>Approver: phase2-lead</span><span>Generated 2026-10-31T11:41:50Z</span>
+<span>1 errors · 0 warnings</span></div><p>Check that the code implements the mapping and passes every QA check.</p></header>
+<section><h2>Key numbers</h2><div class="tiles"><div class='tile'><b>0</b><span>Notebooks</span></div><div class='tile'><b>0 / 0 / 0</b><span>QA pass / fail / error</span></div><div class='tile'><b>missing</b><span>Code review</span></div></div></section>
+<section><h2>Connections</h2><div class="box"><p style='font-size:13px;color:var(--mu);margin-bottom:8px'>STTM table -&gt; notebook -&gt; QA result</p><div class='flow'><div class='node'>slv_cnt_shipment_leg</div><div class='edge'>built by</div><div class='node'>(no notebook)</div><div class='rid'>0/0 QA pass</div></div></div></section>
+<section><h2>Needs attention</h2><ul class='issues'><li class='error'><span class='sev'>error</span><span><code>qa</code> 05_build/qa_results/summary.json missing or empty</span></li></ul></section>
+<section><h2>Reviewer decides</h2><div class="box"><ol class="decide"><li>Does the code do exactly what the STTM says, and nothing more?</li><li>Do all QA checks pass without changed thresholds?</li><li>Does the code follow the naming and coding standards?</li></ol></div></section>
+
+<footer><span>Full lists: <code>CP5_code_qa.xlsx</code> (QA checks, Notebooks, Questions, Feedback). Machine-readable: <code>CP5_code_qa.json</code>. Next: p6-1-handoff-package.</span>
+
+<span>Feedback: <code>python tools/x_feedback.py new S07_container_moves CP5_code_qa --comment "..."</code></span></footer>
+</main></body></html>

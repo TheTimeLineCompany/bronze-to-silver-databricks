@@ -1,0 +1,231 @@
+{
+  "table": "bronze.container_track.shipments",
+  "row_count": 1500,
+  "sample_rows": 1500,
+  "profiled_at": "2026-10-31T10:57:05.796394+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "SHPMT_ID",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 1516,
+      "distinct_ratio": 1.0107,
+      "min": "S000000",
+      "max": "S001499",
+      "min_len": 7,
+      "max_len": 7,
+      "avg_len": 7.0,
+      "patterns": [
+        "A999999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "BOOKING_DT",
+      "type": "date",
+      "family": "date",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 204,
+      "distinct_ratio": 0.136,
+      "min": "2026-01-01",
+      "max": "2026-07-20",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "ORIGIN_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 0.0067,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "KRPUS",
+          170
+        ],
+        [
+          "CNSHA",
+          168
+        ],
+        [
+          "DEHAM",
+          157
+        ],
+        [
+          "USNYC",
+          157
+        ],
+        [
+          "NLRTM",
+          154
+        ],
+        [
+          "SGSIN",
+          153
+        ],
+        [
+          "USLAX",
+          144
+        ],
+        [
+          "GBFXT",
+          140
+        ],
+        [
+          "BEANR",
+          136
+        ],
+        [
+          "AEJEA",
+          121
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "DEST_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 0.0067,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "BEANR",
+          162
+        ],
+        [
+          "USLAX",
+          158
+        ],
+        [
+          "NLRTM",
+          156
+        ],
+        [
+          "KRPUS",
+          155
+        ],
+        [
+          "CNSHA",
+          153
+        ],
+        [
+          "SGSIN",
+          152
+        ],
+        [
+          "GBFXT",
+          148
+        ],
+        [
+          "AEJEA",
+          145
+        ],
+        [
+          "USNYC",
+          138
+        ],
+        [
+          "DEHAM",
+          133
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "CUSTOMER",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 4,
+      "distinct_ratio": 0.0027,
+      "min": "ACME",
+      "max": "UMBRELLA",
+      "min_len": 4,
+      "max_len": 8,
+      "avg_len": 6.3,
+      "patterns": [
+        "AAAAAA",
+        "AAAAAAA",
+        "AAAAAAAA"
+      ],
+      "topk": [
+        [
+          "GLOBEX",
+          432
+        ],
+        [
+          "INITECH",
+          373
+        ],
+        [
+          "UMBRELLA",
+          361
+        ],
+        [
+          "ACME",
+          334
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.shipments",
+      "column": "BOOKED_FROM",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1500,
+      "null_pct": 0.0,
+      "approx_distinct": 1518,
+      "distinct_ratio": 1.012,
+      "min": null,
+      "max": null,
+      "min_len": 9,
+      "max_len": 14,
+      "avg_len": 12.8,
+      "patterns": [
+        "99.999.999.999",
+        "99.999.999.99",
+        "99.999.99.999"
+      ],
+      "topk": [],
+      "kinds": {
+        "ip": 1.0
+      },
+      "redacted": "application_log"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+items:
+- id: QZ-CP1-001
+  mode: kickoff
+  ref: CP1_source_brief
+  checkpoint: CP1_source_brief
+  status: asked
+  'on': '2026-10-31T11:00:26Z'
+  file: sources/S07_container_moves/01_intake/clarify/QZ-CP1-001.md

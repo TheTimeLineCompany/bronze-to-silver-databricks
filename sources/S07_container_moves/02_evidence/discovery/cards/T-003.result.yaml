@@ -1,0 +1,20 @@
+card: T-003
+role: master
+business_object: Location
+grain_key:
+- LOC_CD
+accept_links:
+- legs.FROM_LOC -> locations.LOC_CD
+- legs.TO_LOC -> locations.LOC_CD
+- shipments.ORIGIN_LOC -> locations.LOC_CD
+- shipments.DEST_LOC -> locations.LOC_CD
+reject_links: []
+load_to_silver: true
+reason: Small, but it is the place master (name, country, time zone) referenced by
+  four columns. Location is a conformed master entity. TZ_NAME can answer Q-0001 (ETA
+  time zone).
+evidence:
+- discovery/tables.csv locations
+- discovery/links.csv
+- 01_intake/source_brief.md Keys and links
+raise_upstream: null

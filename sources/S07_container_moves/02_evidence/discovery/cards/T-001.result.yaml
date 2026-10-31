@@ -1,0 +1,11 @@
+card: T-001
+role: master
+business_object: NEW:CarrierContact
+grain_key: [OWNER, CONTACT_NAME]
+accept_links: []
+reject_links: []
+load_to_silver: yes
+reason: Dispatch contacts of each carrier. Needed by operations to call the carrier. Personal data; no object in business.yaml for carrier contacts.
+evidence: [discovery/column_scope.csv carrier_contacts, discovery/columns.csv carrier_contacts shapes]
+raise_upstream: null
+columns: {CONTACT_NAME: keep, EMAIL_ADDR: mask, TEL: mask, ROLE_TXT: out_of_scope}

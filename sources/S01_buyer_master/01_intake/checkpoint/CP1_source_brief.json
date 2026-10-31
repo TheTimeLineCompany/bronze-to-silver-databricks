@@ -1,0 +1,212 @@
+{
+  "checkpoint": "CP1_source_brief",
+  "source_id": "S01_buyer_master",
+  "phase": "P1",
+  "title": "Source brief",
+  "purpose": "Check that the agent reads the right files, and that the brief describes the source correctly.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "p2-1-doc-profiles, p2-2-bronze-discovery, p2-3-evidence-reconcile",
+  "inputs": {
+    "sources/S01_buyer_master/01_intake/manifest.csv": "fef0a8b835fc615ef76c397d298d19e278e6ab25",
+    "sources/S01_buyer_master/01_intake/triage.yaml": "ebf68c4d5c7216958875f377b8c8f08cf20c44af",
+    "sources/S01_buyer_master/01_intake/source_brief.md": "1e66039d58954c68207ca104eed426400784bb28",
+    "sources/S01_buyer_master/02_evidence/evidence_register.csv": "77f349f77a439dee7c53084591689ecce0a13a2d"
+  },
+  "metrics": [
+    {
+      "label": "Files in inbox",
+      "value": 2,
+      "note": ""
+    },
+    {
+      "label": "Duplicates / old versions",
+      "value": "0 / 0",
+      "note": ""
+    },
+    {
+      "label": "Core files",
+      "value": 2,
+      "note": "max 15"
+    },
+    {
+      "label": "Supporting / background / ignore",
+      "value": "0 / 0 / 0",
+      "note": ""
+    },
+    {
+      "label": "Brief words",
+      "value": 84,
+      "note": "max 1800"
+    },
+    {
+      "label": "Evidence claims",
+      "value": 5,
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "funnel",
+    "steps": [
+      [
+        "00_inbox",
+        "2 files"
+      ],
+      [
+        "Inventory",
+        "0 duplicates, 0 old versions"
+      ],
+      [
+        "Triage",
+        "2 core, 0 supporting"
+      ],
+      [
+        "Read plans",
+        "2 files with named parts"
+      ],
+      [
+        "Evidence",
+        "5 claims"
+      ],
+      [
+        "Brief",
+        "84 words"
+      ]
+    ]
+  },
+  "issues": [],
+  "decide": [
+    "Is each core file the latest and right version?",
+    "Do the ignored and background files hold nothing the mapping needs?",
+    "Does the brief name the right business objects, grain, and keys?"
+  ],
+  "key_table": "Files",
+  "tables": {
+    "Files": {
+      "columns": [
+        "file_id",
+        "path",
+        "doc_type",
+        "relevance",
+        "reason",
+        "read_plan"
+      ],
+      "rows": [
+        [
+          "IF-0001",
+          "00_inbox/Docs/BUYMGR_data_dictionary.xlsx",
+          "data_dictionary",
+          "core",
+          "field definitions and keys",
+          "sheets: ['T_BUYER', 'T_DEPT']"
+        ],
+        [
+          "IF-0002",
+          "00_inbox/Docs/buyer_system_overview.pptx",
+          "system_overview",
+          "core",
+          "status codes and id policy",
+          "sections: ['slide 4 status codes', 'slide 6 buyer ids']"
+        ]
+      ]
+    },
+    "Evidence": {
+      "columns": [
+        "evidence_id",
+        "claim",
+        "about",
+        "origin",
+        "file_id",
+        "location",
+        "confidence",
+        "status"
+      ],
+      "rows": [
+        [
+          "E-0001",
+          "BUYER_ID identifies a buyer and is never re-used.",
+          "T_BUYER.BUYER_ID -> Buyer",
+          "document",
+          "IF-0001",
+          "sheet T_BUYER row 2",
+          "high",
+          "corroborated"
+        ],
+        [
+          "E-0002",
+          "Client confirmed buyer ids are never re-used (Q-0002).",
+          "T_BUYER.BUYER_ID",
+          "client_answer",
+          "",
+          "registry/open_questions.yaml Q-0002",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0003",
+          "BUYER_NM is the buyer full name.",
+          "T_BUYER.BUYER_NM",
+          "document",
+          "IF-0001",
+          "sheet T_BUYER row 3",
+          "high",
+          "unverified"
+        ],
+        [
+          "E-0004",
+          "DEPT_CD links a buyer to T_DEPT; DEPT_NM is the department name.",
+          "T_BUYER -> T_DEPT (Department)",
+          "document",
+          "IF-0001",
+          "sheet T_DEPT rows 2-3",
+          "medium",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0005",
+          "STATUS_CD A means active and I means inactive.",
+          "T_BUYER.STATUS_CD",
+          "document",
+          "IF-0002",
+          "slide 4",
+          "high",
+          "unverified"
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {}
+}

@@ -1,0 +1,250 @@
+{
+  "table": "bronze.container_track.locations",
+  "row_count": 10,
+  "sample_rows": 10,
+  "profiled_at": "2026-10-31T10:56:59.807873+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.locations",
+      "column": "LOC_CD",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 10,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 1.0,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "KRPUS",
+          1
+        ],
+        [
+          "AEJEA",
+          1
+        ],
+        [
+          "BEANR",
+          1
+        ],
+        [
+          "GBFXT",
+          1
+        ],
+        [
+          "USLAX",
+          1
+        ],
+        [
+          "USNYC",
+          1
+        ],
+        [
+          "DEHAM",
+          1
+        ],
+        [
+          "NLRTM",
+          1
+        ],
+        [
+          "CNSHA",
+          1
+        ],
+        [
+          "SGSIN",
+          1
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.locations",
+      "column": "LOC_NAME",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 10,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 1.0,
+      "min": "Port AEJEA",
+      "max": "Port USNYC",
+      "min_len": 10,
+      "max_len": 10,
+      "avg_len": 10.0,
+      "patterns": [
+        "Aaaa AAAAA"
+      ],
+      "topk": [
+        [
+          "Port BEANR",
+          1
+        ],
+        [
+          "Port AEJEA",
+          1
+        ],
+        [
+          "Port KRPUS",
+          1
+        ],
+        [
+          "Port GBFXT",
+          1
+        ],
+        [
+          "Port USLAX",
+          1
+        ],
+        [
+          "Port USNYC",
+          1
+        ],
+        [
+          "Port DEHAM",
+          1
+        ],
+        [
+          "Port NLRTM",
+          1
+        ],
+        [
+          "Port SGSIN",
+          1
+        ],
+        [
+          "Port CNSHA",
+          1
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.locations",
+      "column": "COUNTRY_CD",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 10,
+      "null_pct": 0.0,
+      "approx_distinct": 9,
+      "distinct_ratio": 0.9,
+      "min": "AE",
+      "max": "US",
+      "min_len": 2,
+      "max_len": 2,
+      "avg_len": 2.0,
+      "patterns": [
+        "AA"
+      ],
+      "topk": [
+        [
+          "US",
+          2
+        ],
+        [
+          "KR",
+          1
+        ],
+        [
+          "AE",
+          1
+        ],
+        [
+          "BE",
+          1
+        ],
+        [
+          "GB",
+          1
+        ],
+        [
+          "NL",
+          1
+        ],
+        [
+          "DE",
+          1
+        ],
+        [
+          "CN",
+          1
+        ],
+        [
+          "SG",
+          1
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.locations",
+      "column": "TZ_NAME",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 10,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 1.0,
+      "min": "America/Los_Angeles",
+      "max": "Europe/London",
+      "min_len": 10,
+      "max_len": 19,
+      "avg_len": 13.9,
+      "patterns": [
+        "Aaaaaa/Aaaaaa",
+        "Aaaa/Aaaaa",
+        "Aaaaaa/Aaaaaaaa"
+      ],
+      "topk": [
+        [
+          "Asia/Dubai",
+          1
+        ],
+        [
+          "Asia/Seoul",
+          1
+        ],
+        [
+          "Europe/London",
+          1
+        ],
+        [
+          "Europe/Brussels",
+          1
+        ],
+        [
+          "America/New_York",
+          1
+        ],
+        [
+          "America/Los_Angeles",
+          1
+        ],
+        [
+          "Europe/Berlin",
+          1
+        ],
+        [
+          "Europe/Amsterdam",
+          1
+        ],
+        [
+          "Asia/Shanghai",
+          1
+        ],
+        [
+          "Asia/Singapore",
+          1
+        ]
+      ],
+      "kinds": {}
+    }
+  ]
+}

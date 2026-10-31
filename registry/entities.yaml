@@ -1,0 +1,90 @@
+# Central conformed entities (the shared ER model).
+# Checkpoint CP3 approves this file. After CP3, change it only through a change request PR
+# (see registry/decisions.md). Every source STTM must point its foreign keys here.
+#
+# Fields
+#   name            Entity name used in STTM `fk.entity` and `conformed_entity`.
+#   business_object Business object it implements (registry/ontology/business.yaml).
+#   data_class      master | reference (registry/ontology/data.yaml).
+#   target_table    Silver table name (follow standards/naming.yaml).
+#   grain           One sentence: what one row means.
+#   business_key    Natural key columns (after key normalisation).
+#   surrogate_key   Column that other tables reference as their FK.
+#   scd_type        0, 1 or 2. Masters are usually 2.
+#   key_rule        Name of a rule in registry/key_normalisation.yaml.
+#   owner           Person who approves changes.
+#   status          proposed | approved
+
+version: 1
+entities:
+  - name: Part
+    business_object: Part
+    data_class: master
+    target_table: slv_mst_part
+    grain: One row per part number per validity period.
+    business_key: [part_number]
+    surrogate_key: part_sk
+    scd_type: 2
+    key_rule: part_number
+    owner: data-architect
+    status: proposed
+
+  - name: Supplier
+    business_object: Supplier
+    data_class: master
+    target_table: slv_mst_supplier
+    grain: One row per supplier code per validity period.
+    business_key: [supplier_code]
+    surrogate_key: supplier_sk
+    scd_type: 2
+    key_rule: supplier_code
+    owner: data-architect
+    status: proposed
+
+  - name: Buyer
+    business_object: Buyer
+    data_class: master
+    target_table: slv_mst_buyer
+    grain: One row per buyer (employee) per validity period.
+    business_key: [buyer_id]
+    surrogate_key: buyer_sk
+    scd_type: 2
+    key_rule: buyer_id
+    owner: data-architect
+    status: proposed
+
+  - name: Material
+    business_object: Material
+    data_class: reference
+    target_table: slv_mst_material
+    grain: One row per raw material code (for example iron, aluminium grades).
+    business_key: [material_code]
+    surrogate_key: material_sk
+    scd_type: 1
+    key_rule: generic_code
+    owner: data-architect
+    status: proposed
+
+  - name: Location
+    business_object: Location
+    data_class: master
+    target_table: slv_mst_location
+    grain: One row per site, port, or warehouse code.
+    business_key: [location_code]
+    surrogate_key: location_sk
+    scd_type: 1
+    key_rule: generic_code
+    owner: data-architect
+    status: proposed
+
+  - name: Container
+    business_object: Container
+    data_class: master
+    target_table: slv_mst_container
+    grain: One row per physical container number.
+    business_key: [container_number]
+    surrogate_key: container_sk
+    scd_type: 1
+    key_rule: container_number
+    owner: data-architect
+    status: proposed

@@ -1,0 +1,501 @@
+{
+  "checkpoint": "CP1_source_brief",
+  "source_id": "S07_container_moves",
+  "phase": "P1",
+  "title": "Source brief",
+  "purpose": "Check that the agent reads the right files, and that the brief describes the source correctly.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:49Z",
+  "next_step": "p2-1-doc-profiles, p2-2-bronze-discovery, p2-3-evidence-reconcile",
+  "inputs": {
+    "sources/S07_container_moves/01_intake/manifest.csv": "46666802176c90df3092aac5ca8b758512f0ecb8",
+    "sources/S07_container_moves/01_intake/triage.yaml": "2803f383885d1e0c6be591193aebe06dd8a4152b",
+    "sources/S07_container_moves/01_intake/source_brief.md": "007a052ebacdfdf1b44c19a0f6f983137341c658",
+    "sources/S07_container_moves/02_evidence/evidence_register.csv": "e4541f42f2ee5c9351532eb83af5171d2328b328"
+  },
+  "metrics": [
+    {
+      "label": "Files in inbox",
+      "value": 11,
+      "note": ""
+    },
+    {
+      "label": "Duplicates / old versions",
+      "value": "1 / 1",
+      "note": ""
+    },
+    {
+      "label": "Core files",
+      "value": 4,
+      "note": "max 15"
+    },
+    {
+      "label": "Supporting / background / ignore",
+      "value": "1 / 2 / 4",
+      "note": ""
+    },
+    {
+      "label": "Brief words",
+      "value": 164,
+      "note": "max 1800"
+    },
+    {
+      "label": "Evidence claims",
+      "value": 23,
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "funnel",
+    "steps": [
+      [
+        "00_inbox",
+        "11 files"
+      ],
+      [
+        "Inventory",
+        "1 duplicates, 1 old versions"
+      ],
+      [
+        "Triage",
+        "4 core, 1 supporting"
+      ],
+      [
+        "Read plans",
+        "5 files with named parts"
+      ],
+      [
+        "Evidence",
+        "23 claims"
+      ],
+      [
+        "Brief",
+        "164 words"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "warn",
+      "item": "QZ-CP1-001",
+      "text": "clarify questions not answered yet"
+    }
+  ],
+  "decide": [
+    "Is each core file the latest and right version?",
+    "Do the ignored and background files hold nothing the mapping needs?",
+    "Does the brief name the right business objects, grain, and keys?"
+  ],
+  "key_table": "Files",
+  "tables": {
+    "Files": {
+      "columns": [
+        "file_id",
+        "path",
+        "doc_type",
+        "relevance",
+        "reason",
+        "read_plan"
+      ],
+      "rows": [
+        [
+          "IF-0001",
+          "00_inbox/01_Overview/CNTRK_solution_overview.docx",
+          "system_overview",
+          "core",
+          "needed for mapping LEGS: grain, tables, legs",
+          "sections: ['2 Scope', '3 Data model', '3.2 Leg sequence']"
+        ],
+        [
+          "IF-0002",
+          "00_inbox/01_Overview/KPI definitions logistics.docx",
+          "business_rules_doc",
+          "core",
+          "needed for mapping LEGS: transit time formula",
+          "sections: ['5 KPI definitions']"
+        ],
+        [
+          "IF-0004",
+          "00_inbox/02_Profiling/CNTRK_profiling_v3_FINAL.xlsx",
+          "profiling_workbook",
+          "core",
+          "needed for mapping LEGS: column-level profile with client confidence",
+          "sheets: ['LEGS']"
+        ],
+        [
+          "IF-0005",
+          "00_inbox/02_Profiling/cntrk_schema_export.sql",
+          "schema_ddl",
+          "core",
+          "needed for mapping LEGS: column list and types",
+          "sections: ['CREATE TABLE LEGS']"
+        ],
+        [
+          "IF-0003",
+          "00_inbox/02_Profiling/CNTRK_profile_report.html",
+          "profiling_html",
+          "supporting",
+          "needed for mapping LEGS: cross-check only where workbook confidence is medium/low",
+          "sections: ['LEGS summary table']"
+        ],
+        [
+          "IF-0006",
+          "00_inbox/03_Workshops/RE_ ETA timezone question.eml",
+          "email_or_chat",
+          "background",
+          "background: read only if Q-0001 (ETA time zone) needs it",
+          ""
+        ],
+        [
+          "IF-0007",
+          "00_inbox/03_Workshops/Workshop minutes 2026-09-12.txt",
+          "meeting_notes",
+          "background",
+          "background: read only if Q-0001 (ETA time zone) needs it",
+          ""
+        ],
+        [
+          "IF-0008",
+          "00_inbox/Archive/old_drafts/CNTRK_profiling_v1.xlsx",
+          "draft_or_superseded",
+          "ignore",
+          "duplicate or older version",
+          ""
+        ],
+        [
+          "IF-0009",
+          "00_inbox/Archive/old_drafts/CNTRK_solution_overview_draft.docx",
+          "draft_or_superseded",
+          "ignore",
+          "duplicate or older version",
+          ""
+        ],
+        [
+          "IF-0010",
+          "00_inbox/Misc/Copy of CNTRK_profiling_v3_FINAL.xlsx",
+          "draft_or_superseded",
+          "ignore",
+          "duplicate or older version",
+          ""
+        ],
+        [
+          "IF-0011",
+          "00_inbox/Misc/company_logo.png",
+          "unrelated",
+          "ignore",
+          "suggested by inventory signals",
+          ""
+        ]
+      ]
+    },
+    "Evidence": {
+      "columns": [
+        "evidence_id",
+        "claim",
+        "about",
+        "origin",
+        "file_id",
+        "location",
+        "confidence",
+        "status"
+      ],
+      "rows": [
+        [
+          "E-0001",
+          "CNTR_NO holds the ISO 6346 container number of the leg.",
+          "LEGS.CNTR_NO -> Container",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 4",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0002",
+          "After normalisation CNTR_NO matches the ISO pattern in 99.98% of rows.",
+          "LEGS.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/profiling/legs.json",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0003",
+          "SHPMT_ID identifies the shipment the leg belongs to.",
+          "LEGS.SHPMT_ID -> Shipment",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 5",
+          "high",
+          "unverified"
+        ],
+        [
+          "E-0004",
+          "LEG_NO is the leg sequence within a shipment; CNTR_NO+SHPMT_ID+LEG_NO is unique.",
+          "LEGS -> ShipmentLeg",
+          "document",
+          "IF-0001",
+          "section 3.2",
+          "medium",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0005",
+          "FROM_LOC and TO_LOC are location codes for departure and arrival.",
+          "LEGS -> Location",
+          "document",
+          "IF-0004",
+          "sheet LEGS rows 7-8",
+          "medium",
+          "corroborated"
+        ],
+        [
+          "E-0006",
+          "FROM_LOC/TO_LOC codes exist in the locations table except 0.3% (mixed case).",
+          "LEGS -> Location",
+          "bronze_profile",
+          "",
+          "02_evidence/profiling/legs.json",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0007",
+          "ATD_TS is the actual departure time in epoch seconds (UTC).",
+          "LEGS.ATD_TS",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 9",
+          "high",
+          "unverified"
+        ],
+        [
+          "E-0008",
+          "ETA_TS has two formats; time zone of the text format is unknown.",
+          "LEGS.ETA_TS",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 11",
+          "low",
+          "unverified"
+        ],
+        [
+          "E-0009",
+          "Transit days = actual arrival minus actual departure in days.",
+          "ShipmentLeg BR-LOGI-001",
+          "document",
+          "IF-0002",
+          "section 5 KPI definitions",
+          "high",
+          "unverified"
+        ],
+        [
+          "E-0010",
+          "container_types: TYPE_CD is unique and not null in all 5 rows (role reference).",
+          "container_types.TYPE_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#container_types",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0011",
+          "locations: LOC_CD is unique and not null in all 10 rows (role master).",
+          "locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#locations",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0012",
+          "containers: CNTR_NO is unique and not null in all 800 rows (role master).",
+          "containers.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#containers",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0013",
+          "leg_daily_summary: DEP_DATE + FROM_LOC is unique and not null in all 1519 rows (role aggregate).",
+          "leg_daily_summary.DEP_DATE + FROM_LOC",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#leg_daily_summary",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0014",
+          "shipments: SHPMT_ID is unique and not null in all 1500 rows (role transaction_header).",
+          "shipments.SHPMT_ID",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#shipments",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0015",
+          "legs: SHPMT_ID + LEG_NO is unique and not null in all 2667 rows (role event).",
+          "legs.SHPMT_ID + LEG_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#legs",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0016",
+          "100.0% of distinct containers.TYPE_CD values exist in container_types.TYPE_CD (N:1).",
+          "containers.TYPE_CD -> container_types.TYPE_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#containers.TYPE_CD",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0017",
+          "100.0% of distinct leg_daily_summary.FROM_LOC values exist in locations.LOC_CD (N:1).",
+          "leg_daily_summary.FROM_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#leg_daily_summary.FROM_LOC",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0018",
+          "100.0% of distinct legs.CNTR_NO values exist in containers.CNTR_NO (N:1).",
+          "legs.CNTR_NO -> containers.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.CNTR_NO",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0019",
+          "100.0% of distinct legs.SHPMT_ID values exist in shipments.SHPMT_ID (N:1).",
+          "legs.SHPMT_ID -> shipments.SHPMT_ID",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.SHPMT_ID",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0020",
+          "100.0% of distinct legs.FROM_LOC values exist in locations.LOC_CD (N:1).",
+          "legs.FROM_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.FROM_LOC",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0021",
+          "100.0% of distinct legs.TO_LOC values exist in locations.LOC_CD (N:1).",
+          "legs.TO_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.TO_LOC",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0022",
+          "100.0% of distinct shipments.ORIGIN_LOC values exist in locations.LOC_CD (N:1).",
+          "shipments.ORIGIN_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#shipments.ORIGIN_LOC",
+          "high",
+          "confirmed_by_bronze"
+        ],
+        [
+          "E-0023",
+          "100.0% of distinct shipments.DEST_LOC values exist in locations.LOC_CD (N:1).",
+          "shipments.DEST_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#shipments.DEST_LOC",
+          "high",
+          "confirmed_by_bronze"
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": [
+        [
+          "FB-0003",
+          "proposed",
+          "agent:p2-2-bronze-discovery",
+          "comment",
+          "T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm with the client which one defines a",
+          "sources/S07_container_moves/01_intake/feedback/CP1_source_brief/FB-0003.yaml"
+        ]
+      ]
+    },
+    "Clarify": {
+      "columns": [
+        "id",
+        "mode",
+        "ref",
+        "status",
+        "on",
+        "reason"
+      ],
+      "rows": [
+        [
+          "QZ-CP1-001",
+          "kickoff",
+          "CP1_source_brief",
+          "asked",
+          "2026-10-31T11:00:26Z",
+          null
+        ]
+      ]
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "warn": 1
+  }
+}

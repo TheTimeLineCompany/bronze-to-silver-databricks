@@ -1,0 +1,25 @@
+# Example CODEOWNERS. Copy to .github/CODEOWNERS and replace the @client/... teams with your own.
+# A PR that changes these paths needs approval from the listed owners. Replace the team names.
+# Checkpoint approvers: CP1/CP2/CP4 phase1-leads, CP3/CP3b data-architects,
+# CP4b client SMEs (sign-off file), CP5 phase2-leads, CP6 deployment-leads.
+
+/registry/ontology/business.yaml              @client/data-architects
+/registry/ontology/data.yaml                  @client/data-architects
+/registry/ontology/information.yaml           @client/project-leads
+/registry/entities.yaml                       @client/data-architects
+/registry/key_normalisation.yaml              @client/data-architects
+/registry/change_requests/                    @client/data-architects
+/registry/feedback/                           @client/data-architects
+/registry/sources.yaml                        @client/project-leads
+/sources/*/01_intake/                         @client/phase1-modelling-leads
+/sources/*/02_evidence/                       @client/phase1-modelling-leads
+/sources/*/04_mapping/                        @client/phase1-modelling-leads
+/sources/*/04_mapping/reviews/business_logic_signoff.md  @client/business-smes
+/sources/*/05_build/                          @client/phase2-engineering-leads
+/sources/*/06_handoff/                        @client/deployment-leads
+/standards/                                   @client/standards-owners
+/lib/                                         @client/phase2-engineering-leads
+/tools/                                       @client/project-leads
+/skills/                                      @client/project-leads
+/AGENTS.md                                    @client/project-leads
+/.github/                                     @client/project-leads

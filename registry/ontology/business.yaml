@@ -1,0 +1,109 @@
+# BUSINESS ONTOLOGY — what the supply-chain business is made of, independent of any system.
+# Layer 1 of 3 (business -> data -> information). See registry/ontology/README.md.
+#
+# Why: 30 source systems use different words for the same thing ("vendor", "supplier",
+# "provider"). Agents and people must use ONE vocabulary. Every silver table names a
+# business_object from this file, and every FK must follow a relationship declared here.
+# tools/x_ontology_check.py and tools/p4_2_validate_sttm.py enforce this.
+#
+# EXAMPLE CONTENT: refine it with the client in P0 and approve it at CP3.
+
+version: 1
+
+domains:
+  PROC: {name: Procurement,          desc: "Buying parts and materials from suppliers; buyer ownership; contracts and orders."}
+  COST: {name: Pricing and costing,  desc: "Calculating should-cost and prices from material content, indices, and terms."}
+  LOGI: {name: Logistics,            desc: "Moving goods in containers between locations."}
+  SAVE: {name: Savings tracking,     desc: "Targets and actual cost savings from initiatives."}
+  ORG:  {name: Organisation,         desc: "People, departments, and sites."}
+
+processes:
+  P-PROC-01: {domain: PROC, name: Assign buyer to category or supplier}
+  P-PROC-02: {domain: PROC, name: Source and contract a part}
+  P-COST-01: {domain: COST, name: Calculate part price from material content}
+  P-COST-02: {domain: COST, name: Update prices from material indices}
+  P-LOGI-01: {domain: LOGI, name: Plan and execute container shipment}
+  P-LOGI-02: {domain: LOGI, name: Track container leg events}
+  P-SAVE-01: {domain: SAVE, name: Set savings target}
+  P-SAVE-02: {domain: SAVE, name: Record actual savings}
+
+# Abbreviations found in source column and table names -> business words.
+# Used by bronze discovery (tools/discovery/core.py) to map bronze tables to business objects. Extend per source.
+abbreviations:
+  cntr: container
+  ctr: container
+  shpmt: shipment
+  shp: shipment
+  loc: location
+  sup: supplier
+  supp: supplier
+  vnd: vendor
+  vend: vendor
+  mat: material
+  matl: material
+  prt: part
+  byr: buyer
+  dept: department
+  dep: department
+  idx: index
+  prc: price
+  sav: savings
+  init: initiative
+  trgt: target
+  act: actual
+
+# Business objects. kind: party | thing | place | event | agreement | measure | classification
+business_objects:
+  Buyer:            {kind: party,          domain: PROC, definition: "Employee responsible for purchasing a category or supplier.", synonyms: [purchaser, procurement agent, category manager]}
+  Department:       {kind: party,          domain: ORG,  definition: "Organisational unit a person belongs to.",                     synonyms: [dept, org unit, cost centre owner]}
+  Supplier:         {kind: party,          domain: PROC, definition: "External company that sells parts or materials.",              synonyms: [vendor, provider, seller, source]}
+  Part:             {kind: thing,          domain: PROC, definition: "A purchased component identified by a part number.",           synonyms: [component, item, article, sku, material number]}
+  Material:         {kind: classification, domain: COST, definition: "Raw material or grade contained in a part (iron, aluminium...).", synonyms: [commodity, raw material, alloy, grade]}
+  PartMaterialContent: {kind: measure,     domain: COST, definition: "Quantity/weight of a material in one part.",                   synonyms: [bill of material weight, material content, raw weight]}
+  MaterialIndex:    {kind: measure,        domain: COST, definition: "Published price index value for a material on a date.",        synonyms: [index, commodity index, lme price]}
+  PartPrice:        {kind: agreement,      domain: COST, definition: "Price of a part from a supplier valid for a period.",          synonyms: [piece price, unit price, quoted price, calculated price]}
+  Location:         {kind: place,          domain: LOGI, definition: "Site, plant, port, or warehouse.",                             synonyms: [site, plant, port, warehouse, node]}
+  Container:        {kind: thing,          domain: LOGI, definition: "Physical shipping container (ISO 6346 number).",               synonyms: [box, cntr, equipment]}
+  Shipment:         {kind: event,          domain: LOGI, definition: "A movement of goods from origin to final destination.",       synonyms: [consignment, booking, load]}
+  ShipmentLeg:      {kind: event,          domain: LOGI, definition: "One segment of a shipment from point A to point B.",          synonyms: [leg, segment, hop, voyage leg]}
+  SavingsInitiative: {kind: agreement,     domain: SAVE, definition: "A planned action to reduce cost (renegotiation, redesign...).", synonyms: [project, lever, opportunity]}
+  SavingsTarget:    {kind: measure,        domain: SAVE, definition: "Planned saving amount for an initiative and period.",         synonyms: [target saving, plan, budget saving]}
+  SavingsActual:    {kind: measure,        domain: SAVE, definition: "Realised saving amount for an initiative and period.",        synonyms: [actual saving, realised saving, achieved]}
+
+# Relationships: subject -verb-> object, with business cardinality.
+# FKs in an STTM must correspond to one of these (checked by the validator).
+relationships:
+  R01: {subject: Buyer,             verb: belongs_to,      object: Department,        cardinality: "N:1"}
+  R02: {subject: Buyer,             verb: manages,         object: Supplier,          cardinality: "1:N"}
+  R03: {subject: PartMaterialContent, verb: of_part,       object: Part,              cardinality: "N:1"}
+  R04: {subject: PartMaterialContent, verb: of_material,   object: Material,          cardinality: "N:1"}
+  R05: {subject: MaterialIndex,     verb: for_material,    object: Material,          cardinality: "N:1"}
+  R06: {subject: PartPrice,         verb: for_part,        object: Part,              cardinality: "N:1"}
+  R07: {subject: PartPrice,         verb: from_supplier,   object: Supplier,          cardinality: "N:1"}
+  R08: {subject: Part,              verb: bought_by,       object: Buyer,             cardinality: "N:1"}
+  R09: {subject: ShipmentLeg,       verb: part_of,         object: Shipment,          cardinality: "N:1"}
+  R10: {subject: ShipmentLeg,       verb: moves,           object: Container,         cardinality: "N:1"}
+  R11: {subject: ShipmentLeg,       verb: departs_from,    object: Location,          cardinality: "N:1"}
+  R12: {subject: ShipmentLeg,       verb: arrives_at,      object: Location,          cardinality: "N:1"}
+  R13: {subject: SavingsTarget,     verb: for_initiative,  object: SavingsInitiative, cardinality: "N:1"}
+  R14: {subject: SavingsActual,     verb: for_initiative,  object: SavingsInitiative, cardinality: "N:1"}
+  R15: {subject: SavingsInitiative, verb: concerns_part,   object: Part,              cardinality: "N:1"}
+  R16: {subject: SavingsInitiative, verb: concerns_supplier, object: Supplier,        cardinality: "N:1"}
+  R17: {subject: SavingsInitiative, verb: owned_by,      object: Buyer,               cardinality: "N:1"}
+
+# Business rules (catalogue). STTM columns with business_logic: true cite one of these ids.
+business_rules:
+  BR-COST-001: {object: PartPrice,    desc: "Material cost = sum over materials of (content weight x index price)",   status: proposed, owner: client-costing-sme}
+  BR-LOGI-001: {object: ShipmentLeg,  desc: "Transit days = (actual arrival - actual departure) in days",              status: proposed, owner: client-logistics-sme}
+  BR-SAVE-001: {object: SavingsActual, desc: "Actual saving = (baseline price - new price) x volume, per period",      status: proposed, owner: client-finance-sme}
+
+# Which business objects each process creates or uses (C = creates/maintains, U = uses).
+process_objects:
+  P-PROC-01: {C: [Buyer], U: [Supplier, Department]}
+  P-PROC-02: {C: [Part], U: [Supplier, Buyer]}
+  P-COST-01: {C: [PartPrice, PartMaterialContent], U: [Part, Material, MaterialIndex, Supplier]}
+  P-COST-02: {C: [MaterialIndex], U: [Material]}
+  P-LOGI-01: {C: [Shipment], U: [Location, Container]}
+  P-LOGI-02: {C: [ShipmentLeg], U: [Shipment, Container, Location]}
+  P-SAVE-01: {C: [SavingsInitiative, SavingsTarget], U: [Part, Supplier, Buyer]}
+  P-SAVE-02: {C: [SavingsActual], U: [SavingsInitiative, PartPrice]}

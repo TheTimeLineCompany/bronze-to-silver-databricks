@@ -1,0 +1,4 @@
+evidence_id,claim,about_type,about,origin,file_id,location,doc_type,confidence,status,corroborated_by,notes
+E-0001,<one short claim>,column,<TABLE.COLUMN -> Object>,document,IF-0001,sheet <name> row <n>,profiling_workbook,high,unverified,,
+E-0002,<bronze fact>,key,<TABLE.COLUMN>,bronze_profile,,02_evidence/profiling/<table>.json,,high,confirmed_by_bronze,02_evidence/profiling/<table>.json,
+E-0003,<client answer>,business_rule,BR-XXX-001,client_answer,,Q-0001,,high,unverified,,answered <date> (FB-0001)

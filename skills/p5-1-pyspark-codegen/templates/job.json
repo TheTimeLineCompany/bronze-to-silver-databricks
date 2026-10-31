@@ -1,0 +1,23 @@
+{
+  "name": "job_slv_S07_container_moves",
+  "description": "Silver load for S07_container_moves. Generated from the approved STTM. Masters run before process tables.",
+  "max_concurrent_runs": 1,
+  "parameters": [
+    {"name": "catalog", "default": "dev"},
+    {"name": "silver_schema", "default": "silver"},
+    {"name": "batch_id", "default": ""}
+  ],
+  "tasks": [
+    {
+      "task_key": "slv_cnt_shipment_leg",
+      "notebook_task": {
+        "notebook_path": "sources/S07_container_moves/05_build/nb_slv_S07_container_moves_slv_cnt_shipment_leg",
+        "source": "GIT"
+      },
+      "depends_on": [],
+      "timeout_seconds": 3600,
+      "max_retries": 1
+    }
+  ],
+  "tags": {"layer": "silver", "source_id": "S07_container_moves"}
+}

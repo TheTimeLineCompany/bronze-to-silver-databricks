@@ -1,0 +1,154 @@
+# EXAMPLE STTM (process table with foreign keys to shared masters). Replace with the real source.
+source_id: S07_container_moves
+source_system: CNTRK
+version: "0.3"
+status: draft
+owner: phase1-analyst
+notes: One row per container per leg (point A to point B). FKs to Container and Location.
+
+tables:
+  - target_table: slv_cnt_shipment_leg
+    business_object: ShipmentLeg    # registry/ontology/business.yaml
+    data_class: event               # registry/ontology/data.yaml
+    target_kind: process
+    conformed_entity: null
+    grain: One row per container per shipment leg (container_number + leg_seq).
+    load_pattern: merge
+    scd_type: null
+    primary_key: [shipment_leg_sk]
+    business_key: [container_number, shipment_id, leg_seq]
+    surrogate_key: {column: shipment_leg_sk, method: hash, of: [container_number, shipment_id, leg_seq]}
+    partition_by: [departure_date]
+    sources:
+      - table: bronze.container_track.legs
+        alias: l
+        filter: "l.IS_DELETED = 'N'"
+        dedup: "latest by l._ingest_ts per CNTR_NO, SHPMT_ID, LEG_NO"
+    joins: null
+    columns:
+      - target: shipment_leg_sk
+        type: STRING
+        nullable: false
+        rule: technical
+        source: null
+        transform: "sha2(concat_ws('|', container_number, shipment_id, leg_seq), 256)"
+        key_role: PK
+        description: Surrogate key for one leg.
+        provenance: null
+        confidence: high
+      - target: container_number
+        type: STRING
+        nullable: false
+        rule: normalised_key
+        source: l.CNTR_NO
+        transform: "keys.normalise('container_number', l.CNTR_NO)"
+        key_rule: container_number
+        key_role: BK
+        dq: [not_null, matches_key_pattern]
+        description: ISO container number, normalised.
+        provenance: {evidence: [E-0001, E-0002], profiling: 02_evidence/profiling/legs.json}
+        confidence: high
+      - target: shipment_id
+        type: STRING
+        nullable: false
+        rule: direct
+        source: l.SHPMT_ID
+        transform: "trim(l.SHPMT_ID)"
+        key_role: BK
+        dq: [not_null]
+        description: Shipment identifier in the tracking system.
+        provenance: {evidence: [E-0003], profiling: 02_evidence/profiling/legs.json}
+        confidence: high
+      - target: leg_seq
+        type: INT
+        nullable: false
+        rule: direct
+        source: l.LEG_NO
+        transform: "cast(l.LEG_NO as int)"
+        key_role: BK
+        dq: [not_null, ">= 1"]
+        description: Sequence number of the leg within the shipment.
+        provenance: {evidence: [E-0004], profiling: 02_evidence/profiling/legs.json}
+        confidence: high
+      - target: container_sk
+        type: STRING
+        nullable: false
+        rule: lookup
+        source: l.CNTR_NO
+        transform: "lookup slv_mst_container.container_sk on normalised container_number (current version)"
+        key_role: FK
+        fk:
+          entity: Container
+          column: container_sk
+          cardinality: "N:1"
+          orphan_policy: unknown_member
+          lookup_on: [{expr: l.CNTR_NO, key_rule: container_number}]   # one item per Container business-key column
+        description: Link to the shared Container master.
+        provenance: {evidence: [E-0001, E-0002]}
+        confidence: high
+      - target: origin_location_sk
+        type: STRING
+        nullable: false
+        rule: lookup
+        source: l.FROM_LOC
+        transform: "lookup slv_mst_location.location_sk on keys.normalise('generic_code', l.FROM_LOC)"
+        key_role: FK
+        fk:
+          entity: Location
+          column: location_sk
+          cardinality: "N:1"
+          orphan_policy: unknown_member
+          lookup_on: [{expr: l.FROM_LOC, key_rule: generic_code}]
+        description: Departure location (point A).
+        provenance: {evidence: [E-0005, E-0006]}
+        confidence: high
+      - target: destination_location_sk
+        type: STRING
+        nullable: false
+        rule: lookup
+        source: l.TO_LOC
+        transform: "lookup slv_mst_location.location_sk on keys.normalise('generic_code', l.TO_LOC)"
+        key_role: FK
+        fk:
+          entity: Location
+          column: location_sk
+          cardinality: "N:1"
+          orphan_policy: unknown_member
+          lookup_on: [{expr: l.TO_LOC, key_rule: generic_code}]
+        description: Arrival location (point B).
+        provenance: {evidence: [E-0005, E-0006]}
+        confidence: high
+      - target: departure_date
+        type: DATE
+        nullable: true
+        rule: derived
+        source: l.ATD_TS
+        transform: "to_date(from_unixtime(l.ATD_TS))"
+        key_role: none
+        description: Actual departure date (UTC).
+        provenance: {evidence: [E-0007]}
+        confidence: high
+      - target: eta_ts
+        type: TIMESTAMP
+        nullable: true
+        rule: derived
+        source: l.ETA_TS
+        transform: "parse epoch or 'dd/MM/yyyy HH:mm' (time zone pending Q-0001)"
+        key_role: none
+        description: Estimated arrival time, converted to UTC.
+        provenance: {evidence: [E-0008], profiling: 02_evidence/profiling/legs.json}
+        confidence: low
+        open_question: Q-0001
+      - target: transit_days
+        type: DECIMAL(9,2)
+        nullable: true
+        rule: derived
+        source: "l.ATD_TS, l.ATA_TS"
+        transform: "(l.ATA_TS - l.ATD_TS) / 86400.0"
+        business_logic: true
+        business_rule: BR-LOGI-001
+        key_role: none
+        dq: [">= 0"]
+        description: Actual transit time in days. Business rule; needs SME sign-off at CP4b.
+        provenance: {evidence: [E-0009]}
+        confidence: medium

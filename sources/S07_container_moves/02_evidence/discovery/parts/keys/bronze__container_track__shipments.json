@@ -1,0 +1,16 @@
+{
+  "table": "bronze.container_track.shipments",
+  "keys": [
+    [
+      "SHPMT_ID"
+    ],
+    [
+      "BOOKED_FROM"
+    ]
+  ],
+  "checks": 4,
+  "best": [
+    "SHPMT_ID"
+  ],
+  "declared_keys": []
+}

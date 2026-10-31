@@ -1,0 +1,113 @@
+{
+  "checkpoint": "CP5_code_qa",
+  "source_id": "S01_buyer_master",
+  "phase": "P5",
+  "title": "Code and QA",
+  "purpose": "Check that the code implements the mapping and passes every QA check.",
+  "approver": "phase2-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "p6-1-handoff-package",
+  "inputs": {
+    "sources/S01_buyer_master/04_mapping/sttm.yaml": "5f8935e64a8ecfc2d0a0e0b22c1a7fff6e4182a1",
+    "sources/S01_buyer_master/02_evidence/evidence_register.csv": "77f349f77a439dee7c53084591689ecce0a13a2d"
+  },
+  "metrics": [
+    {
+      "label": "Notebooks",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "QA pass / fail / error",
+      "value": "0 / 0 / 0",
+      "note": ""
+    },
+    {
+      "label": "Code review",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "STTM table -> notebook -> QA result",
+    "flows": [
+      [
+        "slv_mst_buyer",
+        "built by",
+        "(no notebook)",
+        "0/0 QA pass"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "qa",
+      "text": "05_build/qa_results/summary.json missing or empty"
+    }
+  ],
+  "decide": [
+    "Does the code do exactly what the STTM says, and nothing more?",
+    "Do all QA checks pass without changed thresholds?",
+    "Does the code follow the naming and coding standards?"
+  ],
+  "key_table": "QA checks",
+  "tables": {
+    "QA checks": {
+      "columns": [
+        "check",
+        "table",
+        "status",
+        "metric",
+        "threshold",
+        "evidence"
+      ],
+      "rows": []
+    },
+    "Notebooks": {
+      "columns": [
+        "notebook",
+        "placeholder_left",
+        "review_blocks"
+      ],
+      "rows": []
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 1
+  }
+}

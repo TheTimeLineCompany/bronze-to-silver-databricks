@@ -1,0 +1,153 @@
+{
+  "table": "bronze.container_track.carrier_contacts",
+  "row_count": 12,
+  "sample_rows": 12,
+  "profiled_at": "2026-10-31T10:56:02.138759+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "column": "OWNER",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 12,
+      "null_pct": 0.0,
+      "approx_distinct": 3,
+      "distinct_ratio": 0.25,
+      "min": "CMA",
+      "max": "MSC",
+      "min_len": 3,
+      "max_len": 6,
+      "avg_len": 4.0,
+      "patterns": [
+        "AAA",
+        "AAAAAA"
+      ],
+      "topk": [
+        [
+          "MAERSK",
+          4
+        ],
+        [
+          "CMA",
+          4
+        ],
+        [
+          "MSC",
+          4
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "column": "CONTACT_NAME",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 12,
+      "null_pct": 0.0,
+      "approx_distinct": 12,
+      "distinct_ratio": 1.0,
+      "min": null,
+      "max": null,
+      "min_len": 9,
+      "max_len": 13,
+      "avg_len": 10.5,
+      "patterns": [
+        "Aaaa Aaaaa",
+        "Aaaa Aaaaaa",
+        "Aaa Aaaaaa"
+      ],
+      "topk": [
+        [
+          "<redacted>",
+          12
+        ]
+      ],
+      "kinds": {},
+      "redacted": "personal_data"
+    },
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "column": "EMAIL_ADDR",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 12,
+      "null_pct": 0.0,
+      "approx_distinct": 12,
+      "distinct_ratio": 1.0,
+      "min": null,
+      "max": null,
+      "min_len": 26,
+      "max_len": 31,
+      "avg_len": 28.5,
+      "patterns": [
+        "aaaa.aaaaa@aaaaaa-aaaa.aaaaaaa",
+        "aaaa.aaaaa@aaa-aaaa.aaaaaaa",
+        "aaa.aaaaaa@aaaaaa-aaaa.aaaaaaa"
+      ],
+      "topk": [
+        [
+          "<redacted>",
+          12
+        ]
+      ],
+      "kinds": {
+        "email": 1.0
+      },
+      "redacted": "personal_data"
+    },
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "column": "TEL",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 12,
+      "null_pct": 0.0,
+      "approx_distinct": 12,
+      "distinct_ratio": 1.0,
+      "min": null,
+      "max": null,
+      "min_len": 14,
+      "max_len": 14,
+      "avg_len": 14.0,
+      "patterns": [
+        "+99 99 9999999"
+      ],
+      "topk": [
+        [
+          "<redacted>",
+          12
+        ]
+      ],
+      "kinds": {
+        "phone": 1.0
+      },
+      "redacted": "personal_data"
+    },
+    {
+      "table": "bronze.container_track.carrier_contacts",
+      "column": "ROLE_TXT",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 12,
+      "null_pct": 0.0,
+      "approx_distinct": 1,
+      "distinct_ratio": 0.0833,
+      "min": "dispatch",
+      "max": "dispatch",
+      "min_len": 8,
+      "max_len": 8,
+      "avg_len": 8.0,
+      "patterns": [
+        "aaaaaaaa"
+      ],
+      "topk": [
+        [
+          "dispatch",
+          12
+        ]
+      ],
+      "kinds": {}
+    }
+  ]
+}

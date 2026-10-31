@@ -1,0 +1,46 @@
+{
+  "tables": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`tables` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "columns": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`columns` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "tags": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`table_tags` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "masks_and_filters": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`row_filters` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "constraints": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `spark_catalog`.`information_schema`.`table_constraints` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "detail_history": {
+    "available": false,
+    "reason": "AnalysisException: [TABLE_OR_VIEW_NOT_FOUND] The table or view `DETAIL` cannot be found. Verify the spelling and correctness of the schema and catalog.",
+    "rows": []
+  },
+  "column_stats": {
+    "available": true,
+    "rows": []
+  },
+  "lineage": {
+    "available": false,
+    "reason": "AnalysisException: [REQUIRES_SINGLE_PART_NAMESPACE] spark_catalog requires a single-part namespace, but got `system`.`access`.",
+    "rows": []
+  },
+  "column_lineage": {
+    "available": false,
+    "reason": "AnalysisException: [REQUIRES_SINGLE_PART_NAMESPACE] spark_catalog requires a single-part namespace, but got `system`.`access`.",
+    "rows": []
+  }
+}

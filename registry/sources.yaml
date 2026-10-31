@@ -1,0 +1,52 @@
+# Manifest of all source systems: business scope and checkpoint status.
+# Change a checkpoint status ONLY in a pull request. tools/x_validate_gate.py runs on every PR
+# and fails if a checkpoint is approved before its prerequisites, without its evidence,
+# or while feedback for it is still open.
+#
+# Status values: pending | in_review | approved | not_required
+# Order per source: CP1 -> CP2 -> (global CP3, CP3b) -> CP4 -> CP4b -> CP5 -> CP6
+# Handovers: H1 (phase 1 -> phase 2) after CP4/CP4b; H2 (phase 2 -> deployment) after CP6.
+
+version: 1
+global_checkpoints:
+  CP3_central_model:   {status: pending, approved_by: null, date: null, pr: null}
+  CP3b_key_rules:      {status: pending, approved_by: null, date: null, pr: null}
+
+sources:
+  - id: S01_buyer_master
+    name: Buyer management
+    domains: [PROC, ORG]                    # registry/ontology/business.yaml
+    processes: [P-PROC-01]
+    business_objects: [Buyer, Department]   # objects this source is a system of record for
+    bronze_schema: bronze.buyer_mgmt
+    phase1_owner: tbd
+    phase2_owner: tbd
+    wave: pilot
+    checkpoints:
+      CP1_source_brief:    {status: pending, approved_by: null, date: null, pr: null}
+      CP2_evidence:        {status: pending, approved_by: null, date: null, pr: null}
+      CP4_sttm:            {status: pending, approved_by: null, date: null, pr: null}
+      CP4b_business_logic: {status: not_required, approved_by: null, date: null, pr: null}
+      CP5_code_qa:         {status: pending, approved_by: null, date: null, pr: null}
+      CP6_handoff:         {status: pending, approved_by: null, date: null, pr: null}
+
+  - id: S07_container_moves
+    name: Container movement tracking
+    domains: [LOGI]
+    processes: [P-LOGI-02]
+    business_objects: [ShipmentLeg]
+    bronze_schema: bronze.container_track
+    discovery: {include: null, exclude: null}   # optional table lists for P2.2 bronze discovery
+    phase1_owner: tbd
+    phase2_owner: tbd
+    wave: pilot
+    checkpoints:
+      CP1_source_brief:    {status: pending, approved_by: null, date: null, pr: null}
+      CP2_evidence:        {status: pending, approved_by: null, date: null, pr: null}
+      CP4_sttm:            {status: pending, approved_by: null, date: null, pr: null}
+      CP4b_business_logic: {status: pending, approved_by: null, date: null, pr: null}
+      CP5_code_qa:         {status: pending, approved_by: null, date: null, pr: null}
+      CP6_handoff:         {status: pending, approved_by: null, date: null, pr: null}
+
+# Add the other ~28 sources with the same structure.
+# Waves: pilot (2) -> wave 1 (master and reference systems) -> waves 2..n (process systems, ~5 each)

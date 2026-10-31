@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Silver Modelling Process Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a shipping-manifest reading of the pipeline — phase rail on top, then one block per phase with three work lanes (agent / code / human) and checkpoint slips. */
+:root {
+  --bg: #f4f6f7; --surface: #ffffff; --ink: #18232b; --muted: #5b6a74; --line: #d5dde2;
+  --agent: #0f7c78; --agent-bg: #e3f3f1;
+  --code: #3d4f9c; --code-bg: #e7eaf7;
+  --human: #a3530b; --human-bg: #fbeedf;
+  --gate: #8a1f2d; --gate-bg: #f8e6e8;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12181c; --surface: #1a2227; --ink: #e3e9ec; --muted: #94a3ad; --line: #2c3840;
+  --agent: #4fc3bc; --agent-bg: #143331; --code: #9aa9f0; --code-bg: #1e2540;
+  --human: #f0a35a; --human-bg: #35261a; --gate: #f08a98; --gate-bg: #3a1d22; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12181c; --surface: #1a2227; --ink: #e3e9ec; --muted: #94a3ad; --line: #2c3840;
+  --agent: #4fc3bc; --agent-bg: #143331; --code: #9aa9f0; --code-bg: #1e2540;
+  --human: #f0a35a; --human-bg: #35261a; --gate: #f08a98; --gate-bg: #3a1d22; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: clamp(34px, 6vw, 54px); font-weight: 700; line-height: 1; }
+h2 { font-size: 30px; font-weight: 600; }
+h3 { font-size: 26px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+code { font-family: var(--mono); font-size: .86em; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.intro { display: grid; gap: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.key { font-size: 13px; padding: 4px 10px; border-radius: 3px; border: 1px solid transparent; cursor: pointer; font-family: var(--body); font-weight: 600; }
+.key:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.key-agent { background: var(--agent-bg); color: var(--agent); }
+.key-code { background: var(--code-bg); color: var(--code); }
+.key-human { background: var(--human-bg); color: var(--human); }
+.key-all { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.key[aria-pressed="true"] { border-color: currentColor; }
+.legend-note { font-size: 13px; color: var(--muted); }
+body.focus-agent [data-lane]:not([data-lane="agent"]),
+body.focus-code [data-lane]:not([data-lane="code"]),
+body.focus-human [data-lane]:not([data-lane="human"]) { opacity: .28; }
+/* rail */
+.rail { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.rail-item { display: grid; gap: 6px; align-content: start; }
+.rail-link { display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--ink); padding: 10px 10px 12px; }
+.rail-link:hover { border-color: var(--muted); }
+.rail-id { font-family: var(--display); font-size: 26px; font-weight: 700; line-height: 1; }
+.rail-name { font-weight: 600; font-size: 14px; }
+.rail-scope { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.rail-marks { display: flex; flex-wrap: wrap; gap: 4px; }
+.cp-chip, .ho-chip { font-family: var(--mono); font-size: 11px; padding: 2px 6px; text-decoration: none; }
+.cp-chip { background: var(--gate-bg); color: var(--gate); }
+.ho-chip { background: var(--ink); color: var(--bg); }
+@media (max-width: 860px) { .rail { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .rail { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* phase */
+.phase { display: grid; gap: 12px; scroll-margin-top: 12px; }
+.phase-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+.phase-id { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: .9; }
+.scope { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: auto; }
+.step { background: var(--surface); border: 1px solid var(--line); display: grid; }
+.step-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.step-n { font-family: var(--display); font-weight: 600; font-size: 20px; }
+.skill { color: var(--ink); font-weight: 500; }
+.step-out { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lane { padding: 10px 14px 12px; min-width: 0; transition: opacity .15s; }
+.lane + .lane { border-left: 1px solid var(--line); }
+.lane h4 { margin: 0 0 4px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.lane ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 2px; }
+.lane-agent h4 { color: var(--agent); } .lane-agent { box-shadow: inset 0 3px 0 var(--agent); }
+.lane-code h4 { color: var(--code); } .lane-code { box-shadow: inset 0 3px 0 var(--code); }
+.lane-human h4 { color: var(--human); } .lane-human { box-shadow: inset 0 3px 0 var(--human); }
+@media (max-width: 760px) { .lanes { grid-template-columns: 1fr; } .lane + .lane { border-left: 0; border-top: 1px solid var(--line); } }
+/* gate slip */
+.gate { background: var(--gate-bg); border: 1.5px dashed var(--gate); padding: 12px 14px; display: grid; gap: 8px; transition: opacity .15s; }
+.gate-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+.gate-id { font-family: var(--display); font-weight: 700; font-size: 22px; color: var(--gate); }
+.gate-who { margin-left: auto; font-weight: 600; color: var(--human); font-size: 14px; }
+.gate-grid { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 14px; margin: 0; font-size: 14px; }
+.gate-grid dt { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 3px; }
+.gate-grid dd { margin: 0; min-width: 0; }
+@media (max-width: 560px) { .gate-grid { grid-template-columns: 1fr; } .gate-grid dd { margin-bottom: 6px; } }
+.handover { display: flex; gap: 14px; align-items: flex-start; background: var(--ink); color: var(--bg); padding: 12px 16px; }
+.handover .muted { color: var(--bg); opacity: .7; }
+.ho-id { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; }
+.pkg { margin: 6px 0 0; padding-left: 18px; font-family: var(--mono); font-size: 12.5px; }
+/* generic panels */
+.panel { display: grid; gap: 14px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+.box { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; min-width: 0; display: grid; gap: 8px; align-content: start; }
+.tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+/* lifecycle */
+.life { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--mono); font-size: 13px; }
+.st { padding: 4px 10px; border: 1px solid var(--line); background: var(--surface); }
+.st.block { border-color: var(--gate); color: var(--gate); }
+.st.ok { border-color: var(--agent); color: var(--agent); }
+.arrow { color: var(--muted); }
+pre.cli { margin: 0; background: var(--surface); border: 1px solid var(--line); padding: 12px 14px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; }
+/* funnel */
+.funnel { display: grid; gap: 4px; }
+.fn { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 8px 14px; background: var(--code-bg); margin-inline: calc(var(--i) * 3.2%); }
+.fn strong { font-weight: 600; }
+.fn .n { font-family: var(--mono); font-size: 12.5px; color: var(--code); font-variant-numeric: tabular-nums; text-align: right; }
+@media (max-width: 560px) { .fn { margin-inline: 0; grid-template-columns: 1fr; } .fn .n { text-align: left; } }
+/* ontology chain */
+.chain { display: grid; gap: 0; counter-reset: c; }
+.link { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--line); border-top: 0; font-size: 14px; }
+.link:first-child { border-top: 1px solid var(--line); }
+.link .lvl { font-weight: 600; }
+.link .src { font-family: var(--mono); font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.link .ex { font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
+.layer-b { box-shadow: inset 4px 0 0 var(--human); }
+.layer-d { box-shadow: inset 4px 0 0 var(--code); }
+.layer-i { box-shadow: inset 4px 0 0 var(--agent); }
+@media (max-width: 680px) { .link { grid-template-columns: 1fr; gap: 2px; } }
+.layers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .layers { grid-template-columns: 1fr; } }
+.layer h3 { font-size: 22px; }
+.layer ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 2px; }
+.layer.b { border-top: 4px solid var(--human); } .layer.d { border-top: 4px solid var(--code); } .layer.i { border-top: 4px solid var(--agent); }
+.conf { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 760px) { .conf { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cf { padding: 10px 12px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; display: grid; gap: 4px; align-content: start; }
+.cf b { font-family: var(--display); font-size: 20px; font-weight: 600; }
+.cf.h b { color: var(--agent); } .cf.m b { color: var(--code); } .cf.l b { color: var(--human); } .cf.u b { color: var(--muted); }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="intro">
+  <span class="eyebrow">Bronze → Silver · Databricks Genie Code · kit v2</span>
+  <h1>Silver Modelling Process Map</h1>
+  <p>Seven phases take one source system from a raw file dump to a deployable silver load. Each phase writes into its own numbered folder and ends with a checkpoint pack. Each step shows what the <b>agent</b> does, what <b>code</b> guarantees, and what a <b>human</b> decides. Red slips are checkpoints: a person approves them in a pull request, and can send feedback that reruns the steps before it.</p>
+  <div class="legend" role="group" aria-label="Highlight one lane">
+    <button class="key key-all" id="lane-all" data-focus="" aria-pressed="true">All lanes</button>
+    <button class="key key-agent" id="lane-agent" data-focus="agent" aria-pressed="false">Agent</button>
+    <button class="key key-code" id="lane-code" data-focus="code" aria-pressed="false">Code</button>
+    <button class="key key-human" id="lane-human" data-focus="human" aria-pressed="false">Human</button>
+    <span class="legend-note">Pick a lane to dim the others.</span>
+  </div>
+</header>
+
+<nav aria-label="Phases"><ol class="rail"><li class="rail-item"><a class="rail-link" href="#P0"><span class="rail-id">P0</span><span class="rail-name">Setup</span><span class="rail-scope">once</span></a><div class="rail-marks"></div></li><li class="rail-item"><a class="rail-link" href="#P1"><span class="rail-id">P1</span><span class="rail-name">Intake and focus</span><span class="rail-scope">per source</span></a><div class="rail-marks"><a class="cp-chip" href="#P1">CP1</a></div></li><li class="rail-item"><a class="rail-link" href="#P2"><span class="rail-id">P2</span><span class="rail-name">Discovery and evidence</span><span class="rail-scope">per source</span></a><div class="rail-marks"><a class="cp-chip" href="#P2">CP2</a></div></li><li class="rail-item"><a class="rail-link" href="#P3"><span class="rail-id">P3</span><span class="rail-name">Central model</span><span class="rail-scope">global</span></a><div class="rail-marks"><a class="cp-chip" href="#P3">CP3</a><a class="cp-chip" href="#P3">CP3b</a></div></li><li class="rail-item"><a class="rail-link" href="#P4"><span class="rail-id">P4</span><span class="rail-name">Mapping</span><span class="rail-scope">per source</span></a><div class="rail-marks"><a class="cp-chip" href="#P4">CP4</a><a class="cp-chip" href="#P4">CP4b</a><span class="ho-chip">H1</span></div></li><li class="rail-item"><a class="rail-link" href="#P5"><span class="rail-id">P5</span><span class="rail-name">Build</span><span class="rail-scope">per source</span></a><div class="rail-marks"><a class="cp-chip" href="#P5">CP5</a></div></li><li class="rail-item"><a class="rail-link" href="#P6"><span class="rail-id">P6</span><span class="rail-name">Handoff</span><span class="rail-scope">per source</span></a><div class="rail-marks"><a class="cp-chip" href="#P6">CP6</a><span class="ho-chip">H2</span></div></li></ol></nav>
+
+<section class="panel" id="funnel">
+  <h2>Focus funnel for the input dump</h2>
+  <p>The agent never reads <code>00_inbox</code> as a whole. Code makes the dump small first; the agent then reads only named parts, and from P2 on it works from the brief and the evidence register. Numbers are from the S07 example.</p>
+  <div class="funnel">
+    <div class="fn" style="--i:0"><span><strong>00_inbox</strong> — every file as delivered: overviews, profiling workbooks, drafts, copies, emails, logos</span><span class="n">11 files</span></div>
+    <div class="fn" style="--i:1"><span><strong>Inventory</strong> (code) — duplicates and version groups found, type suggested</span><span class="n">1 duplicate · 2 old versions</span></div>
+    <div class="fn" style="--i:2"><span><strong>Triage</strong> — core / supporting / background / ignore</span><span class="n">4 / 1 / 2 / 4 · max 15 core</span></div>
+    <div class="fn" style="--i:3"><span><strong>Read plan</strong> — only named sheets, pages, sections</span><span class="n">e.g. sheet LEGS only</span></div>
+    <div class="fn" style="--i:4"><span><strong>Evidence register</strong> — one short claim per fact, with origin and confidence</span><span class="n">9 document claims · ≤40 words</span></div>
+    <div class="fn" style="--i:5"><span><strong>Source brief</strong> — the page every later step reads</span><span class="n">158 words · ≤1800</span></div>
+  </div>
+</section>
+
+<section class="panel" id="confidence">
+  <h2>Confidence rules</h2>
+  <p>Client profiling workbooks carry their own labels (High, Amber, 40%…). Code normalises them; the rules decide what each level may support.</p>
+  <div class="conf">
+    <div class="cf h"><b>high</b><span>Usable alone, unless bronze contradicts it. Labels: High, H, green, ≥ 80%.</span></div>
+    <div class="cf m"><b>medium</b><span>Needs one corroboration: bronze, or a second document with authority ≤ 3. Amber, 50–79%.</span></div>
+    <div class="cf l"><b>low</b><span>Hypothesis only. Verify in bronze or ask the client before it supports a key, FK, grain, or rule.</span></div>
+    <div class="cf u"><b>unknown</b><span>No label. Treated as low.</span></div>
+  </div>
+  <p class="muted">Bronze wins for structure (keys, nulls, formats). Documents win for meaning (definitions, rules, codes). A client answer wins for both. The STTM validator refuses a PK, BK, FK, or business-logic column that rests only on low or unknown evidence.</p>
+</section>
+
+<section class="panel" id="phases">
+  <h2>Phases, steps, and checkpoints</h2>
+  <section class="phase" id="P0">
+  <header class="phase-head"><span class="phase-id">P0</span><h3>Setup</h3><span class="scope">once</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P0</span><code class="skill">README.md</code><span class="step-out">→ Repo ready, ontology agreed</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Nothing yet. Genie Code reads AGENTS.md automatically once the Git folder exists.</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>pytest -q tests/</li><li>x_ontology_check.py</li><li>PR check workflow + CODEOWNERS</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Create the Git folder; register skills/ in Genie Code (Settings → Add folder)</li><li>Agree the business ontology with the client</li><li>Copy standards/, fill sources.yaml, set UC grants</li></ul></div>
+  </div>
+</div>
+  
+  
+</section><section class="phase" id="P1">
+  <header class="phase-head"><span class="phase-id">P1</span><h3>Intake and focus</h3><span class="scope">per source</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P1.1</span><code class="skill">@p1-1-inventory</code><span class="step-out">→ 01_intake/manifest.md</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Reads ONLY manifest.md</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p1_1_inventory.py: IF-ids, hashes, duplicates, version groups, suggested doc type</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Drops the dump into 00_inbox as it is</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P1.2</span><code class="skill">@p1-2-triage</code><span class="step-out">→ 01_intake/triage.yaml</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Sets doc type + relevance per file</li><li>Writes a read plan for core / supporting files</li><li>Keeps one version per group</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p1_2_check_context.py --only triage: all files classified, ≤15 core, read plans present</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Can add include_paths / ignore_paths feedback</li><li>Only a person sets a budget_override</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P1.3</span><code class="skill">@p1-3-source-brief</code><span class="step-out">→ source_brief.md + evidence_register.csv</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Reads only read-plan parts of core files</li><li>Writes short claims E-xxxx with origin + confidence</li><li>Maps source words to business objects</li><li>Raises questions</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p1_2_check_context.py: brief ≤1800 words, cites existing E-ids; claims ≤40 words</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Reviews the brief in the PR</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP1</span><code>CP1_source_brief</code><span class="gate-who">Phase 1 lead</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Triage and brief are right; the agent reads the right files</dd>
+    <dt>Code checks first</dt><dd>All files triaged, ≤15 core, read plans, brief cites existing E-ids · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>include_paths, ignore_paths, comment, attachments</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p1-2, p1-3</code> · back to pending: CP1 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>01_intake/checkpoint/CP1_source_brief</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  
+</section><section class="phase" id="P2">
+  <header class="phase-head"><span class="phase-id">P2</span><h3>Discovery and evidence</h3><span class="scope">per source</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P2.1</span><code class="skill">@p2-1-doc-profiles</code><span class="step-out">→ 02_evidence/profiling/doc_profiles.csv</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Reads only the summary; filters the CSV</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p2_1_extract_doc_profiles.py: client workbooks → one table, confidence normalised to high/medium/low/unknown</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Adds header synonyms when a workbook is not extracted</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P2.2</span><code class="skill">@p2-2-bronze-discovery</code><span class="step-out">→ 02_evidence/discovery/</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Orchestrates the job; reads only summary.md</li><li>Answers one card per chat (or the card runner does, one LLM call per card)</li><li>Raises upstream issues (new object, grain conflict)</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>Unity Catalog metadata + lineage first (no data read)</li><li>Parallel job: profile on a sample, exact key checks, value containment between columns</li><li>Roles, grain, lineage, ontology map; table and column scope (logs, personal data)</li><li>Merge answers → evidence lines</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Checks roles, business objects, scope, and personal data in the CP2 page</li><li>Accepts or rejects upstream issues</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P2.3</span><code class="skill">@p2-3-evidence-reconcile</code><span class="step-out">→ evidence_register.csv (reconciled)</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Sets status: corroborated, confirmed_by_bronze, contradicted, superseded</li><li>Bronze wins structure; documents win meaning</li><li>Updates the brief</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p1_2_check_context.py: register valid; corroborated needs a reference</li><li>Gate needs ≥1 bronze result</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Answers questions (answer feedback)</li><li>Approves CP2 in the PR</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP2</span><code>CP2_evidence</code><span class="gate-who">Phase 1 lead</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Evidence is enough; conflicts handled; questions raised</dd>
+    <dt>Code checks first</dt><dd>Register well formed; discovery done; all cards answered; no upstream issue open · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>data, answer, comment, include_paths</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p2-3 (rerun_from p2-2 for data)</code> · back to pending: CP2 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>02_evidence/checkpoint/CP2_evidence</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  
+</section><section class="phase" id="P3">
+  <header class="phase-head"><span class="phase-id">P3</span><h3>Central model</h3><span class="scope">global</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P3.1</span><code class="skill">@p3-1-entity-model</code><span class="step-out">→ ontology + entities.yaml + key rules</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Finds gaps: new object, synonym, relationship, key format</li><li>Writes a change request CR-nnn; never edits silently</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>x_ontology_check.py: domains, synonyms, relationships, entities, sources coherent</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Data architect approves CP3 (objects, entities) and CP3b (key rules, survivorship)</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP3</span><code>CP3_central_model</code><span class="gate-who">Data architect</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Business objects, relationships, shared entities</dd>
+    <dt>Code checks first</dt><dd>All entities approved; ontology coherent · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>comment, attachments</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p3-1</code> · back to pending: CP3, CP3b + every source CP4 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>registry/checkpoint/CP3_central_model</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div><div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP3b</span><code>CP3b_key_rules</code><span class="gate-who">Data architect</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Key formats and which source wins</dd>
+    <dt>Code checks first</dt><dd>CP3 approved first · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>comment, data, code</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p3-1</code> · back to pending: CP3, CP3b + every source CP4 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>registry/checkpoint/CP3b_key_rules</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  
+</section><section class="phase" id="P4">
+  <header class="phase-head"><span class="phase-id">P4</span><h3>Mapping</h3><span class="scope">per source</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P4.1</span><code class="skill">@p4-1-sttm-author</code><span class="step-out">→ 04_mapping/sttm.yaml</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Writes sttm.yaml: business object, data class, grain, keys, joins, FKs, transforms, BR ids, evidence ids</li><li>Never goes back to 00_inbox</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>schema: sttm.schema.json</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Gives comment / code feedback on columns</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P4.2</span><code class="skill">@p4-2-sttm-validate</code><span class="step-out">→ validator PASS</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Explains each error and fixes it</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p4_2_validate_sttm.py: structure, naming, registry, ontology chain, FK ↔ relationship, confidence rules</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>—</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P4.3</span><code class="skill">@p4-3-sttm-review</code><span class="step-out">→ 04_mapping/reviews/sttm_review.md</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>NEW chat: checklist review, spot-checks 5 evidence ids</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>Gate reads ‘Result: PASS’</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Phase 1 lead approves CP4</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P4.4</span><code class="skill">@p4-4-sttm-export</code><span class="step-out">→ exports/ + business_logic_signoff.md</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Sends the Excel to the SME when business logic exists</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p4_4_export_sttm.py: Excel + Mermaid ER</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Client SME signs off formulas (CP4b)</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP4</span><code>CP4_sttm</code><span class="gate-who">Phase 1 lead</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>The mapping</dd>
+    <dt>Code checks first</dt><dd>Validator PASS, STTM approved, review PASS, CP3/CP3b approved · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>comment, code, data</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p4-1 → p4-4</code> · back to pending: CP4 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>04_mapping/checkpoint/CP4_sttm</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div><div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP4b</span><code>CP4b_business_logic</code><span class="gate-who">Client SME</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Formulas of business-logic columns</dd>
+    <dt>Code checks first</dt><dd>Sign-off file PASS (required when business_logic columns exist) · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>comment, answer, code</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p4-1 → p4-4</code> · back to pending: CP4 → CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>04_mapping/checkpoint/CP4b_business_logic</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  <div class="handover"><span class="ho-id">H1</span><div><strong>Phase 1 → Phase 2</strong> <span class="muted">after CP4 + CP4b</span><ul class="pkg"><li>04_mapping/ (approved sttm.yaml, exports/, reviews/, checkpoint/)</li><li>02_evidence/evidence_register.csv</li></ul></div></div>
+</section><section class="phase" id="P5">
+  <header class="phase-head"><span class="phase-id">P5</span><h3>Build</h3><span class="scope">per source</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P5.1</span><code class="skill">@p5-1-pyspark-codegen</code><span class="step-out">→ 05_build/nb_*.py, job</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Completes only TODO(genie) cells: dedup, joins, lookups, derived</li><li>Writes the Job JSON</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>p5_1_gen_notebook.py: deterministic skeleton; lib/keys, lib/load_patterns</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Gives code feedback (snippets)</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P5.2</span><code class="skill">@p5-2-qa-runner</code><span class="step-out">→ qa_results/summary.json</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Explains each failure: code bug, STTM gap, or data problem</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>lib/qa_checks.py: QA-01…07 → qa_results/summary.json</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Gives data feedback: rows to check</li></ul></div>
+  </div>
+</div><div class="step">
+  <div class="step-head"><span class="step-n">P5.3</span><code class="skill">@p5-3-code-review</code><span class="step-out">→ 05_build/reviews/code_review.md</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>NEW chat: code vs STTM, standards, QA</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>Gate: QA all pass + ‘Result: PASS’</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Phase 2 lead approves CP5</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP5</span><code>CP5_code_qa</code><span class="gate-who">Phase 2 lead</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Code matches STTM and standards</dd>
+    <dt>Code checks first</dt><dd>QA summary all pass; code review PASS · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>code, data, comment</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p5-1 → p5-3</code> · back to pending: CP5, CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>05_build/checkpoint/CP5_code_qa</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  
+</section><section class="phase" id="P6">
+  <header class="phase-head"><span class="phase-id">P6</span><h3>Handoff</h3><span class="scope">per source</span></header>
+  <div class="step">
+  <div class="step-head"><span class="step-n">P6.1</span><code class="skill">@p6-1-handoff-package</code><span class="step-out">→ 06_handoff/readiness.md</span></div>
+  <div class="lanes">
+    <div class="lane lane-agent" data-lane="agent"><h4>Agent</h4><ul><li>Writes readiness.md: deliverables, run order, limits, feedback history</li></ul></div>
+    <div class="lane lane-code" data-lane="code"><h4>Code</h4><ul><li>x_validate_gate.py: exports + readiness exist, no blocking questions</li></ul></div>
+    <div class="lane lane-human" data-lane="human"><h4>Human</h4><ul><li>Deployment lead approves CP6</li></ul></div>
+  </div>
+</div>
+  <div class="gate" data-lane="human">
+  <div class="gate-head"><span class="gate-id">CP6</span><code>CP6_handoff</code><span class="gate-who">Deployment lead</span></div>
+  <dl class="gate-grid">
+    <dt>Person approves</dt><dd>Package is complete and runnable</dd>
+    <dt>Code checks first</dt><dd>Exports + readiness exist; no blocking question · no open feedback · approver, date, PR filled</dd>
+    <dt>Typical feedback</dt><dd>comment, attachments</dd>
+    <dt>Rerun on feedback</dt><dd>now: <code>p6-1</code> · back to pending: CP6</dd>
+    <dt>Checkpoint pack</dt><dd><code>06_handoff/checkpoint/CP6_handoff</code> .html · .xlsx · .json · .md</dd>
+  </dl>
+</div>
+  <div class="handover"><span class="ho-id">H2</span><div><strong>Phase 2 → Deployment</strong> <span class="muted">after CP6</span><ul class="pkg"><li>05_build/ (notebooks, job, qa_results/, checkpoint/)</li><li>06_handoff/readiness.md</li><li>04_mapping/exports/</li></ul></div></div>
+</section>
+</section>
+
+<section class="panel" id="discovery">
+  <h2>Bronze discovery: code does the work, agents decide the rest</h2>
+  <p>The largest piece of P2. Code finds keys, links, and roles with numbers as proof, on samples and with exact checks only for candidates. Judgement goes on small cards. Genie Code has no documented sub-agents, so each card is a self-contained task that any runtime can answer.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Stage</th><th>Runs</th><th>Work</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td>catalog + meta</td><td>code, once</td><td>tables, columns; Unity Catalog comments, owners, tags, masks, declared PK/FK, statistics, history; lineage system tables (who writes and reads)</td><td>parts/catalog.json, metadata/, lineage_view.json</td></tr>
+      <tr><td>profile + keys</td><td>code, parallel per table</td><td>null %, approx distinct, shapes, value-kind ratios (email, phone, IP, user agent, token); minimal unique keys, exact check; values of sensitive columns removed before writing</td><td>columns.csv, keys.csv</td></tr>
+      <tr><td>links</td><td>code, parallel per batch</td><td>distinct-value containment between columns, raw and normalised; cardinality</td><td>links.csv</td></tr>
+      <tr><td>model</td><td>code, once</td><td>roles, grain, lineage levels, derived tables, ontology map; table scope; column class and scope (logs, audit, secrets, personal data)</td><td>tables.csv, column_scope.csv, graph.json, summary.md</td></tr>
+      <tr><td>wider</td><td>code, once</td><td>tables outside the schema (names, shared key columns, lineage); documents vs bronze; same object in other sources</td><td>related.csv, doc_gaps.csv, overlap.csv</td></tr>
+      <tr><td>cards</td><td>agents, one per card, parallel</td><td>decisions code cannot make (role, business object, scope, columns to confirm, partial links, aggregates; related tables; missing documented tables)</td><td>cards/T-, R-, D-xxx.result.yaml</td></tr>
+      <tr><td>merge + evidence</td><td>code, once</td><td>apply answers, raise upstream issues, write evidence lines</td><td>tables.csv (final), FB items, E-ids</td></tr>
+    </tbody></table></div>
+  <p class="muted">Runtimes for cards: a Genie Code chat per card, or <code>tools/discovery/card_runner.py</code> (one fresh LLM call per card on a serving endpoint, answers checked), or later a Databricks multi-agent app / Agent Bricks supervisor with the card runner as a tool. Method: data-profiling literature (Abedjan, Golab, Naumann) and Kimball's grain and table roles.</p>
+</section>
+
+<section class="panel" id="input">
+  <h2>Your input at every start and every review</h2>
+  <p>The process is interactive. At the start of each checkpoint, and each time you type an instruction, give feedback, or upload a file, the input goes through the same four steps before any work starts.</p>
+  <div class="life" aria-label="Input lifecycle">
+    <span class="st">typed or uploaded</span><span class="arrow">→</span><span class="st block">checked against the ontology</span><span class="arrow">→</span><span class="st block">clarify: a few questions</span><span class="arrow">→</span><span class="st ok">route: steps that use it</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Step</th><th>Who</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td>Capture</td><td>you, in <code>00_start_here</code></td><td><code>give-instruction</code> (IN-xxx, for a step or all), <code>give-feedback</code> (FB item), or files in <code>uploads/</code> + <code>register-uploads</code> (instruction, feedback, or handover to the next stage). A filled scope sheet is applied directly.</td></tr>
+      <tr><td>Check</td><td>code: <code>x_input_ontology.py</code></td><td>Every term is matched to the <b>business</b> layer (objects, synonyms, abbreviations, relationships, rules), the <b>data</b> layer (classes, load patterns, bronze and silver tables and columns), and the <b>information</b> layer (phases, steps, checkpoints, evidence, questions). File headers and sheet names are read; values are not. Result: matches, unknown names, new concepts, conflicts (with instructions, evidence, relationships, business rules), intent, and route.</td></tr>
+      <tr><td>Clarify</td><td>agent: <code>@x-clarify</code></td><td>Asks at most 7 questions, and only about unknowns, new concepts, conflicts, an unclear intent, or a rerun of approved work. A clear, known, conflict-free input gets no questions. "I don't know" becomes a client question.</td></tr>
+      <tr><td>Route</td><td>code</td><td>Answers become instructions, evidence (<code>team_knowledge</code>, medium), feedback, client questions, or CP3 change requests. The input gets its route: the first step that uses it, and the checkpoints that go back to pending.</td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="panel" id="feedback">
+  <h2>Feedback and rerun at any checkpoint</h2>
+  <p>A reviewer does more than approve or reject. One feedback item <code>FB-xxxx.yaml</code> in <code>06_feedback/&lt;checkpoint&gt;/</code> can mix any of the kinds below. Code works out what to rerun, sets later checkpoints back to pending, and keeps the checkpoint blocked until the reviewer verifies the change.</p>
+  <div class="life" aria-label="Feedback lifecycle">
+    <span class="st block">open</span><span class="arrow">→</span><span class="st block">in_progress</span><span class="arrow">→ agent reruns →</span><span class="st block">applied</span><span class="arrow">→ reviewer checks →</span><span class="st ok">verified</span><span class="arrow">or</span><span class="st">rejected</span>
+  </div>
+  <p class="muted">Red states block approval of their checkpoint. Only the reviewer sets <code>verified</code> or <code>rejected</code>. Every agent run is logged to <code>run_log.jsonl</code>.</p>
+  <div class="box">
+    <span class="eyebrow">Upstream issues: an agent in a later phase finds a problem</span>
+    <div class="life" aria-label="Upstream issue lifecycle"><span class="st">agent raises</span><span class="arrow">→</span><span class="st block">proposed</span><span class="arrow">→ person accepts →</span><span class="st block">open</span><span class="arrow">→ same loop as above</span></div>
+    <p>The item sits on the earlier checkpoint that owns the problem and blocks the agent's own checkpoint (<code>--blocks</code>). The agent does not work around it. The third attempt for the same problem stops the gate: a person decides. All items: <code>registry/board/feedback_board.html</code>.</p>
+<pre class="cli">python tools/x_feedback.py raise S07_container_moves CP1_source_brief --step p4-1-sttm-author   --comment "Brief grain key differs from bronze key" --blocks CP4_sttm
+python tools/x_feedback.py accept FB-0003 --source S07_container_moves</pre>
+  </div>
+  <div class="two">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Kind</th><th>Example</th><th>Used by</th></tr></thead>
+      <tbody>
+        <tr><td><code>comment</code></td><td>“ETA text is local port time.”</td><td>any step</td></tr>
+        <tr><td><code>include_paths</code></td><td><code>00_inbox/03_Workshops/</code></td><td>P1.2, P2.3</td></tr>
+        <tr><td><code>ignore_paths</code></td><td><code>00_inbox/Archive/</code></td><td>P1.2</td></tr>
+        <tr><td><code>code</code></td><td>PySpark snippet for a cell or transform</td><td>P4.1, P5.1</td></tr>
+        <tr><td><code>data</code></td><td>table + filter + columns to test</td><td>P2.2 (targeted check), P5.2</td></tr>
+        <tr><td><code>attachments</code></td><td>port time-zone list (new file)</td><td>P1.1, P2.3</td></tr>
+        <tr><td><code>answer</code></td><td>answer to Q-0001</td><td>P2.3</td></tr>
+      </tbody></table></div>
+    <div class="box">
+      <span class="eyebrow">Example: feedback at CP2 for S07</span>
+<pre class="cli">python tools/x_feedback.py new S07_container_moves CP2_evidence \
+  --comment "ETA text is local port time" \
+  --include 00_inbox/03_Workshops/ \
+  --data-table bronze.container_track.legs \
+  --data-filter "ETA_TS like '%/%'" \
+  --rerun-from p2-2-bronze-discovery
+
+python tools/x_feedback.py plan  FB-0004 --source S07_container_moves
+python tools/x_feedback.py reset FB-0004 --source S07_container_moves
+#  agent reruns p2-2, p2-3 → validators recheck P4…P6
+python tools/x_feedback.py set FB-0004 applied --source S07_container_moves \
+  --summary "E-0008 now client_answer, high" --changed 02_evidence/evidence_register.csv
+python tools/x_feedback.py set FB-0004 verified --source S07_container_moves --by reviewer1</pre>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="ontology">
+  <h2>Ontology: three layers, one chain</h2>
+  <p>The ontology keeps 30 sources coherent. Every silver table names a business object and a data class, every FK follows a business relationship, and every column traces down to evidence and its origin.</p>
+  <div class="layers">
+    <div class="box layer b"><span class="eyebrow">Layer 1 · business.yaml</span><h3>Business</h3><ul>
+      <li>Domains: PROC, COST, LOGI, SAVE, ORG</li><li>Processes, e.g. P-LOGI-02 track container legs</li>
+      <li>Business objects + synonyms (Supplier ← vendor, provider)</li><li>Relationships R01–R17 with cardinality</li><li>Business rules BR-xxx-nnn (CP4b)</li></ul></div>
+    <div class="box layer d"><span class="eyebrow">Layer 2 · data.yaml</span><h3>Data</h3><ul>
+      <li>Data classes: master, reference, event, agreement, measure, snapshot, bridge</li><li>Allowed load patterns per class</li>
+      <li>Conformed classes = shared entities</li><li>Key types BK, SK, FK; grain rule</li></ul></div>
+    <div class="box layer i"><span class="eyebrow">Layer 3 · information.yaml</span><h3>Information</h3><ul>
+      <li>Document types with authority</li><li>Relevance + reading rules + budgets</li>
+      <li>Evidence origin, confidence, status</li><li>Phases, checkpoints, handovers</li></ul></div>
+  </div>
+  <div class="chain" aria-label="Lineage chain for one column">
+    <div class="link layer-b"><span class="lvl">Business object</span><span class="src">business.yaml</span><span class="ex">ShipmentLeg (event) — R10 moves Container</span></div>
+    <div class="link layer-d"><span class="lvl">Silver table + class</span><span class="src">sttm.yaml + data.yaml</span><span class="ex">slv_cnt_shipment_leg · event · merge</span></div>
+    <div class="link layer-d"><span class="lvl">Silver column</span><span class="src">sttm.yaml column</span><span class="ex">container_sk · FK → Container</span></div>
+    <div class="link layer-d"><span class="lvl">Bronze column</span><span class="src">sttm.yaml source</span><span class="ex">bronze.container_track.legs.CNTR_NO</span></div>
+    <div class="link layer-i"><span class="lvl">Evidence</span><span class="src">evidence_register.csv</span><span class="ex">E-0001, E-0002 · high · confirmed_by_bronze</span></div>
+    <div class="link layer-i"><span class="lvl">Origin</span><span class="src">manifest / 02_evidence</span><span class="ex">IF-0004 sheet LEGS row 4 · 02_evidence/discovery/links.csv</span></div>
+  </div>
+  <p class="muted">Checked by <code>x_ontology_check.py</code> (all layers together) and <code>p4_2_validate_sttm.py</code> (each STTM). A missing link fails the PR.</p>
+</section>
+
+<section class="panel" id="folders">
+  <h2>Folders: folder number = phase number</h2>
+  <p>Every phase folder has a <code>README.md</code>, a <code>checkpoint/</code> folder for its pack, and a <code>feedback/&lt;CP&gt;/</code> folder. P3 is global and lives in <code>registry/</code>. Code and QA live in <code>05_build/</code>, shared code in <code>lib/</code>, the QA checklist in <code>standards/</code>, PR checks in <code>.github/</code>.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Folder</th><th>Phase</th><th>Holds</th><th>Checkpoint pack</th></tr></thead>
+    <tbody>
+      <tr><td><code>00_inbox/</code></td><td>input</td><td>the dump, never edited</td><td>-</td></tr>
+      <tr><td><code>01_intake/</code></td><td>P1</td><td>manifest, triage, source brief</td><td>CP1</td></tr>
+      <tr><td><code>02_evidence/</code></td><td>P2</td><td>evidence register, <code>profiling/</code>, <code>discovery/</code> (+ cards)</td><td>CP2</td></tr>
+      <tr><td><code>registry/</code></td><td>P3 (global)</td><td>ontology, entities, key rules, change requests, board</td><td>CP3, CP3b</td></tr>
+      <tr><td><code>04_mapping/</code></td><td>P4</td><td>sttm.yaml, exports/, reviews/</td><td>CP4, CP4b</td></tr>
+      <tr><td><code>05_build/</code></td><td>P5</td><td>notebooks, job, qa_results/, reviews/</td><td>CP5</td></tr>
+      <tr><td><code>06_handoff/</code></td><td>P6</td><td>readiness.md</td><td>CP6</td></tr>
+      <tr><td><code>masters/</code></td><td>P5 (global)</td><td>one build per shared master: survivorship across sources, unknown member, QA</td><td>via CP5 of feeding sources</td></tr>
+    </tbody></table></div>
+</section>
+
+<footer>Source of truth: <code>registry/ontology/information.yaml</code> (phases, checkpoints, handovers) and <code>tools/x_feedback.py</code> (step catalogue and rerun plans). Example sources S01 and S07 are fictional.</footer>
+</div>
+
+<script>
+(function () {
+  var keys = document.querySelectorAll(".key");
+  keys.forEach(function (k) {
+    k.addEventListener("click", function () {
+      var f = k.getAttribute("data-focus");
+      document.body.classList.remove("focus-agent", "focus-code", "focus-human");
+      if (f) document.body.classList.add("focus-" + f);
+      keys.forEach(function (x) { x.setAttribute("aria-pressed", x === k ? "true" : "false"); });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

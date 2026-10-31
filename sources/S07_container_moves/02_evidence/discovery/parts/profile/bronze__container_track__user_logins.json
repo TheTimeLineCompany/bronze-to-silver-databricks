@@ -1,0 +1,123 @@
+{
+  "table": "bronze.container_track.user_logins",
+  "row_count": 2000,
+  "sample_rows": 2000,
+  "profiled_at": "2026-10-31T10:57:10.429995+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.user_logins",
+      "column": "USER_ID",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2000,
+      "null_pct": 0.0,
+      "approx_distinct": 61,
+      "distinct_ratio": 0.0305,
+      "min": "U0001",
+      "max": "U0060",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "A9999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.user_logins",
+      "column": "LOGIN_TS",
+      "type": "timestamp",
+      "family": "date",
+      "sample_rows": 2000,
+      "null_pct": 0.0,
+      "approx_distinct": 1953,
+      "distinct_ratio": 0.9765,
+      "min": null,
+      "max": null,
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": [],
+      "redacted": "application_log"
+    },
+    {
+      "table": "bronze.container_track.user_logins",
+      "column": "IP_ADDR",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2000,
+      "null_pct": 0.0,
+      "approx_distinct": 1969,
+      "distinct_ratio": 0.9845,
+      "min": null,
+      "max": null,
+      "min_len": 11,
+      "max_len": 15,
+      "avg_len": 14.1,
+      "patterns": [
+        "999.999.999.999",
+        "999.999.99.999",
+        "999.999.999.99"
+      ],
+      "topk": [],
+      "kinds": {
+        "ip": 1.0
+      },
+      "redacted": "application_log"
+    },
+    {
+      "table": "bronze.container_track.user_logins",
+      "column": "USER_AGENT",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2000,
+      "null_pct": 0.0,
+      "approx_distinct": 3,
+      "distinct_ratio": 0.0015,
+      "min": null,
+      "max": null,
+      "min_len": 12,
+      "max_len": 61,
+      "avg_len": 36.4,
+      "patterns": [],
+      "topk": [
+        [
+          "<redacted>",
+          2000
+        ]
+      ],
+      "kinds": {
+        "user_agent": 1.0
+      },
+      "redacted": "application_log"
+    },
+    {
+      "table": "bronze.container_track.user_logins",
+      "column": "SESSION_ID",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2000,
+      "null_pct": 0.0,
+      "approx_distinct": 1972,
+      "distinct_ratio": 0.986,
+      "min": null,
+      "max": null,
+      "min_len": 32,
+      "max_len": 32,
+      "avg_len": 32.0,
+      "patterns": [
+        "99a99a9999999999aaa99a9aa99aa999",
+        "9aa99999aa9999a9aa9a99a99aa99aaa",
+        "a99aaaa9a9999a99a999a999a999999a"
+      ],
+      "topk": [],
+      "kinds": {
+        "uuid": 1.0,
+        "hash_token": 1.0
+      },
+      "redacted": "secret_or_token"
+    }
+  ]
+}

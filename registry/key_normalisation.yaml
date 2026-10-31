@@ -1,0 +1,61 @@
+# Shared key-normalisation rules (gate CP3b).
+# The same business key can arrive in different formats from different sources
+# (spaces, case, leading zeros, null tokens). Every source maps its key columns
+# through ONE of these rules, so that keys match across systems.
+# lib/keys.py applies these rules. Do not write ad-hoc trim/upper code in notebooks.
+#
+# Steps run in this order: null_tokens -> trim -> remove_chars -> case -> lpad -> regex check.
+
+version: 1
+null_tokens: ["", "NULL", "N/A", "NA", "-", "0"]   # values treated as missing for keys
+
+rules:
+  part_number:
+    trim: true
+    case: upper
+    remove_chars: [" ", "-"]
+    lpad: null            # example: {length: 10, char: "0"}
+    pattern: "^[A-Z0-9]{3,20}$"
+  supplier_code:
+    trim: true
+    case: upper
+    remove_chars: [" "]
+    lpad: {length: 8, char: "0"}
+    pattern: "^[A-Z0-9]{8}$"
+  buyer_id:
+    trim: true
+    case: upper
+    remove_chars: []
+    lpad: null
+    pattern: "^[A-Z0-9]{2,12}$"
+  container_number:
+    trim: true
+    case: upper
+    remove_chars: [" ", "-"]
+    lpad: null
+    pattern: "^[A-Z]{4}[0-9]{7}$"   # ISO 6346 shape
+  generic_code:
+    trim: true
+    case: upper
+    remove_chars: []
+    lpad: null
+    pattern: null
+
+# Survivorship (which source wins when two sources give different values
+# for the same attribute of a shared entity). Approved at CP3b. Applied by lib/survivorship.py in the
+# master build (masters/<table>/), never in source notebooks.
+#   default:          rule for attributes without their own rule: most_recent_update | source_priority
+#   source_priority:  source order for 'source_priority' and for ties
+#   attributes:       per attribute: {priority: [sources...]} or {rule: most_recent_update}
+# A NULL never wins over a value. Every master row records the winners in _survivor.
+# Required for every entity that two or more STTMs map (tools/x_ontology_check.py).
+survivorship:
+  Part:
+    default: most_recent_update
+    source_priority: [S03_part_catalogue, S01_buyer_master]
+    attributes:
+      description: {priority: [S03_part_catalogue, S01_buyer_master]}
+  Supplier:
+    default: most_recent_update
+    source_priority: []
+    attributes: {}

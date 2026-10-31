@@ -1,0 +1,2 @@
+table_a,column_a,table_b,column_b,jaccard,shared_values
+bronze.container_track.carrier_contacts,OWNER,bronze.container_track.containers,OWNER,1.0,"CMA, MAERSK, MSC"

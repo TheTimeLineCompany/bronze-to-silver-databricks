@@ -1,0 +1,19 @@
+{
+  "table": "bronze.container_track.locations",
+  "keys": [
+    [
+      "LOC_CD"
+    ],
+    [
+      "LOC_NAME"
+    ],
+    [
+      "TZ_NAME"
+    ]
+  ],
+  "checks": 3,
+  "best": [
+    "LOC_CD"
+  ],
+  "declared_keys": []
+}

@@ -1,0 +1,333 @@
+{
+  "table": "bronze.container_track.legs_bkp_2025",
+  "row_count": 300,
+  "sample_rows": 300,
+  "profiled_at": "2026-10-31T10:56:41.979319+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "CNTR_NO",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 168,
+      "distinct_ratio": 0.56,
+      "min": "MSCU 222798-1",
+      "max": "MSCU9925282",
+      "min_len": 11,
+      "max_len": 13,
+      "avg_len": 11.1,
+      "patterns": [
+        "AAAA9999999",
+        "AAAA 999999-9"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "SHPMT_ID",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 173,
+      "distinct_ratio": 0.5767,
+      "min": "S000000",
+      "max": "S000169",
+      "min_len": 7,
+      "max_len": 7,
+      "avg_len": 7.0,
+      "patterns": [
+        "A999999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "LEG_NO",
+      "type": "int",
+      "family": "int",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 3,
+      "distinct_ratio": 0.01,
+      "min": "1",
+      "max": "3",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": [
+        [
+          "1",
+          170
+        ],
+        [
+          "2",
+          97
+        ],
+        [
+          "3",
+          33
+        ]
+      ]
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "FROM_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 13,
+      "distinct_ratio": 0.0433,
+      "min": "AEJEA",
+      "max": "krpus",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA",
+        "aaaaa"
+      ],
+      "topk": [
+        [
+          "CNSHA",
+          40
+        ],
+        [
+          "GBFXT",
+          36
+        ],
+        [
+          "KRPUS",
+          30
+        ],
+        [
+          "DEHAM",
+          29
+        ],
+        [
+          "SGSIN",
+          28
+        ],
+        [
+          "BEANR",
+          27
+        ],
+        [
+          "USNYC",
+          27
+        ],
+        [
+          "USLAX",
+          26
+        ],
+        [
+          "NLRTM",
+          26
+        ],
+        [
+          "AEJEA",
+          24
+        ],
+        [
+          "beanr",
+          4
+        ],
+        [
+          "deham",
+          2
+        ],
+        [
+          "krpus",
+          1
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "TO_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 0.0333,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "BEANR",
+          43
+        ],
+        [
+          "CNSHA",
+          40
+        ],
+        [
+          "GBFXT",
+          34
+        ],
+        [
+          "AEJEA",
+          29
+        ],
+        [
+          "USLAX",
+          28
+        ],
+        [
+          "USNYC",
+          28
+        ],
+        [
+          "SGSIN",
+          28
+        ],
+        [
+          "NLRTM",
+          27
+        ],
+        [
+          "DEHAM",
+          23
+        ],
+        [
+          "KRPUS",
+          20
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "ATD_TS",
+      "type": "bigint",
+      "family": "int",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 301,
+      "distinct_ratio": 1.0033,
+      "min": "1767445200",
+      "max": "1787007600",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "ATA_TS",
+      "type": "bigint",
+      "family": "int",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 286,
+      "distinct_ratio": 0.9533,
+      "min": "1767762000",
+      "max": "1787353200",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "ETA_TS",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 300,
+      "distinct_ratio": 1.0,
+      "min": "01/03/2026 13:00",
+      "max": "30/05/2026 06:00",
+      "min_len": 10,
+      "max_len": 16,
+      "avg_len": 11.7,
+      "patterns": [
+        "9999999999",
+        "99/99/9999 99:99"
+      ],
+      "topk": [],
+      "kinds": {
+        "text_ts": 0.283
+      }
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "IS_DELETED",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 1,
+      "distinct_ratio": 0.0033,
+      "min": "N",
+      "max": "N",
+      "min_len": 1,
+      "max_len": 1,
+      "avg_len": 1.0,
+      "patterns": [
+        "A"
+      ],
+      "topk": [
+        [
+          "N",
+          300
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "CARRIER_REF",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 300,
+      "null_pct": 54.667,
+      "approx_distinct": 128,
+      "distinct_ratio": 0.9412,
+      "min": "CR123",
+      "max": "CR996",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AA999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs_bkp_2025",
+      "column": "_ingest_ts",
+      "type": "timestamp",
+      "family": "date",
+      "sample_rows": 300,
+      "null_pct": 0.0,
+      "approx_distinct": 1,
+      "distinct_ratio": 0.0033,
+      "min": "2026-09-01 05:30:00",
+      "max": "2026-09-01 05:30:00",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    }
+  ]
+}

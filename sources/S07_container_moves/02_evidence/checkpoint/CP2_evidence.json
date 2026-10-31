@@ -1,0 +1,1555 @@
+{
+  "checkpoint": "CP2_evidence",
+  "source_id": "S07_container_moves",
+  "phase": "P2",
+  "title": "Evidence",
+  "purpose": "Check that each fact the mapping needs has enough evidence, and that conflicts are handled.",
+  "approver": "phase1-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:50Z",
+  "next_step": "p4-1-sttm-author (reads evidence and bronze results)",
+  "inputs": {
+    "sources/S07_container_moves/02_evidence/evidence_register.csv": "e4541f42f2ee5c9351532eb83af5171d2328b328",
+    "sources/S07_container_moves/02_evidence/profiling/doc_profiles.csv": "f19c4c1012e47edba38465924f256b6d345d735d",
+    "sources/S07_container_moves/02_evidence/discovery/tables.csv": "5b82fdf6c0176cd26c4ba1473eb14e8e14a20c46",
+    "sources/S07_container_moves/02_evidence/discovery/links.csv": "42bcceb719921d5ec7b49ef37683a318ad149679",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-006.result.yaml": "b47da782a5ad0a042849766f127eb813f82032ff",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-002.result.yaml": "2bb6882dfad5a067c19438386b9b6768230fc96c",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-001.result.yaml": "9a25355ad99bcaa09d1b97b822c7722a72b287ac",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-007.result.yaml": "163e16a1abed5755bde5fde4f0a381ac0844e8d5",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-003.result.yaml": "7ea91f7ea4a06da683d3fee62c876d372e1d5232",
+    "sources/S07_container_moves/02_evidence/discovery/cards/T-005.result.yaml": "4688418b4ca811c6ea4f703fc7af47bd9e747463",
+    "sources/S07_container_moves/02_evidence/discovery/column_scope.csv": "de145fa1c30b94b6e5c046a8413b4059f74da1d6",
+    "sources/S07_container_moves/02_evidence/discovery/doc_gaps.csv": "ca45f429402c69f3f2fa41addd8aaf97792c1e43",
+    "sources/S07_container_moves/02_evidence/discovery/overlap.csv": "5eb1ea62ba3f5a376b000561cebc001c2297fd11",
+    "sources/S07_container_moves/02_evidence/discovery/related.csv": "0471988adb1c069d86321a9e63e4796ad9bd801b",
+    "sources/S07_container_moves/02_evidence/discovery/metadata/availability.csv": "37e2664970756cade066769e43eee642f989e38d"
+  },
+  "metrics": [
+    {
+      "label": "Evidence claims",
+      "value": 23,
+      "note": ""
+    },
+    {
+      "label": "High / medium / low+unknown",
+      "value": "20 / 2 / 1",
+      "note": ""
+    },
+    {
+      "label": "Confirmed by bronze or corroborated",
+      "value": 19,
+      "note": ""
+    },
+    {
+      "label": "Contradicted",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "Client profiling rows",
+      "value": 9,
+      "note": "2 low"
+    },
+    {
+      "label": "Bronze tables",
+      "value": 9,
+      "note": "1 staging"
+    },
+    {
+      "label": "FK links found",
+      "value": 8,
+      "note": "2 need a key rule"
+    },
+    {
+      "label": "Agent cards answered",
+      "value": "6 / 7",
+      "note": ""
+    },
+    {
+      "label": "Table scope in / out / derive / review",
+      "value": "6 / 2 / 1 / 0",
+      "note": ""
+    },
+    {
+      "label": "Columns out of scope / in review",
+      "value": "7 / 0",
+      "note": "4 app log, 2 audit, 0 secret"
+    },
+    {
+      "label": "Personal-data columns",
+      "value": 3,
+      "note": "need privacy handling in the STTM"
+    },
+    {
+      "label": "Unity Catalog metadata sections read",
+      "value": "1 / 9",
+      "note": "missing: tables, columns, tags, masks_and_filters, constraints, detail_history, "
+    },
+    {
+      "label": "Documents vs bronze gaps",
+      "value": 8,
+      "note": ""
+    }
+  ],
+  "connections": [
+    {
+      "kind": "chain",
+      "caption": "Tables in lineage order (level: table, role -> business object)",
+      "steps": [
+        [
+          "0: carrier_contacts",
+          "master -> NEW:CarrierContact"
+        ],
+        [
+          "0: container_types",
+          "reference -> NEW:ContainerType"
+        ],
+        [
+          "0: locations",
+          "master -> Location"
+        ],
+        [
+          "0: user_logins",
+          "technical -> -"
+        ],
+        [
+          "1: containers",
+          "master -> Container"
+        ],
+        [
+          "1: leg_daily_summary",
+          "aggregate -> none"
+        ],
+        [
+          "1: shipments",
+          "transaction_header -> Shipment"
+        ],
+        [
+          "2: legs",
+          "event -> ShipmentLeg"
+        ],
+        [
+          "-: legs_bkp_2025",
+          "staging -> -"
+        ]
+      ]
+    },
+    {
+      "kind": "flows",
+      "caption": "Bronze lineage: column -> referenced table (role), containment",
+      "flows": [
+        [
+          "containers.TYPE_CD",
+          "N:1 (100%)",
+          "container_types (reference)",
+          "fk"
+        ],
+        [
+          "leg_daily_summary.FROM_LOC",
+          "N:1 (100%)",
+          "locations (master)",
+          "fk"
+        ],
+        [
+          "legs.CNTR_NO",
+          "N:1 (100%)",
+          "containers (master)",
+          "fk"
+        ],
+        [
+          "legs.SHPMT_ID",
+          "N:1 (100%)",
+          "shipments (transaction_header)",
+          "fk"
+        ],
+        [
+          "legs.FROM_LOC",
+          "N:1 (100%)",
+          "locations (master)",
+          "fk"
+        ],
+        [
+          "legs.TO_LOC",
+          "N:1 (100%)",
+          "locations (master)",
+          "fk"
+        ],
+        [
+          "shipments.ORIGIN_LOC",
+          "N:1 (100%)",
+          "locations (master)",
+          "fk"
+        ],
+        [
+          "shipments.DEST_LOC",
+          "N:1 (100%)",
+          "locations (master)",
+          "fk"
+        ]
+      ]
+    },
+    {
+      "kind": "matrix",
+      "rows": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ],
+      "cols": [
+        "unverified",
+        "corroborated",
+        "confirmed_by_bronze",
+        "contradicted",
+        "superseded"
+      ],
+      "cells": [
+        [
+          3,
+          0,
+          17,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "caption": "Evidence claims by confidence (rows) and status (columns)"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "error",
+      "item": "T-004",
+      "text": "discovery card not answered"
+    },
+    {
+      "severity": "error",
+      "item": "FB-0001",
+      "text": "feedback is 'open': blocks approval"
+    },
+    {
+      "severity": "error",
+      "item": "FB-0003",
+      "text": "upstream issue at CP1_source_brief (proposed) blocks this checkpoint: T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Con"
+    },
+    {
+      "severity": "warn",
+      "item": "user_logins",
+      "text": "no clear business object"
+    },
+    {
+      "severity": "warn",
+      "item": "E-0008",
+      "text": "low confidence, unverified; question Q-0001"
+    },
+    {
+      "severity": "info",
+      "item": "carrier_contacts",
+      "text": "proposes NEW:CarrierContact: needs a CP3 change request"
+    },
+    {
+      "severity": "info",
+      "item": "container_types",
+      "text": "proposes NEW:ContainerType: needs a CP3 change request"
+    },
+    {
+      "severity": "info",
+      "item": "legs.CNTR_NO",
+      "text": "values match only after normalisation: key rule needed (CP3b)"
+    },
+    {
+      "severity": "info",
+      "item": "legs.FROM_LOC",
+      "text": "values match only after normalisation: key rule needed (CP3b)"
+    }
+  ],
+  "decide": [
+    "Are the table roles, grain keys, and business objects right (see lineage order)?",
+    "Is the scope right: no logs, audit, or staging data in silver, and personal data handled?",
+    "Is the evidence enough for every key, foreign key, grain, and business rule?",
+    "Are contradictions resolved, with bronze for structure and documents for meaning?",
+    "Are the open questions the right ones, and is 'blocking' set correctly?"
+  ],
+  "key_table": "Bronze tables",
+  "tables": {
+    "Column scope": {
+      "columns": [
+        "table",
+        "column",
+        "column_class",
+        "scope",
+        "reason",
+        "decided_by"
+      ],
+      "rows": [
+        [
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.locations",
+          "LOC_NAME",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.locations",
+          "COUNTRY_CD",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.locations",
+          "TZ_NAME",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.carrier_contacts",
+          "OWNER",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.carrier_contacts",
+          "CONTACT_NAME",
+          "personal_data",
+          "in_scope",
+          "keep (card T-001)",
+          "card T-001"
+        ],
+        [
+          "bronze.container_track.carrier_contacts",
+          "EMAIL_ADDR",
+          "personal_data",
+          "in_scope_masked",
+          "mask (card T-001)",
+          "card T-001"
+        ],
+        [
+          "bronze.container_track.carrier_contacts",
+          "TEL",
+          "personal_data",
+          "in_scope_masked",
+          "mask (card T-001)",
+          "card T-001"
+        ],
+        [
+          "bronze.container_track.carrier_contacts",
+          "ROLE_TXT",
+          "constant",
+          "out_of_scope",
+          "out_of_scope (card T-001)",
+          "card T-001"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "SHPMT_ID",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "BOOKING_DT",
+          "business_date",
+          "in_scope",
+          "date or time",
+          "code"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "ORIGIN_LOC",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "DEST_LOC",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "CUSTOMER",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.shipments",
+          "BOOKED_FROM",
+          "application_log",
+          "out_of_scope",
+          "out_of_scope (card T-007)",
+          "card T-007"
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "DEP_DATE",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "FROM_LOC",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "N_LEGS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "AVG_TRANSIT_DAYS",
+          "measure",
+          "in_scope",
+          "numeric value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "CNTR_NO",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "SHPMT_ID",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "LEG_NO",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "FROM_LOC",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "TO_LOC",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "ATD_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "ATA_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "ETA_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "IS_DELETED",
+          "constant",
+          "out_of_scope",
+          "one value only",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "CARRIER_REF",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "_ingest_ts",
+          "audit_metadata",
+          "technical",
+          "who/when a record was written, not business data",
+          "code"
+        ],
+        [
+          "bronze.container_track.container_types",
+          "TYPE_CD",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.container_types",
+          "TYPE_DESC",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.containers",
+          "CNTR_NO",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.containers",
+          "TYPE_CD",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.containers",
+          "OWNER",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.containers",
+          "BUILD_YEAR",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "CNTR_NO",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "SHPMT_ID",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "LEG_NO",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "FROM_LOC",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "TO_LOC",
+          "foreign_key",
+          "in_scope",
+          "links to another table",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "ATD_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "ATA_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "ETA_TS",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "IS_DELETED",
+          "constant",
+          "out_of_scope",
+          "one value only",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "CARRIER_REF",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.legs",
+          "_ingest_ts",
+          "audit_metadata",
+          "technical",
+          "who/when a record was written, not business data",
+          "code"
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "USER_ID",
+          "business_attribute",
+          "in_scope",
+          "descriptive value",
+          "code"
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "LOGIN_TS",
+          "application_log",
+          "out_of_scope",
+          "name looks like an application log field, and the table has 4 such columns",
+          "code"
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "IP_ADDR",
+          "application_log",
+          "out_of_scope",
+          "content looks like ip 100%",
+          "code"
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "USER_AGENT",
+          "application_log",
+          "out_of_scope",
+          "content looks like user_agent 100%",
+          "code"
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "SESSION_ID",
+          "key",
+          "in_scope",
+          "part of the table's unique key",
+          "code"
+        ]
+      ]
+    },
+    "Doc gaps": {
+      "columns": [
+        "kind",
+        "item"
+      ],
+      "rows": [
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.carrier_contacts"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.container_types"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.containers"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.leg_daily_summary"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.legs_bkp_2025"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.locations"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.shipments"
+        ],
+        [
+          "in_bronze_not_documented",
+          "bronze.container_track.user_logins"
+        ]
+      ]
+    },
+    "Bronze tables": {
+      "columns": [
+        "table",
+        "rows",
+        "key",
+        "grain",
+        "role",
+        "role_confidence",
+        "data_class",
+        "lineage_level",
+        "derived_from",
+        "business_object",
+        "ontology_confidence",
+        "scope",
+        "scope_reason",
+        "decided_by"
+      ],
+      "rows": [
+        [
+          "bronze.container_track.carrier_contacts",
+          "12",
+          "OWNER + CONTACT_NAME",
+          "One row per CONTACT_NAME (master).",
+          "master",
+          "agent",
+          "master",
+          "0",
+          "",
+          "NEW:CarrierContact",
+          "agent",
+          "in_scope",
+          "card T-001: Dispatch contacts of each carrier. Needed by operations to call the carrier. Per",
+          "card T-001: Dispatch contacts of each carrier. Needed by operations to call the carrier. Personal data; no object in business.yaml for carrier contacts."
+        ],
+        [
+          "bronze.container_track.container_types",
+          "5",
+          "TYPE_CD",
+          "One row per TYPE_CD (reference).",
+          "reference",
+          "agent",
+          "reference",
+          "0",
+          "",
+          "NEW:ContainerType",
+          "agent",
+          "in_scope",
+          "card T-002: 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containe",
+          "card T-002: 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers; it is not the Container object. No classification object exists in business.yaml."
+        ],
+        [
+          "bronze.container_track.locations",
+          "10",
+          "LOC_CD",
+          "One row per LOC_CD (reference).",
+          "master",
+          "agent",
+          "master",
+          "0",
+          "",
+          "Location",
+          "agent",
+          "in_scope",
+          "card T-003: Small, but it is the place master (name, country, time zone) referenced by four ",
+          "card T-003: Small, but it is the place master (name, country, time zone) referenced by four columns. Location is a conformed master entity. TZ_NAME can answer Q-0001 (ETA time zone)."
+        ],
+        [
+          "bronze.container_track.user_logins",
+          "2000",
+          "SESSION_ID",
+          "One row per SESSION_ID (technical).",
+          "technical",
+          "high",
+          "",
+          "0",
+          "",
+          "",
+          "none",
+          "out_of_scope",
+          "application or operational table (log, audit, session, job, config)",
+          "code"
+        ],
+        [
+          "bronze.container_track.containers",
+          "800",
+          "CNTR_NO",
+          "One row per CNTR_NO (master).",
+          "master",
+          "medium",
+          "master",
+          "1",
+          "",
+          "Container",
+          "high",
+          "in_scope",
+          "maps to Container",
+          "code"
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "1571",
+          "DEP_DATE + FROM_LOC",
+          "One row per DEP_DATE + FROM_LOC (aggregate).",
+          "aggregate",
+          "agent",
+          "measure",
+          "1",
+          "bronze.container_track.legs",
+          "none",
+          "agent",
+          "derive_instead",
+          "card T-005: Daily count and average transit per departure port, computed from legs. Silver k",
+          "card T-005: Daily count and average transit per departure port, computed from legs. Silver keeps the detail (legs); gold can rebuild this summary. Loading it would duplicate BR-LOGI-001 logic."
+        ],
+        [
+          "bronze.container_track.shipments",
+          "1500",
+          "SHPMT_ID",
+          "One row per SHPMT_ID (transaction header).",
+          "transaction_header",
+          "agent",
+          "event",
+          "1",
+          "",
+          "Shipment",
+          "agent",
+          "in_scope",
+          "card T-007: One row per booking. BOOKED_FROM holds IP addresses of the booking screen (appli",
+          "card T-007: One row per booking. BOOKED_FROM holds IP addresses of the booking screen (application log), not business data."
+        ],
+        [
+          "bronze.container_track.legs",
+          "2738",
+          "SHPMT_ID + LEG_NO",
+          "One row per SHPMT_ID + LEG_NO (transaction line).",
+          "event",
+          "agent",
+          "event",
+          "2",
+          "",
+          "ShipmentLeg",
+          "agent",
+          "in_scope",
+          "card T-006: Time-stamped leg movements. Bronze shows SHPMT_ID + LEG_NO is already unique; th",
+          "card T-006: Time-stamped leg movements. Bronze shows SHPMT_ID + LEG_NO is already unique; the documents use CNTR_NO + SHPMT_ID + LEG_NO. Both are valid; the brief must state which one is the grain."
+        ],
+        [
+          "bronze.container_track.legs_bkp_2025",
+          "300",
+          "SHPMT_ID + LEG_NO",
+          "One row per SHPMT_ID + LEG_NO (staging).",
+          "staging",
+          "high",
+          "",
+          "-",
+          "",
+          "",
+          "none",
+          "out_of_scope",
+          "copy, backup, or staging table",
+          "code"
+        ]
+      ]
+    },
+    "Bronze links": {
+      "columns": [
+        "dep_table",
+        "dep_column",
+        "ref_table",
+        "ref_column",
+        "status",
+        "cardinality",
+        "containment_raw",
+        "containment_norm",
+        "coverage",
+        "note"
+      ],
+      "rows": [
+        [
+          "bronze.container_track.containers",
+          "TYPE_CD",
+          "bronze.container_track.container_types",
+          "TYPE_CD",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ],
+        [
+          "bronze.container_track.leg_daily_summary",
+          "FROM_LOC",
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ],
+        [
+          "bronze.container_track.legs",
+          "CNTR_NO",
+          "bronze.container_track.containers",
+          "CNTR_NO",
+          "fk",
+          "N:1",
+          "0.8545",
+          "1.0",
+          "0.8512",
+          "matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule"
+        ],
+        [
+          "bronze.container_track.legs",
+          "SHPMT_ID",
+          "bronze.container_track.shipments",
+          "SHPMT_ID",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ],
+        [
+          "bronze.container_track.legs",
+          "FROM_LOC",
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "fk",
+          "N:1",
+          "0.5",
+          "1.0",
+          "1.0",
+          "matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule"
+        ],
+        [
+          "bronze.container_track.legs",
+          "TO_LOC",
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ],
+        [
+          "bronze.container_track.shipments",
+          "ORIGIN_LOC",
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ],
+        [
+          "bronze.container_track.shipments",
+          "DEST_LOC",
+          "bronze.container_track.locations",
+          "LOC_CD",
+          "fk",
+          "N:1",
+          "1.0",
+          "1.0",
+          "1.0",
+          ""
+        ]
+      ]
+    },
+    "Evidence": {
+      "columns": [
+        "evidence_id",
+        "claim",
+        "about_type",
+        "about",
+        "origin",
+        "file_id",
+        "location",
+        "confidence",
+        "status",
+        "corroborated_by",
+        "notes"
+      ],
+      "rows": [
+        [
+          "E-0001",
+          "CNTR_NO holds the ISO 6346 container number of the leg.",
+          "column",
+          "LEGS.CNTR_NO -> Container",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 4",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/legs.json",
+          ""
+        ],
+        [
+          "E-0002",
+          "After normalisation CNTR_NO matches the ISO pattern in 99.98% of rows.",
+          "key",
+          "LEGS.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/profiling/legs.json",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/legs.json",
+          "key_pattern check"
+        ],
+        [
+          "E-0003",
+          "SHPMT_ID identifies the shipment the leg belongs to.",
+          "column",
+          "LEGS.SHPMT_ID -> Shipment",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 5",
+          "high",
+          "unverified",
+          "",
+          ""
+        ],
+        [
+          "E-0004",
+          "LEG_NO is the leg sequence within a shipment; CNTR_NO+SHPMT_ID+LEG_NO is unique.",
+          "grain",
+          "LEGS -> ShipmentLeg",
+          "document",
+          "IF-0001",
+          "section 3.2",
+          "medium",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/legs.json",
+          "candidate key check ok"
+        ],
+        [
+          "E-0005",
+          "FROM_LOC and TO_LOC are location codes for departure and arrival.",
+          "relationship",
+          "LEGS -> Location",
+          "document",
+          "IF-0004",
+          "sheet LEGS rows 7-8",
+          "medium",
+          "corroborated",
+          "E-0006",
+          ""
+        ],
+        [
+          "E-0006",
+          "FROM_LOC/TO_LOC codes exist in the locations table except 0.3% (mixed case).",
+          "relationship",
+          "LEGS -> Location",
+          "bronze_profile",
+          "",
+          "02_evidence/profiling/legs.json",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/profiling/legs.json",
+          "fk check"
+        ],
+        [
+          "E-0007",
+          "ATD_TS is the actual departure time in epoch seconds (UTC).",
+          "column",
+          "LEGS.ATD_TS",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 9",
+          "high",
+          "unverified",
+          "",
+          ""
+        ],
+        [
+          "E-0008",
+          "ETA_TS has two formats; time zone of the text format is unknown.",
+          "column",
+          "LEGS.ETA_TS",
+          "document",
+          "IF-0004",
+          "sheet LEGS row 11",
+          "low",
+          "unverified",
+          "",
+          "Q-0001 raised"
+        ],
+        [
+          "E-0009",
+          "Transit days = actual arrival minus actual departure in days.",
+          "business_rule",
+          "ShipmentLeg BR-LOGI-001",
+          "document",
+          "IF-0002",
+          "section 5 KPI definitions",
+          "high",
+          "unverified",
+          "",
+          "needs CP4b sign-off"
+        ],
+        [
+          "E-0010",
+          "container_types: TYPE_CD is unique and not null in all 5 rows (role reference).",
+          "grain",
+          "container_types.TYPE_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#container_types",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#container_types",
+          "decided_by card T-001: 5-row ISO size/type code list used by containers"
+        ],
+        [
+          "E-0011",
+          "locations: LOC_CD is unique and not null in all 10 rows (role master).",
+          "grain",
+          "locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#locations",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#locations",
+          "decided_by card T-002: Small, but it is the place master (name, country"
+        ],
+        [
+          "E-0012",
+          "containers: CNTR_NO is unique and not null in all 800 rows (role master).",
+          "grain",
+          "containers.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#containers",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#containers",
+          "decided_by code"
+        ],
+        [
+          "E-0013",
+          "leg_daily_summary: DEP_DATE + FROM_LOC is unique and not null in all 1519 rows (role aggregate).",
+          "grain",
+          "leg_daily_summary.DEP_DATE + FROM_LOC",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#leg_daily_summary",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#leg_daily_summary",
+          "decided_by card T-004: Daily count and average transit per departure po"
+        ],
+        [
+          "E-0014",
+          "shipments: SHPMT_ID is unique and not null in all 1500 rows (role transaction_header).",
+          "grain",
+          "shipments.SHPMT_ID",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#shipments",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#shipments",
+          "decided_by code"
+        ],
+        [
+          "E-0015",
+          "legs: SHPMT_ID + LEG_NO is unique and not null in all 2667 rows (role event).",
+          "grain",
+          "legs.SHPMT_ID + LEG_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/keys.csv#legs",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/keys.csv#legs",
+          "decided_by card T-006: Time-stamped leg movements. Bronze shows SHPMT_I"
+        ],
+        [
+          "E-0016",
+          "100.0% of distinct containers.TYPE_CD values exist in container_types.TYPE_CD (N:1).",
+          "relationship",
+          "containers.TYPE_CD -> container_types.TYPE_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#containers.TYPE_CD",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#containers.TYPE_CD",
+          ""
+        ],
+        [
+          "E-0017",
+          "100.0% of distinct leg_daily_summary.FROM_LOC values exist in locations.LOC_CD (N:1).",
+          "relationship",
+          "leg_daily_summary.FROM_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#leg_daily_summary.FROM_LOC",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#leg_daily_summary.FROM_LOC",
+          ""
+        ],
+        [
+          "E-0018",
+          "100.0% of distinct legs.CNTR_NO values exist in containers.CNTR_NO (N:1).",
+          "relationship",
+          "legs.CNTR_NO -> containers.CNTR_NO",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.CNTR_NO",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#legs.CNTR_NO",
+          "matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule"
+        ],
+        [
+          "E-0019",
+          "100.0% of distinct legs.SHPMT_ID values exist in shipments.SHPMT_ID (N:1).",
+          "relationship",
+          "legs.SHPMT_ID -> shipments.SHPMT_ID",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.SHPMT_ID",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#legs.SHPMT_ID",
+          ""
+        ],
+        [
+          "E-0020",
+          "100.0% of distinct legs.FROM_LOC values exist in locations.LOC_CD (N:1).",
+          "relationship",
+          "legs.FROM_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.FROM_LOC",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#legs.FROM_LOC",
+          "matches only after normalisation (trim/upper/remove spaces and dashes): needs a key rule"
+        ],
+        [
+          "E-0021",
+          "100.0% of distinct legs.TO_LOC values exist in locations.LOC_CD (N:1).",
+          "relationship",
+          "legs.TO_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#legs.TO_LOC",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#legs.TO_LOC",
+          ""
+        ],
+        [
+          "E-0022",
+          "100.0% of distinct shipments.ORIGIN_LOC values exist in locations.LOC_CD (N:1).",
+          "relationship",
+          "shipments.ORIGIN_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#shipments.ORIGIN_LOC",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#shipments.ORIGIN_LOC",
+          ""
+        ],
+        [
+          "E-0023",
+          "100.0% of distinct shipments.DEST_LOC values exist in locations.LOC_CD (N:1).",
+          "relationship",
+          "shipments.DEST_LOC -> locations.LOC_CD",
+          "bronze_profile",
+          "",
+          "02_evidence/discovery/links.csv#shipments.DEST_LOC",
+          "high",
+          "confirmed_by_bronze",
+          "02_evidence/discovery/links.csv#shipments.DEST_LOC",
+          ""
+        ]
+      ]
+    },
+    "Bronze checks": {
+      "columns": [
+        "table",
+        "check",
+        "status",
+        "evidence",
+        "file"
+      ],
+      "rows": []
+    },
+    "Client profiling": {
+      "columns": [
+        "profile_id",
+        "table",
+        "column",
+        "data_type",
+        "null_pct",
+        "distinct",
+        "pk_candidate",
+        "raw_confidence",
+        "confidence",
+        "description"
+      ],
+      "rows": [
+        [
+          "DP-00001",
+          "LEGS",
+          "CNTR_NO",
+          "VARCHAR(15)",
+          "0",
+          "48211",
+          "Y",
+          "High",
+          "high",
+          "Container number (ISO 6346)"
+        ],
+        [
+          "DP-00002",
+          "LEGS",
+          "SHPMT_ID",
+          "VARCHAR(20)",
+          "0",
+          "20110",
+          "Y",
+          "High",
+          "high",
+          "Shipment id"
+        ],
+        [
+          "DP-00003",
+          "LEGS",
+          "LEG_NO",
+          "NUMBER",
+          "0",
+          "6",
+          "Y",
+          "Medium",
+          "medium",
+          "Leg sequence"
+        ],
+        [
+          "DP-00004",
+          "LEGS",
+          "FROM_LOC",
+          "VARCHAR(10)",
+          "0.4",
+          "812",
+          "N",
+          "Medium",
+          "medium",
+          "Departure location code"
+        ],
+        [
+          "DP-00005",
+          "LEGS",
+          "TO_LOC",
+          "VARCHAR(10)",
+          "0.6",
+          "790",
+          "N",
+          "Medium",
+          "medium",
+          "Arrival location code"
+        ],
+        [
+          "DP-00006",
+          "LEGS",
+          "ATD_TS",
+          "NUMBER",
+          "3.1",
+          "",
+          "N",
+          "High",
+          "high",
+          "Actual departure, epoch seconds"
+        ],
+        [
+          "DP-00007",
+          "LEGS",
+          "ATA_TS",
+          "NUMBER",
+          "7.9",
+          "",
+          "N",
+          "High",
+          "high",
+          "Actual arrival, epoch seconds"
+        ],
+        [
+          "DP-00008",
+          "LEGS",
+          "ETA_TS",
+          "VARCHAR(30)",
+          "1.2",
+          "",
+          "N",
+          "Low",
+          "low",
+          "Estimated arrival"
+        ],
+        [
+          "DP-00009",
+          "LEGS",
+          "CARRIER_REF",
+          "VARCHAR(40)",
+          "55",
+          "",
+          "N",
+          "40%",
+          "low",
+          "Carrier reference - meaning unclear"
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": [
+        [
+          "FB-0001",
+          "open",
+          "reviewer1",
+          "comment, include_paths, data",
+          "ETA_TS: the workshop notes say the text format comes from the manual entry screen in local port time. Use the port time zone from the locations table.",
+          "sources/S07_container_moves/02_evidence/feedback/CP2_evidence/FB-0001.yaml"
+        ]
+      ]
+    },
+    "Upstream issues": {
+      "columns": [
+        "id",
+        "at",
+        "status",
+        "raised_by",
+        "comment"
+      ],
+      "rows": [
+        [
+          "FB-0003",
+          "CP1_source_brief",
+          "proposed",
+          "agent:p2-2-bronze-discovery",
+          "T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm with the client which one defines a leg."
+        ]
+      ]
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 3,
+    "warn": 2,
+    "info": 4
+  }
+}

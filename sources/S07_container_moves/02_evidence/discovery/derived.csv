@@ -1,0 +1,2 @@
+table,derived_from,shared_columns,evidence
+bronze.container_track.leg_daily_summary,bronze.container_track.legs,from_loc,1/2 grouping columns in bronze.container_track.legs; 2738 > 1571 rows

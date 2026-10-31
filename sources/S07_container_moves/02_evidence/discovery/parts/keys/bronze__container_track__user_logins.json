@@ -1,0 +1,25 @@
+{
+  "table": "bronze.container_track.user_logins",
+  "keys": [
+    [
+      "SESSION_ID"
+    ],
+    [
+      "USER_ID",
+      "IP_ADDR"
+    ],
+    [
+      "USER_ID",
+      "LOGIN_TS"
+    ],
+    [
+      "LOGIN_TS",
+      "IP_ADDR"
+    ]
+  ],
+  "checks": 8,
+  "best": [
+    "SESSION_ID"
+  ],
+  "declared_keys": []
+}

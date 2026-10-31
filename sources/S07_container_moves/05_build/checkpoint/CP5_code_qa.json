@@ -1,0 +1,113 @@
+{
+  "checkpoint": "CP5_code_qa",
+  "source_id": "S07_container_moves",
+  "phase": "P5",
+  "title": "Code and QA",
+  "purpose": "Check that the code implements the mapping and passes every QA check.",
+  "approver": "phase2-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:50Z",
+  "next_step": "p6-1-handoff-package",
+  "inputs": {
+    "sources/S07_container_moves/04_mapping/sttm.yaml": "b077d4ab4e4b0412c2ab7ccd273a035fd0bfb5ff",
+    "sources/S07_container_moves/02_evidence/evidence_register.csv": "e4541f42f2ee5c9351532eb83af5171d2328b328"
+  },
+  "metrics": [
+    {
+      "label": "Notebooks",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "QA pass / fail / error",
+      "value": "0 / 0 / 0",
+      "note": ""
+    },
+    {
+      "label": "Code review",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "STTM table -> notebook -> QA result",
+    "flows": [
+      [
+        "slv_cnt_shipment_leg",
+        "built by",
+        "(no notebook)",
+        "0/0 QA pass"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "qa",
+      "text": "05_build/qa_results/summary.json missing or empty"
+    }
+  ],
+  "decide": [
+    "Does the code do exactly what the STTM says, and nothing more?",
+    "Do all QA checks pass without changed thresholds?",
+    "Does the code follow the naming and coding standards?"
+  ],
+  "key_table": "QA checks",
+  "tables": {
+    "QA checks": {
+      "columns": [
+        "check",
+        "table",
+        "status",
+        "metric",
+        "threshold",
+        "evidence"
+      ],
+      "rows": []
+    },
+    "Notebooks": {
+      "columns": [
+        "notebook",
+        "placeholder_left",
+        "review_blocks"
+      ],
+      "rows": []
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 1
+  }
+}

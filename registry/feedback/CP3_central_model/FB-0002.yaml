@@ -1,0 +1,22 @@
+id: FB-0002
+source_id: global
+checkpoint: CP3_central_model
+raised_by: agent:p2-2-bronze-discovery
+raised_on: '2026-10-31T08:44:56Z'
+origin: upstream_issue
+blocks: null
+related: null
+target: null
+comment: 'T-001: new business object ''ContainerType'' proposed for bronze.container_track.container_types.
+  5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers;
+  it is not the Container object. No classification object exists in business.yaml.'
+include_paths: null
+ignore_paths: null
+code: null
+data: null
+attachments: null
+answer: null
+rerun_from: null
+status: proposed
+response: null
+verified_by: null

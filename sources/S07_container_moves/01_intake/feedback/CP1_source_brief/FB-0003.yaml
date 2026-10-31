@@ -1,0 +1,22 @@
+id: FB-0003
+source_id: S07_container_moves
+checkpoint: CP1_source_brief
+raised_by: agent:p2-2-bronze-discovery
+raised_on: '2026-10-31T08:44:56Z'
+origin: upstream_issue
+blocks: CP2_evidence
+related: null
+target: null
+comment: 'T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID
+  + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm
+  with the client which one defines a leg.'
+include_paths: null
+ignore_paths: null
+code: null
+data: null
+attachments: null
+answer: null
+rerun_from: null
+status: proposed
+response: null
+verified_by: null

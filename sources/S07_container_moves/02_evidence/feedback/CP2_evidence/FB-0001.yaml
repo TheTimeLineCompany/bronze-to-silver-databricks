@@ -1,0 +1,23 @@
+id: FB-0001
+source_id: S07_container_moves
+checkpoint: CP2_evidence
+raised_by: reviewer1
+raised_on: '2026-10-31T08:14:04Z'
+target:
+  artifact: 02_evidence/evidence_register.csv
+  location: E-0008
+comment: 'ETA_TS: the workshop notes say the text format comes from the manual entry
+  screen in local port time. Use the port time zone from the locations table.'
+include_paths:
+- 00_inbox/03_Workshops/
+ignore_paths: null
+code: null
+data:
+- table: bronze.container_track.legs
+  filter: ETA_TS like '%/%'
+attachments: null
+answer: null
+rerun_from: null
+status: open
+response: null
+verified_by: null

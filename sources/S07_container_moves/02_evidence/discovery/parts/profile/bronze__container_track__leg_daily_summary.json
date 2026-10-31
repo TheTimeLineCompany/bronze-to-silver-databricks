@@ -1,0 +1,149 @@
+{
+  "table": "bronze.container_track.leg_daily_summary",
+  "row_count": 1571,
+  "sample_rows": 1571,
+  "profiled_at": "2026-10-31T10:56:15.215801+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.leg_daily_summary",
+      "column": "DEP_DATE",
+      "type": "date",
+      "family": "date",
+      "sample_rows": 1571,
+      "null_pct": 0.0,
+      "approx_distinct": 227,
+      "distinct_ratio": 0.1445,
+      "min": "2026-01-03",
+      "max": "2026-08-31",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.leg_daily_summary",
+      "column": "FROM_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 1571,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 0.0064,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "DEHAM",
+          167
+        ],
+        [
+          "CNSHA",
+          161
+        ],
+        [
+          "KRPUS",
+          160
+        ],
+        [
+          "BEANR",
+          159
+        ],
+        [
+          "SGSIN",
+          158
+        ],
+        [
+          "NLRTM",
+          157
+        ],
+        [
+          "USNYC",
+          157
+        ],
+        [
+          "USLAX",
+          155
+        ],
+        [
+          "GBFXT",
+          155
+        ],
+        [
+          "AEJEA",
+          142
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.leg_daily_summary",
+      "column": "N_LEGS",
+      "type": "bigint",
+      "family": "int",
+      "sample_rows": 1571,
+      "null_pct": 0.0,
+      "approx_distinct": 7,
+      "distinct_ratio": 0.0045,
+      "min": "1",
+      "max": "7",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": [
+        [
+          "1",
+          799
+        ],
+        [
+          "2",
+          492
+        ],
+        [
+          "3",
+          193
+        ],
+        [
+          "4",
+          65
+        ],
+        [
+          "5",
+          17
+        ],
+        [
+          "6",
+          4
+        ],
+        [
+          "7",
+          1
+        ]
+      ]
+    },
+    {
+      "table": "bronze.container_track.leg_daily_summary",
+      "column": "AVG_TRANSIT_DAYS",
+      "type": "decimal(32,11)",
+      "family": "num",
+      "sample_rows": 1571,
+      "null_pct": 0.0,
+      "approx_distinct": 95,
+      "distinct_ratio": 0.0605,
+      "min": "1.00000000000",
+      "max": "20.00000000000",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    }
+  ]
+}

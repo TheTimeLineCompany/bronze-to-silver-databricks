@@ -1,0 +1,15 @@
+card: T-002
+role: reference
+business_object: NEW:ContainerType
+grain_key:
+- TYPE_CD
+accept_links:
+- containers.TYPE_CD -> container_types.TYPE_CD
+reject_links: []
+load_to_silver: true
+reason: 5-row ISO size/type code list used by containers.TYPE_CD. It classifies containers;
+  it is not the Container object. No classification object exists in business.yaml.
+evidence:
+- discovery/columns.csv container_types.TYPE_CD top values
+- discovery/links.csv containers.TYPE_CD
+raise_upstream: null

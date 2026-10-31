@@ -1,0 +1,82 @@
+# DATA ONTOLOGY — how business objects become data in bronze and silver.
+# Layer 2 of 3 (business -> data -> information). See registry/ontology/README.md.
+#
+# Every silver table declares: business_object (business.yaml) + data_class (this file).
+# The data_class decides the allowed load patterns, history, and key rules.
+# tools/p4_2_validate_sttm.py and tools/x_ontology_check.py enforce these rules.
+
+version: 1
+
+layers:
+  bronze: {desc: "Raw copy of each source system. Source names and formats. No business meaning added.", owner: platform}
+  silver: {desc: "Cleaned, typed, keyed, conformed. One business object per table at a stated grain.",  owner: this project}
+  gold:   {desc: "Out of scope. Aggregates, marts, features built on silver.",                           owner: analytics teams}
+
+# Data classes for silver tables.
+data_classes:
+  master:
+    desc: "Shared, slowly changing business objects (party, thing, place). Conformed across sources."
+    business_kinds: [party, thing, place]
+    allowed_load_patterns: [scd2, merge]
+    history: "SCD2 by default; SCD1 only if the registry says history is not needed."
+    conformed: true          # must be an entity in registry/entities.yaml
+    key: "business key normalised by a key rule + surrogate key"
+  reference:
+    desc: "Small code lists and classifications (materials, status codes, units)."
+    business_kinds: [classification]
+    allowed_load_patterns: [merge, overwrite]
+    history: "SCD1 (latest value)."
+    conformed: true
+    key: "code normalised by a key rule + surrogate key"
+  event:
+    desc: "Things that happen at a time (shipment legs, orders, postings). Immutable or corrected later."
+    business_kinds: [event]
+    allowed_load_patterns: [append, merge]
+    history: "No SCD. Corrections overwrite by business key (merge) or arrive as new rows (append)."
+    conformed: false
+    key: "natural event key (source ids + sequence) + surrogate key"
+  agreement:
+    desc: "Terms valid for a period (prices, contracts, initiatives)."
+    business_kinds: [agreement]
+    allowed_load_patterns: [scd2, merge]
+    history: "Validity period from the business (valid_from/valid_to) or SCD2 when the source has no period."
+    conformed: false
+    key: "business key + validity start"
+  measure:
+    desc: "Numeric values for a subject and period (targets, actuals, index values, content weights)."
+    business_kinds: [measure]
+    allowed_load_patterns: [append, merge, overwrite]
+    history: "Period is part of the grain; restatements overwrite by key (merge)."
+    conformed: false
+    key: "subject keys + period"
+  snapshot:
+    desc: "State of something on a date (inventory on hand, open orders)."
+    business_kinds: [thing, measure, agreement]
+    allowed_load_patterns: [append, overwrite]
+    history: "snapshot_date is part of the grain."
+    conformed: false
+    key: "subject keys + snapshot_date"
+  bridge:
+    desc: "Many-to-many link between two business objects (part-to-material content without measures)."
+    business_kinds: [measure, agreement, classification]
+    allowed_load_patterns: [merge, overwrite]
+    history: "SCD1 unless the business needs validity."
+    conformed: false
+    key: "both foreign keys (+ validity start)"
+
+key_types:
+  BK:    "Business key: natural identifier after key normalisation (registry/key_normalisation.yaml)."
+  SK:    "Surrogate key: sha2 hash of BK (+ effective_from for SCD2). Name ends _sk. Primary key in silver."
+  FK:    "Foreign key: always the surrogate key of a conformed entity, and must follow a business relationship."
+  PK_FK: "A key that is both (for 1:1 extensions)."
+
+grain_rule: "Every silver table states its grain as one sentence: 'One row per <business object> per <qualifier>'."
+
+# Lineage chain that must be unbroken for every silver column (checked by validators):
+lineage:
+  - "business object (business.yaml)"
+  - "silver table + data_class (sttm.yaml target table)"
+  - "silver column (sttm.yaml column, rule + transform)"
+  - "bronze table/column (sttm.yaml sources + column.source)"
+  - "evidence (evidence_register.csv E-xxxx)"
+  - "origin (input file IF-xxxx + location, or 02_evidence/profiling/ file, or answered question)"

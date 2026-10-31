@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CP1_source_brief S07_container_moves</title><style>
+:root{--bg:#f4f6f7;--sf:#fff;--ink:#18232b;--mu:#5b6a74;--ln:#d5dde2;--err:#a3202f;--errb:#f8e6e8;--wrn:#8a5a00;--wrnb:#fbf0d9;--inf:#3d4f9c;--infb:#e7eaf7;--ok:#0f7c78;--okb:#e3f3f1;
+--sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181c;--sf:#1a2227;--ink:#e3e9ec;--mu:#94a3ad;--ln:#2c3840;--err:#f08a98;--errb:#3a1d22;--wrn:#f0c05a;--wrnb:#352b14;--inf:#9aa9f0;--infb:#1e2540;--ok:#4fc3bc;--okb:#143331;color-scheme:dark}
+*{box-sizing:border-box}main>*,section,header{min-width:0}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+main{max-width:1040px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+h1{font-size:28px;line-height:1.15;margin:0;text-wrap:balance}h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:0 0 8px;font-weight:500}
+p{margin:0;max-width:70ch}code{font-family:var(--mono);font-size:.86em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mu)}
+.pill{display:inline-block;padding:1px 8px;font-family:var(--mono);font-size:12px;border:1px solid currentColor}
+.s-approved,.s-not_required{color:var(--ok)}.s-pending{color:var(--mu)}.s-in_review{color:var(--inf)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.tile{background:var(--sf);border:1px solid var(--ln);padding:10px 12px;display:grid;gap:2px;align-content:start}
+.tile b{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1;overflow-wrap:anywhere}.tile span{font-size:13px;color:var(--mu)}
+.box{background:var(--sf);border:1px solid var(--ln);padding:14px 16px;min-width:0}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px 10px;align-items:center;font-size:14px}
+.node{border:1px solid var(--ln);padding:4px 8px;font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;background:var(--bg)}
+.edge{color:var(--mu);font-size:12.5px;white-space:nowrap}.edge::after{content:" \2192"}.rid{font-family:var(--mono);font-size:11.5px;color:var(--mu);overflow-wrap:anywhere}
+@media (max-width:620px){.flow{grid-template-columns:1fr}.edge{white-space:normal}}
+.funnel{display:grid;gap:4px}.fs{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 12px;background:var(--infb);margin-inline:calc(var(--i)*3%)}
+.fs b{font-weight:600}.fs span{font-family:var(--mono);font-size:12.5px;color:var(--inf)}
+.chain{display:flex;flex-wrap:wrap;gap:6px}.ch{padding:6px 10px;border:1px solid var(--ln);font-family:var(--mono);font-size:12.5px;display:grid}
+.ch small{font-size:11px}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.issues li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:6px 10px;font-size:14px}
+.issues .sev{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;padding-top:2px}
+.error{background:var(--errb)}.error .sev{color:var(--err)}.warn{background:var(--wrnb)}.warn .sev{color:var(--wrn)}.info{background:var(--infb)}.info .sev{color:var(--inf)}
+.issues code{overflow-wrap:anywhere}
+.decide{margin:0;padding-left:20px;display:grid;gap:4px}
+.tw{overflow-x:auto;background:var(--sf);border:1px solid var(--ln)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:500;white-space:nowrap}
+td{max-width:420px;min-width:80px;overflow-wrap:break-word}tr:last-child td{border-bottom:0}
+.mx td,.mx th{text-align:center}.mx td:first-child,.mx th:first-child{text-align:left}.mx td{font-variant-numeric:tabular-nums}
+.z{color:var(--mu)}
+footer{font-size:13px;color:var(--mu);display:grid;gap:4px;border-top:1px solid var(--ln);padding-top:10px}
+</style></head><body><main>
+<header style="display:grid;gap:8px"><h2>P1 · checkpoint · S07_container_moves</h2><h1>CP1 Source brief</h1>
+<div class="meta"><span class="pill s-pending">pending</span><span>Approver: phase1-lead</span><span>Generated 2026-10-31T11:41:49Z</span>
+<span>0 errors · 1 warnings</span></div><p>Check that the agent reads the right files, and that the brief describes the source correctly.</p></header>
+<section><h2>Key numbers</h2><div class="tiles"><div class='tile'><b>11</b><span>Files in inbox</span></div><div class='tile'><b>1 / 1</b><span>Duplicates / old versions</span></div><div class='tile'><b>4</b><span>Core files · max 15</span></div><div class='tile'><b>1 / 2 / 4</b><span>Supporting / background / ignore</span></div><div class='tile'><b>164</b><span>Brief words · max 1800</span></div><div class='tile'><b>23</b><span>Evidence claims</span></div></div></section>
+<section><h2>Connections</h2><div class="box"><div class='funnel'><div class='fs' style='--i:0'><b>00_inbox</b><span>11 files</span></div><div class='fs' style='--i:1'><b>Inventory</b><span>1 duplicates, 1 old versions</span></div><div class='fs' style='--i:2'><b>Triage</b><span>4 core, 1 supporting</span></div><div class='fs' style='--i:3'><b>Read plans</b><span>5 files with named parts</span></div><div class='fs' style='--i:4'><b>Evidence</b><span>23 claims</span></div><div class='fs' style='--i:5'><b>Brief</b><span>164 words</span></div></div></div></section>
+<section><h2>Needs attention</h2><ul class='issues'><li class='warn'><span class='sev'>warn</span><span><code>QZ-CP1-001</code> clarify questions not answered yet</span></li></ul></section>
+<section><h2>Reviewer decides</h2><div class="box"><ol class="decide"><li>Is each core file the latest and right version?</li><li>Do the ignored and background files hold nothing the mapping needs?</li><li>Does the brief name the right business objects, grain, and keys?</li></ol></div></section>
+<section><h2>Files</h2><div class='tw'><table><tr><th>file_id</th><th>path</th><th>doc_type</th><th>relevance</th><th>reason</th><th>read_plan</th></tr><tr><td>IF-0001</td><td>00_inbox/01_Overview/CNTRK_solution_overview.docx</td><td>system_overview</td><td>core</td><td>needed for mapping LEGS: grain, tables, legs</td><td>sections: [&#x27;2 Scope&#x27;, &#x27;3 Data model&#x27;, &#x27;3.2 Leg sequence&#x27;]</td></tr><tr><td>IF-0002</td><td>00_inbox/01_Overview/KPI definitions logistics.docx</td><td>business_rules_doc</td><td>core</td><td>needed for mapping LEGS: transit time formula</td><td>sections: [&#x27;5 KPI definitions&#x27;]</td></tr><tr><td>IF-0004</td><td>00_inbox/02_Profiling/CNTRK_profiling_v3_FINAL.xlsx</td><td>profiling_workbook</td><td>core</td><td>needed for mapping LEGS: column-level profile with client confidence</td><td>sheets: [&#x27;LEGS&#x27;]</td></tr><tr><td>IF-0005</td><td>00_inbox/02_Profiling/cntrk_schema_export.sql</td><td>schema_ddl</td><td>core</td><td>needed for mapping LEGS: column list and types</td><td>sections: [&#x27;CREATE TABLE LEGS&#x27;]</td></tr><tr><td>IF-0003</td><td>00_inbox/02_Profiling/CNTRK_profile_report.html</td><td>profiling_html</td><td>supporting</td><td>needed for mapping LEGS: cross-check only where workbook confidence is medium/low</td><td>sections: [&#x27;LEGS summary table&#x27;]</td></tr><tr><td>IF-0006</td><td>00_inbox/03_Workshops/RE_ ETA timezone question.eml</td><td>email_or_chat</td><td>background</td><td>background: read only if Q-0001 (ETA time zone) needs it</td><td></td></tr><tr><td>IF-0007</td><td>00_inbox/03_Workshops/Workshop minutes 2026-09-12.txt</td><td>meeting_notes</td><td>background</td><td>background: read only if Q-0001 (ETA time zone) needs it</td><td></td></tr><tr><td>IF-0008</td><td>00_inbox/Archive/old_drafts/CNTRK_profiling_v1.xlsx</td><td>draft_or_superseded</td><td>ignore</td><td>duplicate or older version</td><td></td></tr><tr><td>IF-0009</td><td>00_inbox/Archive/old_drafts/CNTRK_solution_overview_draft.docx</td><td>draft_or_superseded</td><td>ignore</td><td>duplicate or older version</td><td></td></tr><tr><td>IF-0010</td><td>00_inbox/Misc/Copy of CNTRK_profiling_v3_FINAL.xlsx</td><td>draft_or_superseded</td><td>ignore</td><td>duplicate or older version</td><td></td></tr><tr><td>IF-0011</td><td>00_inbox/Misc/company_logo.png</td><td>unrelated</td><td>ignore</td><td>suggested by inventory signals</td><td></td></tr></table></div></section>
+<footer><span>Full lists: <code>CP1_source_brief.xlsx</code> (Files, Evidence, Questions, Feedback, Clarify). Machine-readable: <code>CP1_source_brief.json</code>. Next: p2-1-doc-profiles, p2-2-bronze-discovery, p2-3-evidence-reconcile.</span>
+
+<span>Feedback: <code>python tools/x_feedback.py new S07_container_moves CP1_source_brief --comment "..."</code></span></footer>
+</main></body></html>

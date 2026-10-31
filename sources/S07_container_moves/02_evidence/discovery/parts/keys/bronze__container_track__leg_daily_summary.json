@@ -1,0 +1,15 @@
+{
+  "table": "bronze.container_track.leg_daily_summary",
+  "keys": [
+    [
+      "DEP_DATE",
+      "FROM_LOC"
+    ]
+  ],
+  "checks": 2,
+  "best": [
+    "DEP_DATE",
+    "FROM_LOC"
+  ],
+  "declared_keys": []
+}

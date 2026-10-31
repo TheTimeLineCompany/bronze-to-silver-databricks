@@ -1,0 +1,162 @@
+# Ontology: the fixed vocabulary for this project.
+# Every agent step and every tool uses these classes, types, and rules.
+# Purpose: keep agents precise when a source folder holds hundreds of files.
+# Change this file only by PR (project lead).
+
+version: 1
+
+# ---------------------------------------------------------------------------
+# 1. Classes (things we talk about) and how they relate
+# ---------------------------------------------------------------------------
+classes:
+  SourceSystem:   {id_pattern: "S[0-9]{2}_[a-z0-9_]+", has: [InputFile, BronzeTable, Checkpoint, Question, Feedback]}
+  InputFile:      {desc: "One file in 00_inbox. Listed by the inventory (IF-0001...).", has: [DocumentType, Relevance]}
+  DocumentType:   {desc: "What kind of file it is. See document_types."}
+  BronzeTable:    {desc: "A table in the bronze schema.", has: [BronzeColumn]}
+  BronzeColumn:   {desc: "A column in a bronze table."}
+  Evidence:       {desc: "One atomic claim with its origin (E-0001...). Lives in 02_evidence/evidence_register.csv.",
+                   about: [BronzeTable, BronzeColumn, Entity, Relationship, BusinessRule, CodeValue],
+                   has: [origin, authority, confidence, status]}
+  Entity:         {desc: "Shared master entity in registry/entities.yaml (Part, Supplier, ...)."}
+  Relationship:   {desc: "A link between two tables or a table and an entity, with cardinality."}
+  BusinessRule:   {desc: "A calculation or decision rule from the business (pricing, savings, KPIs)."}
+  CodeValue:      {desc: "Meaning of a code or status value (for example STATUS_CD = 'A' means active)."}
+  Mapping:        {desc: "The STTM: target tables and columns, each citing Evidence ids."}
+  Question:       {desc: "Open point for the client (Q-0001...). Blocking or not."}
+  Decision:       {desc: "Recorded decision (D-0001...) in registry/decisions.md."}
+  Checkpoint:     {desc: "A human approval point (CP1...CP6). See checkpoints."}
+  Feedback:       {desc: "Human input at a checkpoint (FB-0001...) that drives a rerun."}
+
+# ---------------------------------------------------------------------------
+# 2. Document types found in a source dump (00_inbox)
+#    authority: 1 = strongest. Used to resolve conflicts between documents.
+#    default_relevance: starting point for triage; a person can change it by feedback.
+# ---------------------------------------------------------------------------
+document_types:
+  data_dictionary:      {authority: 2, default_relevance: core,       signals: ["dictionary", "data model", "field list", "column definitions"]}
+  schema_ddl:           {authority: 2, default_relevance: core,       signals: [".sql", "create table", "ddl", "schema export"]}
+  profiling_workbook:   {authority: 3, default_relevance: core,       signals: [".xlsx with sheets per table", "null %", "distinct", "confidence"]}
+  profiling_html:       {authority: 3, default_relevance: supporting, signals: [".html", "profile report", "statistics"]}
+  system_overview:      {authority: 3, default_relevance: core,       signals: ["overview", "architecture", "solution design"]}
+  business_rules_doc:   {authority: 2, default_relevance: core,       signals: ["calculation", "formula", "pricing logic", "kpi definition"]}
+  process_deck:         {authority: 4, default_relevance: supporting, signals: [".pptx", "process", "workflow", "training"]}
+  interface_spec:       {authority: 3, default_relevance: supporting, signals: ["interface", "feed", "api", "file layout"]}
+  sample_extract:       {authority: 4, default_relevance: supporting, signals: [".csv", "sample", "extract"]}
+  meeting_notes:        {authority: 5, default_relevance: background, signals: ["minutes", "notes", "mom", "workshop"]}
+  email_or_chat:        {authority: 5, default_relevance: background, signals: [".msg", ".eml", "email", "teams export"]}
+  draft_or_superseded:  {authority: 6, default_relevance: ignore,     signals: ["draft", "old", "v0", "copy of", "backup", "archive"]}
+  unrelated:            {authority: 9, default_relevance: ignore,     signals: ["other system", "logo", "template only"]}
+
+# Bronze data itself is the strongest evidence for structure (keys, nulls, formats).
+# It is not evidence for MEANING or BUSINESS RULES; documents are.
+evidence_origins:
+  bronze_profile:  {authority: 1, proves: [key_uniqueness, nullability, format, cardinality, row_counts]}
+  document:        {authority: "from document_types", proves: [meaning, business_rule, code_value, grain, relationship]}
+  client_answer:   {authority: 1, proves: [anything], note: "An answered Question in registry/open_questions.yaml, or a clarify answer the client confirmed"}
+  team_knowledge:  {authority: 3, proves: [meaning, business_rule, code_value, grain, relationship],
+                    note: "What a team member said in a clarify session (x-clarify). Medium at most; needs one corroboration."}
+
+# ---------------------------------------------------------------------------
+# 3. Relevance levels (triage) and reading rules
+# ---------------------------------------------------------------------------
+relevance:
+  core:       "Read the parts listed in read_plan. Extract evidence."
+  supporting: "Read only to confirm or fill a gap named in the brief."
+  background: "Do not read unless a person or a question points to it."
+  ignore:     "Never read. Duplicates, superseded versions, unrelated files."
+
+reading_rules:
+  - "Agents never read 00_inbox as a whole. They read 01_intake/manifest.md, then only files triaged core or supporting, and only the pages or sheets in read_plan."
+  - "One version per document group. Older versions are 'ignore' unless a person says otherwise."
+  - "Downstream steps (P2 onward) read 01_intake/source_brief.md and evidence_register.csv, not the inbox."
+  - "If a needed fact is missing from the brief, add it as new Evidence with its origin. Do not re-read everything."
+
+discovery_budgets:              # P2.2 bronze discovery (tools/p2_2_discover.py). Keeps cost and agent context small.
+  max_tables: 200               # per source; narrow with sources.yaml discovery.include
+  sample_rows: 200000           # profiles run on a sample of this size
+  max_pattern_columns: 12       # letter/digit shapes for the most key-like short string columns
+  low_cardinality_max: 50       # top values only for columns with at most this many distinct values
+  max_topk_columns: 15
+  topk: 20
+  key_pool_size: 8              # columns allowed in composite-key search
+  max_key_size: 4               # largest composite key tested (SAP schedule lines: MANDT+EBELN+EBELP+ETENR)
+  max_key_checks: 25            # exact full-table uniqueness checks per table
+  key_max_null_pct: 1.0
+  min_link_score: 0.3           # name/shape score needed before a containment check
+  max_link_checks: 400          # containment checks per source
+  link_batch_size: 25           # checks per parallel task
+  max_fk_columns: 3             # composite foreign keys: largest referenced key tested (e.g. MANDT+EBELN+EBELP)
+  composite_min_name_score: 0.5 # each component of a composite link needs a similar name (keeps the search small)
+  composite_options: 2          # best dependent columns tried per component
+  max_composite_link_checks: 100
+  link_dep_sample_rows: 500000  # dependent side may be sampled; a subset of an FK is still contained
+  fk_containment_high: 0.98     # >= : foreign key
+  fk_containment_low: 0.80      # >= : partial link (orphans), card for an agent
+  domain_jaccard_min: 0.6       # shared code values between low-cardinality columns
+  reference_max_rows: 1000
+  card_max_columns: 30          # columns shown on one agent card
+  lineage_days: 90              # system.access lineage window
+  related_min_shared_keys: 2    # wider search: a table outside the schema sharing >= 2 key column names
+  related_min_score: 2.0
+  max_related: 20               # R-cards at most
+  related_value_checks: 5       # value-overlap checks for the best related candidates
+
+budgets:
+  max_core_files: 15            # check_triage fails above this; a person can raise it per source by feedback
+  source_brief_max_words: 1800  # the brief must stay short
+  evidence_claim_max_words: 40  # one claim = one short sentence
+
+# ---------------------------------------------------------------------------
+# 4. Confidence (for Evidence, including rows from profiling workbooks)
+# ---------------------------------------------------------------------------
+confidence:
+  high:    "Usable alone, unless bronze profiling contradicts it."
+  medium:  "Needs one corroboration: bronze profiling OR a second independent document with authority <= 3."
+  low:     "A hypothesis only. Must be verified in bronze profiling or answered by the client before it supports a key, FK, grain, or business rule."
+  unknown: "Treat as low."
+
+confidence_rules:      # enforced by tools/p4_2_validate_sttm.py
+  - "A PK, BK, or FK column cannot rest only on low/unknown-confidence evidence."
+  - "A business_logic column cannot rest only on low/unknown-confidence evidence."
+  - "If bronze profiling contradicts a document, bronze wins for structure; raise a Question for meaning."
+
+evidence_status: [unverified, corroborated, confirmed_by_bronze, contradicted, superseded]
+
+# ---------------------------------------------------------------------------
+# 5. Phases, checkpoints, handovers
+# ---------------------------------------------------------------------------
+# Folder per phase (folder number = phase number). P3 is global (registry/).
+phase_folders: {P1: 01_intake, P2: 02_evidence, P4: 04_mapping, P5: 05_build, P6: 06_handoff}
+
+# Checkpoint pack: written by tools/x_checkpoint_pack.py into <phase folder>/checkpoint/ (global: registry/checkpoint/).
+# The .json holds SHA-1 hashes of its inputs; x_validate_gate.py refuses an approval with a missing or stale pack.
+checkpoint_pack:
+  json: "machine-readable: next skill, agents, a Delta table, an API"
+  xlsx: "README sheet (key numbers, issues, decisions) + one sheet per list, filters on"
+  md:   "one-page text summary for the PR and Git history"
+  html: "one page, no tabs: status, key numbers, connections, needs attention, reviewer decides, one key table"
+
+phases:
+  P0: {name: Setup,                 scope: once}
+  P1: {name: Intake and focus,      scope: per source}
+  P2: {name: Discovery and evidence, scope: per source}
+  P3: {name: Central model,         scope: global}
+  P4: {name: Mapping,               scope: per source}
+  P5: {name: Build,                 scope: per source}
+  P6: {name: Handoff,               scope: per source}
+
+checkpoints:
+  CP1_source_brief:     {phase: P1, scope: source, approver: phase1-lead}
+  CP2_evidence:         {phase: P2, scope: source, approver: phase1-lead}
+  CP3_central_model:    {phase: P3, scope: global, approver: data-architect}
+  CP3b_key_rules:       {phase: P3, scope: global, approver: data-architect}
+  CP4_sttm:             {phase: P4, scope: source, approver: phase1-lead}
+  CP4b_business_logic:  {phase: P4, scope: source, approver: client-sme}
+  CP5_code_qa:          {phase: P5, scope: source, approver: phase2-lead}
+  CP6_handoff:          {phase: P6, scope: source, approver: deployment-lead}
+
+handovers:
+  H1: {after: [CP4_sttm, CP4b_business_logic], from: phase1-team, to: phase2-team,
+       package: ["04_mapping/sttm.yaml (approved)", "04_mapping/exports/", "02_evidence/evidence_register.csv", "04_mapping/reviews/", "04_mapping/checkpoint/"]}
+  H2: {after: [CP6_handoff], from: phase2-team, to: deployment-team,
+       package: ["05_build/ notebooks + job", "05_build/qa_results/summary.json", "06_handoff/readiness.md", "04_mapping/exports/"]}

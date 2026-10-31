@@ -1,0 +1,361 @@
+{
+  "table": "bronze.container_track.legs",
+  "row_count": 2738,
+  "sample_rows": 2738,
+  "profiled_at": "2026-10-31T10:56:24.063889+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.legs",
+      "column": "CNTR_NO",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 792,
+      "distinct_ratio": 0.2893,
+      "min": "MSCU 103082-1",
+      "max": "MSCU9996936",
+      "min_len": 11,
+      "max_len": 13,
+      "avg_len": 11.1,
+      "patterns": [
+        "AAAA9999999",
+        "AAAA 999999-9"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "SHPMT_ID",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 1516,
+      "distinct_ratio": 0.5537,
+      "min": "S000000",
+      "max": "S001499",
+      "min_len": 7,
+      "max_len": 7,
+      "avg_len": 7.0,
+      "patterns": [
+        "A999999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "LEG_NO",
+      "type": "int",
+      "family": "int",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 3,
+      "distinct_ratio": 0.0011,
+      "min": "1",
+      "max": "3",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": [
+        [
+          "1",
+          1500
+        ],
+        [
+          "2",
+          916
+        ],
+        [
+          "3",
+          322
+        ]
+      ]
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "FROM_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 20,
+      "distinct_ratio": 0.0073,
+      "min": "AEJEA",
+      "max": "usnyc",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA",
+        "aaaaa"
+      ],
+      "topk": [
+        [
+          "KRPUS",
+          298
+        ],
+        [
+          "CNSHA",
+          287
+        ],
+        [
+          "DEHAM",
+          279
+        ],
+        [
+          "NLRTM",
+          272
+        ],
+        [
+          "BEANR",
+          262
+        ],
+        [
+          "USNYC",
+          262
+        ],
+        [
+          "SGSIN",
+          259
+        ],
+        [
+          "GBFXT",
+          259
+        ],
+        [
+          "USLAX",
+          253
+        ],
+        [
+          "AEJEA",
+          237
+        ],
+        [
+          "krpus",
+          9
+        ],
+        [
+          "usnyc",
+          9
+        ],
+        [
+          "beanr",
+          9
+        ],
+        [
+          "sgsin",
+          8
+        ],
+        [
+          "gbfxt",
+          7
+        ],
+        [
+          "nlrtm",
+          7
+        ],
+        [
+          "cnsha",
+          6
+        ],
+        [
+          "aejea",
+          5
+        ],
+        [
+          "deham",
+          5
+        ],
+        [
+          "uslax",
+          5
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "TO_LOC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 10,
+      "distinct_ratio": 0.0037,
+      "min": "AEJEA",
+      "max": "USNYC",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AAAAA"
+      ],
+      "topk": [
+        [
+          "BEANR",
+          297
+        ],
+        [
+          "KRPUS",
+          292
+        ],
+        [
+          "NLRTM",
+          281
+        ],
+        [
+          "CNSHA",
+          278
+        ],
+        [
+          "GBFXT",
+          274
+        ],
+        [
+          "USLAX",
+          272
+        ],
+        [
+          "AEJEA",
+          266
+        ],
+        [
+          "SGSIN",
+          266
+        ],
+        [
+          "DEHAM",
+          260
+        ],
+        [
+          "USNYC",
+          252
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "ATD_TS",
+      "type": "bigint",
+      "family": "int",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 2093,
+      "distinct_ratio": 0.7644,
+      "min": "1767405600",
+      "max": "1788152400",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "ATA_TS",
+      "type": "bigint",
+      "family": "int",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 2144,
+      "distinct_ratio": 0.7831,
+      "min": "1767693600",
+      "max": "1789534800",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "ETA_TS",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 2325,
+      "distinct_ratio": 0.8492,
+      "min": "01/02/2026 11:00",
+      "max": "31/07/2026 22:00",
+      "min_len": 10,
+      "max_len": 16,
+      "avg_len": 11.8,
+      "patterns": [
+        "9999999999",
+        "99/99/9999 99:99"
+      ],
+      "topk": [],
+      "kinds": {
+        "text_ts": 0.302
+      }
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "IS_DELETED",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 1,
+      "distinct_ratio": 0.0004,
+      "min": "N",
+      "max": "N",
+      "min_len": 1,
+      "max_len": 1,
+      "avg_len": 1.0,
+      "patterns": [
+        "A"
+      ],
+      "topk": [
+        [
+          "N",
+          2738
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "CARRIER_REF",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 2738,
+      "null_pct": 55.551,
+      "approx_distinct": 675,
+      "distinct_ratio": 0.5546,
+      "min": "CR100",
+      "max": "CR999",
+      "min_len": 5,
+      "max_len": 5,
+      "avg_len": 5.0,
+      "patterns": [
+        "AA999"
+      ],
+      "topk": [],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.legs",
+      "column": "_ingest_ts",
+      "type": "timestamp",
+      "family": "date",
+      "sample_rows": 2738,
+      "null_pct": 0.0,
+      "approx_distinct": 1,
+      "distinct_ratio": 0.0004,
+      "min": "2026-09-01 05:30:00",
+      "max": "2026-09-01 05:30:00",
+      "min_len": null,
+      "max_len": null,
+      "avg_len": null,
+      "patterns": [],
+      "topk": []
+    }
+  ]
+}

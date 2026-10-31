@@ -1,0 +1,38 @@
+# Feedback item. Save as sources/<id>/<phase folder>/feedback/<checkpoint>/FB-xxxx.yaml
+# phase folder: CP1 01_intake, CP2 02_evidence, CP4/CP4b 04_mapping, CP5 05_build, CP6 06_handoff
+# (global checkpoints CP3/CP3b: registry/feedback/<checkpoint>/FB-xxxx.yaml)
+# Fill ANY mix of the kinds below. Leave the others null.
+id: FB-0000
+source_id: S00_example            # or: global
+checkpoint: CP4_sttm              # CP1_source_brief | CP2_evidence | CP3_central_model | CP3b_key_rules | CP4_sttm | CP4b_business_logic | CP5_code_qa | CP6_handoff
+raised_by: <name>
+raised_on: '2026-01-01T00:00:00Z'
+target:                           # what the feedback is about (optional but helpful)
+  artifact: 04_mapping/sttm.yaml
+  location: tables[0].columns.eta_ts
+
+# --- kinds -------------------------------------------------------------
+comment: >                        # natural language
+  <what is wrong or missing, and what you expect>
+include_paths:                    # files or folders the agent must read (relative to the source folder)
+  - 00_inbox/03_Workshops/
+ignore_paths:                     # files or folders the agent must not use
+  - 00_inbox/Archive/
+code: |                           # a snippet to use (PySpark, SQL, or a transform expression)
+  F.to_utc_timestamp(F.to_timestamp("ETA_TS", "dd/MM/yyyy HH:mm"), F.col("port_tz"))
+data:                             # a data slice to check or use
+  - table: bronze.container_track.legs
+    filter: ETA_TS like '%/%'
+    columns: [CNTR_NO, LEG_NO, ETA_TS]
+    note: these rows use the text format
+attachments:                      # new files; put them in <phase folder>/feedback/<checkpoint>/attachments/
+  - 04_mapping/feedback/CP4_sttm/attachments/port_timezones.xlsx
+answer:                           # an answer to an open question
+  question: Q-0001
+  text: Text ETA is local port time.
+
+# --- control -----------------------------------------------------------
+rerun_from: null                  # optional skill name; default = first step of the checkpoint
+status: open                      # open -> in_progress -> applied -> verified | rejected
+response: null                    # agent fills: {summary, changed, applied_on}
+verified_by: null                 # the person who checks the change

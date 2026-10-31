@@ -1,0 +1,242 @@
+{
+  "checkpoint": "CP6_handoff",
+  "source_id": "S07_container_moves",
+  "phase": "P6",
+  "title": "Handoff",
+  "purpose": "Check that the deployment package is complete.",
+  "approver": "deployment-lead",
+  "status": "pending",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "Handover H2 -> deployment team",
+  "inputs": {
+    "registry/sources.yaml": "05ddcee8287a1fb38ce5695e22fd544d1de149d6"
+  },
+  "metrics": [
+    {
+      "label": "Checkpoints approved",
+      "value": "0 / 8",
+      "note": ""
+    },
+    {
+      "label": "Deliverables present",
+      "value": "3 / 7",
+      "note": ""
+    },
+    {
+      "label": "Feedback items (all)",
+      "value": 2,
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "chain",
+    "caption": "Checkpoint status for this source",
+    "steps": [
+      [
+        "CP1",
+        "pending"
+      ],
+      [
+        "CP2",
+        "pending"
+      ],
+      [
+        "CP3",
+        "pending"
+      ],
+      [
+        "CP3b",
+        "pending"
+      ],
+      [
+        "CP4",
+        "pending"
+      ],
+      [
+        "CP4b",
+        "pending"
+      ],
+      [
+        "CP5",
+        "pending"
+      ],
+      [
+        "CP6",
+        "pending"
+      ]
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "item": "05_build/qa_results/summary.json",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "04_mapping/reviews/sttm_review.md",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "05_build/reviews/code_review.md",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "06_handoff/readiness.md",
+      "text": "missing"
+    },
+    {
+      "severity": "error",
+      "item": "FB-0001",
+      "text": "feedback open at CP2_evidence"
+    },
+    {
+      "severity": "error",
+      "item": "Q-0001",
+      "text": "blocking question open"
+    }
+  ],
+  "decide": [
+    "Can the deployment team run the job from this package alone?",
+    "Are known limits and non-blocking questions acceptable for go-live?",
+    "Are grants and parameters per environment clear?"
+  ],
+  "key_table": "Deliverables",
+  "tables": {
+    "Checkpoints": {
+      "columns": [
+        "checkpoint",
+        "status"
+      ],
+      "rows": [
+        [
+          "CP1_source_brief",
+          "pending"
+        ],
+        [
+          "CP2_evidence",
+          "pending"
+        ],
+        [
+          "CP3_central_model",
+          "pending"
+        ],
+        [
+          "CP3b_key_rules",
+          "pending"
+        ],
+        [
+          "CP4_sttm",
+          "pending"
+        ],
+        [
+          "CP4b_business_logic",
+          "pending"
+        ],
+        [
+          "CP5_code_qa",
+          "pending"
+        ],
+        [
+          "CP6_handoff",
+          "pending"
+        ]
+      ]
+    },
+    "Deliverables": {
+      "columns": [
+        "deliverable",
+        "present"
+      ],
+      "rows": [
+        [
+          "04_mapping/sttm.yaml",
+          true
+        ],
+        [
+          "04_mapping/exports/sttm.xlsx",
+          true
+        ],
+        [
+          "04_mapping/exports/er.mmd",
+          true
+        ],
+        [
+          "05_build/qa_results/summary.json",
+          false
+        ],
+        [
+          "04_mapping/reviews/sttm_review.md",
+          false
+        ],
+        [
+          "05_build/reviews/code_review.md",
+          false
+        ],
+        [
+          "06_handoff/readiness.md",
+          false
+        ]
+      ]
+    },
+    "Feedback history": {
+      "columns": [
+        "id",
+        "checkpoint",
+        "status",
+        "comment"
+      ],
+      "rows": [
+        [
+          "FB-0003",
+          "CP1_source_brief",
+          "proposed",
+          "T-006: Brief says grain key CNTR_NO + SHPMT_ID + LEG_NO; bronze shows SHPMT_ID + LEG_NO is the minimal unique key (one container per shipment in this data). Confirm with the client which one defines a"
+        ],
+        [
+          "FB-0001",
+          "CP2_evidence",
+          "open",
+          "ETA_TS: the workshop notes say the text format comes from the manual entry screen in local port time. Use the port time zone from the locations table."
+        ]
+      ]
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0001",
+          true,
+          "open",
+          "client-logistics-sme",
+          "LEGS.ETA_TS has two formats (epoch seconds and 'DD/MM/YYYY HH24:MI'). Which time zone does the text format use?",
+          ""
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "error": 6
+  }
+}

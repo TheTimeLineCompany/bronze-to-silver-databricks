@@ -1,0 +1,92 @@
+{
+  "checkpoint": "CP4b_business_logic",
+  "source_id": "S01_buyer_master",
+  "phase": "P4",
+  "title": "Business logic",
+  "purpose": "The business expert checks each calculated value and its formula.",
+  "approver": "client-sme",
+  "status": "not_required",
+  "generated_at": "2026-10-31T11:41:51Z",
+  "next_step": "Handover H1 -> p5-1-pyspark-codegen",
+  "inputs": {
+    "sources/S01_buyer_master/04_mapping/sttm.yaml": "5f8935e64a8ecfc2d0a0e0b22c1a7fff6e4182a1",
+    "sources/S01_buyer_master/02_evidence/evidence_register.csv": "77f349f77a439dee7c53084591689ecce0a13a2d",
+    "registry/ontology/business.yaml": "db15071448a251edde91d64a110ca8ef6626aa31"
+  },
+  "metrics": [
+    {
+      "label": "Business-logic columns",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "Rules still 'proposed'",
+      "value": 0,
+      "note": ""
+    },
+    {
+      "label": "SME sign-off",
+      "value": "missing",
+      "note": ""
+    }
+  ],
+  "connections": {
+    "kind": "flows",
+    "caption": "Business rule -> silver column -> formula",
+    "flows": []
+  },
+  "issues": [
+    {
+      "severity": "info",
+      "item": "scope",
+      "text": "no business-logic columns: CP4b can be 'not_required'"
+    }
+  ],
+  "decide": [
+    "Is each formula the one the business uses (units, rounding, time zone)?",
+    "Are the inputs the right fields?",
+    "Who owns each rule after go-live?"
+  ],
+  "key_table": "Business logic",
+  "tables": {
+    "Business logic": {
+      "columns": [],
+      "rows": []
+    },
+    "Questions": {
+      "columns": [
+        "id",
+        "blocking",
+        "status",
+        "owner",
+        "question",
+        "answer"
+      ],
+      "rows": [
+        [
+          "Q-0002",
+          false,
+          "answered",
+          "client-procurement-sme",
+          "Is BUYER_ID re-used after a buyer leaves the company?",
+          "No. IDs are never re-used."
+        ]
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        "id",
+        "status",
+        "raised_by",
+        "kinds",
+        "comment",
+        "file"
+      ],
+      "rows": []
+    }
+  },
+  "handover_files": [],
+  "counts": {
+    "info": 1
+  }
+}

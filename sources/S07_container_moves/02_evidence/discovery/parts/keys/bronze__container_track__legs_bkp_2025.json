@@ -1,0 +1,55 @@
+{
+  "table": "bronze.container_track.legs_bkp_2025",
+  "keys": [
+    [
+      "SHPMT_ID",
+      "LEG_NO"
+    ],
+    [
+      "SHPMT_ID",
+      "ETA_TS"
+    ],
+    [
+      "SHPMT_ID",
+      "FROM_LOC"
+    ],
+    [
+      "SHPMT_ID",
+      "TO_LOC"
+    ],
+    [
+      "SHPMT_ID",
+      "ATD_TS"
+    ],
+    [
+      "SHPMT_ID",
+      "ATA_TS"
+    ],
+    [
+      "CNTR_NO",
+      "ETA_TS"
+    ],
+    [
+      "CNTR_NO",
+      "ATD_TS"
+    ],
+    [
+      "CNTR_NO",
+      "ATA_TS"
+    ],
+    [
+      "ATD_TS",
+      "ETA_TS"
+    ],
+    [
+      "FROM_LOC",
+      "ATD_TS"
+    ]
+  ],
+  "checks": 25,
+  "best": [
+    "SHPMT_ID",
+    "LEG_NO"
+  ],
+  "declared_keys": []
+}

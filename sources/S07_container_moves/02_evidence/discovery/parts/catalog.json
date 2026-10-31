@@ -1,0 +1,56 @@
+[
+  {
+    "table": "bronze.container_track.carrier_contacts",
+    "row_count": 12,
+    "n_columns": 5,
+    "columns": "OWNER:string, CONTACT_NAME:string, EMAIL_ADDR:string, TEL:string, ROLE_TXT:string"
+  },
+  {
+    "table": "bronze.container_track.container_types",
+    "row_count": 5,
+    "n_columns": 2,
+    "columns": "TYPE_CD:string, TYPE_DESC:string"
+  },
+  {
+    "table": "bronze.container_track.containers",
+    "row_count": 800,
+    "n_columns": 4,
+    "columns": "CNTR_NO:string, TYPE_CD:string, OWNER:string, BUILD_YEAR:int"
+  },
+  {
+    "table": "bronze.container_track.leg_daily_summary",
+    "row_count": 1571,
+    "n_columns": 4,
+    "columns": "DEP_DATE:date, FROM_LOC:string, N_LEGS:bigint, AVG_TRANSIT_DAYS:decimal(32,11)"
+  },
+  {
+    "table": "bronze.container_track.legs",
+    "row_count": 2738,
+    "n_columns": 11,
+    "columns": "CNTR_NO:string, SHPMT_ID:string, LEG_NO:int, FROM_LOC:string, TO_LOC:string, ATD_TS:bigint, ATA_TS:bigint, ETA_TS:string, IS_DELETED:string, CARRIER_REF:string, _ingest_ts:timestamp"
+  },
+  {
+    "table": "bronze.container_track.legs_bkp_2025",
+    "row_count": 300,
+    "n_columns": 11,
+    "columns": "CNTR_NO:string, SHPMT_ID:string, LEG_NO:int, FROM_LOC:string, TO_LOC:string, ATD_TS:bigint, ATA_TS:bigint, ETA_TS:string, IS_DELETED:string, CARRIER_REF:string, _ingest_ts:timestamp"
+  },
+  {
+    "table": "bronze.container_track.locations",
+    "row_count": 10,
+    "n_columns": 4,
+    "columns": "LOC_CD:string, LOC_NAME:string, COUNTRY_CD:string, TZ_NAME:string"
+  },
+  {
+    "table": "bronze.container_track.shipments",
+    "row_count": 1500,
+    "n_columns": 6,
+    "columns": "SHPMT_ID:string, BOOKING_DT:date, ORIGIN_LOC:string, DEST_LOC:string, CUSTOMER:string, BOOKED_FROM:string"
+  },
+  {
+    "table": "bronze.container_track.user_logins",
+    "row_count": 2000,
+    "n_columns": 5,
+    "columns": "USER_ID:string, LOGIN_TS:timestamp, IP_ADDR:string, USER_AGENT:string, SESSION_ID:string"
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "table": "bronze.container_track.container_types",
+  "row_count": 5,
+  "sample_rows": 5,
+  "profiled_at": "2026-10-31T10:56:07.485539+00:00",
+  "columns": [
+    {
+      "table": "bronze.container_track.container_types",
+      "column": "TYPE_CD",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 5,
+      "null_pct": 0.0,
+      "approx_distinct": 5,
+      "distinct_ratio": 1.0,
+      "min": "20GP",
+      "max": "45HC",
+      "min_len": 4,
+      "max_len": 4,
+      "avg_len": 4.0,
+      "patterns": [
+        "99AA"
+      ],
+      "topk": [
+        [
+          "40HC",
+          1
+        ],
+        [
+          "20GP",
+          1
+        ],
+        [
+          "40GP",
+          1
+        ],
+        [
+          "45HC",
+          1
+        ],
+        [
+          "20RF",
+          1
+        ]
+      ],
+      "kinds": {}
+    },
+    {
+      "table": "bronze.container_track.container_types",
+      "column": "TYPE_DESC",
+      "type": "string",
+      "family": "str",
+      "sample_rows": 5,
+      "null_pct": 0.0,
+      "approx_distinct": 5,
+      "distinct_ratio": 1.0,
+      "min": "20ft general",
+      "max": "45ft high cube",
+      "min_len": 11,
+      "max_len": 14,
+      "avg_len": 12.6,
+      "patterns": [
+        "99aa aaaa aaaa",
+        "99aa aaaaaaa",
+        "99aa aaaaaa"
+      ],
+      "topk": [
+        [
+          "40ft high cube",
+          1
+        ],
+        [
+          "20ft general",
+          1
+        ],
+        [
+          "40ft general",
+          1
+        ],
+        [
+          "20ft reefer",
+          1
+        ],
+        [
+          "45ft high cube",
+          1
+        ]
+      ],
+      "kinds": {}
+    }
+  ]
+}

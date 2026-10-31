@@ -1,0 +1,115 @@
+{
+  "name": "discover_S07_container_moves",
+  "max_concurrent_runs": 1,
+  "parameters": [
+    {
+      "name": "repo_path",
+      "default": "/Workspace/Repos/<user>/silver-modelling"
+    },
+    {
+      "name": "source_id",
+      "default": "S07_container_moves"
+    }
+  ],
+  "tasks": [
+    {
+      "task_key": "catalog",
+      "notebook_task": {
+        "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+        "base_parameters": {
+          "stage": "catalog+meta"
+        }
+      }
+    },
+    {
+      "task_key": "list_tables",
+      "depends_on": [
+        {
+          "task_key": "catalog"
+        }
+      ],
+      "notebook_task": {
+        "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+        "base_parameters": {
+          "stage": "emit-tables"
+        }
+      }
+    },
+    {
+      "task_key": "profile_and_keys",
+      "depends_on": [
+        {
+          "task_key": "list_tables"
+        }
+      ],
+      "for_each_task": {
+        "inputs": "{{tasks.list_tables.values.tables}}",
+        "concurrency": 8,
+        "task": {
+          "task_key": "profile_and_keys_iter",
+          "notebook_task": {
+            "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+            "base_parameters": {
+              "stage": "profile+keys",
+              "table": "{{input}}"
+            }
+          }
+        }
+      }
+    },
+    {
+      "task_key": "plan_links",
+      "depends_on": [
+        {
+          "task_key": "profile_and_keys"
+        }
+      ],
+      "notebook_task": {
+        "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+        "base_parameters": {
+          "stage": "plan-links"
+        }
+      }
+    },
+    {
+      "task_key": "links",
+      "depends_on": [
+        {
+          "task_key": "plan_links"
+        }
+      ],
+      "for_each_task": {
+        "inputs": "{{tasks.plan_links.values.batches}}",
+        "concurrency": 8,
+        "task": {
+          "task_key": "links_iter",
+          "notebook_task": {
+            "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+            "base_parameters": {
+              "stage": "links",
+              "batch": "{{input}}"
+            }
+          }
+        }
+      }
+    },
+    {
+      "task_key": "model_and_cards",
+      "depends_on": [
+        {
+          "task_key": "links"
+        }
+      ],
+      "notebook_task": {
+        "notebook_path": "{{job.parameters.repo_path}}/tools/discovery/run_task",
+        "base_parameters": {
+          "stage": "model+cards"
+        }
+      }
+    }
+  ],
+  "tags": {
+    "phase": "P2",
+    "source_id": "S07_container_moves"
+  }
+}
