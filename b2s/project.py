@@ -54,7 +54,7 @@ def init_project(root: str | Path, name: str, workers: list | None = None) -> La
     if layout.project_yaml.exists():
         raise FileExistsError(f"project exists: {layout.project_yaml}")
     cfg = {"name": name, "framework_version": FRAMEWORK_VERSION, "created": now_iso(), "workers": workers or [],
-           "approvers": [],   # names allowed in approval statements; empty = any name except agent names
+           "approvers": [],   # account e-mails allowed to approve; empty = the account of the session
            "settings": DEFAULT_SETTINGS, "approval_points": DEFAULT_APPROVAL_POINTS}
     atomic_write(layout.project_yaml, dump_yaml(cfg))
     src = FRAMEWORK_ROOT / "registry_template"

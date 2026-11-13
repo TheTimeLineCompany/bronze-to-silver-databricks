@@ -78,7 +78,7 @@ def test_approval_statement_rules(app):
     req = request(app, APP, "CP2")
     assert req["template"] == ("I, <your name>, approve CP2 app_brief.v001, dependencies.v001, process.v001, "
                                "conceptual.v001, scope.v002.")
-    assert "To approve, copy and complete" in req["chat_text"]
+    assert "sign with your name" in req["chat_text"]
     with pytest.raises(ApprovalError, match="your name"):
         record(app, APP, req["id"], req["template"])
     with pytest.raises(ApprovalError, match="not an approval statement"):

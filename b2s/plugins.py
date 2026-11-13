@@ -21,7 +21,7 @@ from pathlib import Path
 
 import yaml
 
-from . import FRAMEWORK_ROOT, versions
+from . import FRAMEWORK_ROOT, identity, versions
 from .layout import Layout, guard_write
 from .store import atomic_write, dump_json, emit_event, now_iso, sha256_file
 
@@ -169,7 +169,8 @@ def activate(layout: Layout, name: str, statement: str) -> dict:
         raise ApprovalError(f"the statement must name PLUGIN and {name}.v{m['version']}")
     v = versions.save(layout, layout.plugins_dir / name / "activation", "json",
                       {"name": name, "version": str(m["version"]), "slot": m["slot"], "statement": statement,
-                       "name_in_statement": st["name"], "at": now_iso()}, reason="PLUGIN")
+                       "name_in_statement": st["name"], "account": identity.account()["email"], "at": now_iso()},
+                      reason="PLUGIN")
     emit_event(layout, "approval_recorded", via="chat", note=f"PLUGIN {name}",
                extra={"statement": statement, "point": "PLUGIN", "approval_mode": "self"})
     return {"active": True, "activation": v.label}

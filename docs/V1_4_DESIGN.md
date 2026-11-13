@@ -140,7 +140,8 @@ and dark. Status never by colour alone. Status: **verified locally**.
 
 - The agent runs `b2s approve request`, shows the chat text; the template is pre-filled except the name: `I, <your name>, approve CP3 logical.v004.`
 - The worker's reply is passed **verbatim on stdin** (`--statement-file -`), never through shell quoting.
-- Refused: no name, an agent name (Genie, assistant, …), a name not in `project.yaml approvers` (when set), a wrong point or version, a file changed after the request, an undecided item.
+- The typed name is a **signature**. The account e-mail of the session (Databricks `current_user()`, display name from the SDK) is always recorded with it; a signature that differs from the account is recorded and shown in the handoff, not refused.
+- Refused: no name, an agent name (Genie, assistant, …), an account not in `project.yaml approvers` (when set), a wrong point or version, a file changed after the request, an undecided item.
 - One worker per application, no maker-checker: the handoff states that it is self-approved and quotes the statement.
 - Status: **verified locally**.
 

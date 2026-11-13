@@ -31,4 +31,7 @@ CP3b (key rules) and CP4b (business logic) stay as in V1.3 for now.
 - Treat "OK", "yes", "looks good", a thumbs-up or silence as an approval.
 - Edit a request file or an approval item.
 
+The worker's name in the statement is a **signature**. The tool records the account e-mail of the session next to it,
+whatever name is typed; a name that differs from the account is recorded and shown in the handoff, not refused.
+
 A reply with changes instead of an approval is an input: create an `IN-` item and route it (`@x-input`).

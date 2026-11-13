@@ -3,6 +3,8 @@
 Genie runs `request(...)`, shows `chat_text` (it ends with the statement template), and passes the worker's reply
 VERBATIM to `record(...)`. The worker types only their name; the template already names the point and the file
 versions:   I, <your name>, approve CP3 logical.v004.
+The typed name is the worker's signature. The account e-mail of the session (b2s.identity) is recorded with it
+in every approval, whatever name is typed.
 The request keeps the exact file versions and hashes; `record` refuses when a file changed after the request.
 """
 from __future__ import annotations
@@ -10,7 +12,7 @@ from __future__ import annotations
 import html
 import re
 
-from . import items, versions
+from . import identity, items, versions
 from .layout import Layout
 from .project import approval_points, config as _config
 from .steps import OUTPUT_TO_STEP, ext_of
@@ -203,6 +205,7 @@ def request(layout: Layout, app: str, point: str) -> dict:
 
 
 def template(point: str, labels: list[str], decisions: list[dict]) -> str:
+    """The worker signs with their name in place of <your name>; the account e-mail is recorded by the tool."""
     lines = [f"I, <your name>, approve {point} {', '.join(labels)}."]
     lines += [f"{d['id']}: {d['default']}" for d in decisions]
     return "\n".join(lines)
@@ -219,7 +222,8 @@ def chat_text(req: dict, layout: Layout) -> str:
         dec = f"\n> Open: {len(req['decisions'])} item(s) to decide — pre-filled below, change any you disagree with."
     page = f"review/approvals/{req['id']}.html"
     return (f"> **Approval {req['point']} — {req['name']}, {req['app']}**\n{files}{ch}{dec}\n> Page: `{page}`\n>\n"
-            f"> To approve, copy and complete:\n\n```\n{req['template']}\n```\n\nOr reply with changes, or \"later\".")
+            f"> To approve, sign with your name and send (change a pre-filled decision if you disagree):\n\n```\n{req['template']}\n```"
+            f"\n\nOr reply with changes, or \"later\".")
 
 
 def _page(req: dict) -> str:
@@ -257,9 +261,9 @@ def parse_statement(text: str) -> dict:
         raise ApprovalError("the reply is not an approval statement. Copy the template: I, <your name>, approve <point> <files>.")
     name = m["name"].strip()
     if "<" in name or not re.search(r"[A-Za-z]", name):
-        raise ApprovalError("the statement needs your name in place of <your name>")
+        raise ApprovalError("sign the statement with your name in place of <your name>")
     if name.lower().strip(" .") in AGENT_NAMES:
-        raise ApprovalError(f"'{name}' is an agent, not a person: the worker approves with their own name")
+        raise ApprovalError(f"'{name}' is an agent, not a person: sign with your own name")
     decisions = {}
     for l in lines[1:]:
         d = _DEC.match(l)
@@ -280,9 +284,10 @@ def record(layout: Layout, app: str, request_id: str, statement: str, *, how: st
     if approvals_for_request(layout, app, request_id):
         raise ApprovalError(f"request {request_id} was already approved")
     st = parse_statement(statement)
+    acc = identity.account()          # recorded with the signature, whatever name is typed
     allowed = [a.lower() for a in (_config(layout).get("approvers") or [])]
-    if allowed and st["name"].lower() not in allowed:
-        raise ApprovalError(f"'{st['name']}' is not an approver of this project (project.yaml approvers)")
+    if allowed and acc["email"].lower() not in allowed:
+        raise ApprovalError(f"{acc['email']} is not an approver of this project (project.yaml approvers)")
     rest = st["rest"].lower()
     if not (re.search(rf"\b{re.escape(point.lower())}\b", rest) or cfg["name"].lower() in rest):
         raise ApprovalError(f"the statement must name the approval point ({point} or '{cfg['name']}')")
@@ -318,12 +323,15 @@ def record(layout: Layout, app: str, request_id: str, statement: str, *, how: st
             decided[d["id"]] = allowed[val]
     apr = items.create(layout, app, "approval", {
         "point": point, "request": request_id, "statement": statement, "name_in_statement": st["name"], "how": how,
+        "account": {"email": acc["email"], "name": acc["name"], "source": acc["source"]},
+        "signature_matches_account": identity.matches(st["name"], acc),
         "approval_mode": "self", "files": {s: {"version": f["version"], "hash": f["hash"], "supporting": f["supporting"]}
                                             for s, f in req["files"].items()},
         "decisions": decided}, via="chat" if how == "chat" else "notebook", step=point)
     emit_event(layout, "approval_recorded", app=app, items=[apr["id"], request_id], note=point,
                via="chat" if how == "chat" else "notebook",
-               extra={"statement": statement, "name_in_statement": st["name"], "how": how, "approval_mode": "self",
+               extra={"statement": statement, "name_in_statement": st["name"], "account": acc["email"],
+                      "how": how, "approval_mode": "self",
                       "files": {s: f["label"] for s, f in req["files"].items()}})
     _apply_decisions(layout, app, kind, decided, apr["id"])
     result = {"approval": apr, "decisions": decided}

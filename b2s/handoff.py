@@ -83,7 +83,8 @@ def build_handoff(layout: Layout, app: str, apr: dict) -> str:
         "",
         "## Handoff statement",
         "",
-        f"**Self-approved** by {apr['name_in_statement']} (workspace user `{apr['created']['by']}`) on {apr['created']['at']}, "
+        f"**Self-approved**, signed '{apr['name_in_statement']}' from the account `{(apr.get('account') or {}).get('email') or apr['created']['by']}`"
+        f"{'' if apr.get('signature_matches_account', True) else ' (the signature is not the account name)'} on {apr['created']['at']}, "
         f"in the {apr['how']}. There is no maker-checker in team 1: team 2 is the first second pair of eyes.",
         "",
         f"> {apr['statement'].strip().splitlines()[0]}",

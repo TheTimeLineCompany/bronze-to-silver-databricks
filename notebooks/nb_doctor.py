@@ -26,10 +26,8 @@ dbutils.widgets.text("base_table", "", "K-04: its base table (schema.table), opt
 import os, sys
 sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 sys.path.insert(0, os.path.abspath(".."))
-try:
-    os.environ["B2S_USER"] = spark.sql("SELECT current_user() u").collect()[0]["u"]
-except Exception:
-    pass
+from b2s import identity
+identity.from_workspace(spark)            # account e-mail and display name, never typed
 os.environ["B2S_VIA"] = "notebook"
 os.environ["B2S_RUN_BY"] = dbutils.widgets.get("run_by")
 from b2s import FRAMEWORK_VERSION, doctor

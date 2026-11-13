@@ -89,14 +89,27 @@ def test_agent_names_are_refused(cp2_ready):
         record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "Genie"))
 
 
-def test_approver_list(cp2_ready):
+def test_approver_list_is_by_account(cp2_ready, monkeypatch):
     cfg = yaml.safe_load(cp2_ready.project_yaml.read_text(encoding="utf-8"))
-    cfg["approvers"] = ["Jane Doe"]
+    cfg["approvers"] = ["worker@example.com"]
     cp2_ready.project_yaml.write_text(yaml.safe_dump(cfg), encoding="utf-8")
     req = request(cp2_ready, APP, "CP2")
+    monkeypatch.setenv("B2S_USER", "someone.else@example.com")
     with pytest.raises(ApprovalError, match="not an approver"):
-        record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "John Roe"))
-    record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "jane doe"))
+        record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "Jane Doe"))
+    monkeypatch.setenv("B2S_USER", "worker@example.com")
+    record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "Jane Doe"))
+
+
+def test_signature_is_recorded_with_the_account(cp2_ready, monkeypatch):
+    """The typed name is a signature; the account e-mail is always recorded, and a different name is not refused."""
+    monkeypatch.setenv("B2S_USER_NAME", "Worker One")
+    req = request(cp2_ready, APP, "CP2")
+    assert "<your name>" in req["template"]
+    record(cp2_ready, APP, req["id"], req["template"].replace("<your name>", "J. Doe"))
+    apr = items.list_items(cp2_ready, APP, "approval")[-1]
+    assert apr["name_in_statement"] == "J. Doe" and apr["account"]["email"] == "worker@example.com"
+    assert apr["account"]["name"] == "Worker One" and apr["signature_matches_account"] is False
 
 
 def test_request_file_holds_data_only(cp2_ready):

@@ -20,10 +20,6 @@ import os, sys
 sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 FRAMEWORK = os.path.abspath("..")
 sys.path.insert(0, FRAMEWORK)
-try:
-    os.environ["B2S_USER"] = spark.sql("SELECT current_user() u").collect()[0]["u"]
-except Exception:
-    pass
 os.environ["B2S_VIA"] = "genie" if dbutils.widgets.get("run_by") == "genie" else "notebook"
 for lib_name in ("yaml",):
     __import__(lib_name)          # libraries come from the serverless environment of this notebook (DB-04)

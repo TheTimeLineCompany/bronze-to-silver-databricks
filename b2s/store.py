@@ -59,9 +59,10 @@ def now_iso() -> str:
 
 # --------------------------------------------------------------------------- identity
 def current_user() -> str:
-    """The workspace user. In a Databricks notebook the setup cell sets B2S_USER from current_user();
-    locally it falls back to the OS user. Never typed by a person."""
-    return os.environ.get("B2S_USER") or getpass.getuser()
+    """The account e-mail of this session (b2s.identity: notebook setup, Databricks SDK, or the OS user locally).
+    Never typed by a person."""
+    from .identity import account
+    return account()["email"]
 
 
 def current_via(default: str = "tool") -> str:
