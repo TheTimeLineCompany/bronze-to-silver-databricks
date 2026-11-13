@@ -1,140 +1,73 @@
 # Bronze-to-Silver Databricks
 
-**An agent-assisted framework for moving many source systems from the bronze layer to a clean, modelled silver layer on Databricks.**
-Medallion architecture, done as a repeatable process: automated data discovery and profiling on Unity Catalog, an ontology that keeps
-30+ sources coherent, source-to-target mapping (STTM) as code, PySpark generation, QA, and human checkpoints with feedback loops.
+**An agent-run framework that moves the backend tables of many applications from the bronze layer to a modelled
+silver layer on Databricks.** Genie Code runs the steps — notebooks included — and the worker gives input and
+approves checkpoints in the chat. All project state is plain files in a workspace folder; no tables are needed.
 
-[![pr-checks](../../actions/workflows/pr-checks.yml/badge.svg)](../../actions/workflows/pr-checks.yml)
-![License](https://img.shields.io/badge/license-Apache--2.0-blue)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![Databricks](https://img.shields.io/badge/Databricks-Unity%20Catalog%20%7C%20Genie%20Code-orange)
+Version: see [`FRAMEWORK_VERSION`](FRAMEWORK_VERSION) · Design: [`docs/V1_4_DESIGN.md`](docs/V1_4_DESIGN.md) ·
+Changes: [`CHANGELOG.md`](CHANGELOG.md)
 
-> Keywords: Databricks, Unity Catalog, lakehouse, medallion architecture (bronze, silver, gold), Delta Lake, PySpark, data modelling,
-> data discovery, data profiling, foreign key discovery, data lineage, source-to-target mapping (STTM), ER model, ontology,
-> master data management, survivorship, SCD Type 2, data quality, PII detection, data governance, AI agents, agentic data engineering,
-> Databricks Genie Code, LLM, supply chain.
-
----
-
-## Why this exists
-
-Bronze-to-silver work across many source systems fails in the same places every time:
-
-- **The input dump is huge.** Hundreds of documents, profiling workbooks, schema exports, and emails per source. People and agents drown in it.
-- **Nobody knows what the bronze tables really are.** Which table is a master, a transaction line, an aggregate, a backup copy, or an application log? What is the grain? Which columns join?
-- **Thirty sources use thirty vocabularies.** "Vendor", "supplier", and "provider" end up as three silver tables.
-- **Logs and personal data leak into silver.** Login times, IP addresses, session ids, emails, and phone numbers sit in business tables.
-- **The mapping and the code drift apart.** The STTM lives in a spreadsheet, the code is hand-written, and QA is a checklist nobody runs.
-- **Reviews are approve or reject.** There is no structured way to say "redo this with that file" and have the right steps rerun.
-
-This framework turns that into a process with code where code is reliable, agents where judgement is needed, and people at checkpoints.
-
-## What you get
-
-| Capability | How |
-|---|---|
-| **Automated bronze discovery** | Unity Catalog metadata first (`information_schema`, tags, masks, declared PK/FK, `SHOW STATISTICS`, `DESCRIBE HISTORY`), lineage system tables (`system.access.table_lineage`, `column_lineage`), then sampled profiling, minimal unique keys (composite, SAP-style), foreign-key discovery by value containment, table roles, grain, and lineage order. Never `SELECT *` on a whole table. |
-| **Scope and privacy by name AND content** | Each column is classified from its name, the share of values that look like email, phone, IP, user agent, URL, JSON, UUID, or token, and its Unity Catalog tags. Application logs, audit columns, and secrets stay out of silver; personal data needs explicit handling (keep tagged, mask, or hash). Sensitive values are removed before anything is written to disk. |
-| **Three-layer ontology** | Business (objects, synonyms, relationships, rules), data (classes, load patterns, keys), information (documents, evidence, confidence, phases). Every silver column traces back to evidence and its origin. |
-| **STTM as code** | `sttm.yaml` with a JSON Schema and a validator: keys, FKs (incl. composite), cardinality, history rules, provenance, scope, privacy. Exports to Excel and Mermaid ER. |
-| **PySpark generation** | Safe-to-rerun notebook generator, shared key normalisation, SCD2 with late-arriving data, unknown members, survivorship for shared masters, and Unity Catalog publishing (comments, tags, masks, informational PK/FK). |
-| **QA as code** | The client's QA checklist mapped to `lib/qa_checks.py`; a checkpoint cannot pass with a missing check. |
-| **Human checkpoints with packs** | CP1 to CP6, each with one HTML page, an Excel workbook, JSON, and a text summary. Packs know their inputs by hash, so a stale pack blocks approval. |
-| **Interactive input loop** | Type an instruction, give feedback, or upload a file at any point. Each input is checked against all three ontology layers, an agent asks only the questions that matter, and the input is routed to the steps that must use it. |
-| **Feedback and upstream issues** | Feedback items (comment, paths, code, data slice, attachments, answer) drive targeted reruns. Later phases raise issues back to earlier phases instead of working around them. |
-| **Agent-ready** | Built for Databricks Genie Code skills (`SKILL.md`) and `AGENTS.md`; a card runner can answer discovery cards in parallel on a model serving endpoint. Works with any agent that can read files and run Python. |
-
-## The process
-
+## The sequence
 ```
-P0 Setup ─ P1 Intake ─(CP1)─ P2 Discovery & evidence ─(CP2)─ P3 Central model ─(CP3, CP3b)─
-           P4 Mapping (STTM) ─(CP4, CP4b)─ H1 ─ P5 Build & QA ─(CP5)─ P6 Handoff ─(CP6)─ H2
+P0 Setup ─ P1 Bronze baseline ─(CP1)─ P2 Documents, application understanding, scope ─(CP2)─
+           P3 Central model ─(CP3)─ P4 STTM ─(CP4)─ H1 ─ P5 Build and QA ─(CP5 auto)─ P6 Release ─(CP6 auto)─ H2
 ```
 
-| Phase | Agents do | Code does | People do |
+| Step | What happens | Run by | Skill |
 |---|---|---|---|
-| P1 Intake | triage the dump, write a short source brief with evidence | inventory, duplicates, versions, budgets | confirm the files to read (CP1) |
-| P2 Discovery | answer one decision card per chat | metadata, lineage, profiling, keys, links, roles, scope, privacy | check roles, scope, personal data (CP2) |
-| P3 Central model | propose change requests | ontology coherence checks | approve objects and key rules (CP3, CP3b) |
-| P4 Mapping | write `sttm.yaml` | validate, export Excel + ER | approve mapping and business logic (CP4, CP4b) |
-| P5 Build | complete generated notebooks | generate, run QA | approve code and QA (CP5) |
-| P6 Handoff | write the readiness report | check completeness | approve the handoff (CP6) |
+| P0 | Project folder, framework pin; **first use: the client's own notebooks and templates are integrated** as plug-ins | agent | `@p0-setup`, `@fw-integrate` |
+| P1 | Bronze baseline: inventory, column profiles, grain and keys, open points (client profiler plug-in if integrated) | agent runs `nb_p1_baseline` | `@p1-baseline` |
+| CP1 | Decision per open point | worker, in the chat | `@x-approve` |
+| P2.1 | Documents: inventory, triage, redacted extracts | agent runs `nb_p2_documents` | `@p2-1-triage` |
+| P2.2 | Documents compared with the baseline | agent | `@p2-2-compare` |
+| P2.2b | What the application does: app brief, dependencies, process and conceptual models (Glean conceptual first) | agent | `@p2-2b-understand` |
+| P2.3, P2.4 | Scope and privacy proposal, column meanings; questions never block | agent | `@p2-3-scope` |
+| CP2 | Brief, models and scope | worker, in the chat | `@x-approve` |
+| P3 | Central model: logical silver model | agent | `@p3-logical` |
+| CP3 | Central model — required before P4 | worker, in the chat | `@x-approve` |
+| P4 | STTM: draft from the approved model, validate, review, export with the client template | agent | `@p4-sttm` |
+| CP4 → H1 | STTM approved; handoff package for the build | worker, in the chat | `@x-approve` |
+| P5 | PySpark notebooks from the STTM, shared masters, QA on dev silver, code review | agent | `@p5-1-codegen`, `@p5-4-masters`, `@p5-2-qa`, `@p5-3-code-review` |
+| CP5, CP6 | Automatic checks (no person) | framework | `python -m b2s cp-auto` |
+| P6 → H2 | Readiness package for deployment | agent | `@p6-1-release` |
 
-A picture of the whole flow: [`docs/process_map.html`](docs/process_map.html). The full explanation: [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md).
-Step-by-step set up and daily use, skill by skill: [`docs/OPERATIONS.md`](docs/OPERATIONS.md).
+The worker starts with **`@b2s-run`** in the Genie chat. The agent reads the status, runs the next step, asks for
+checkpoints, and reruns what became stale after new input.
 
-## Quick start
+## What makes it reliable
+- **Files only, safe:** every state file is written once with its version in the name (`logical.v004.yaml`) and a sidecar that names the input versions it was made from. Events record who did what, and how (`run_by: genie | person`).
+- **Stale detection:** new input, a new version or a framework change marks dependent outputs stale; the status shows why and what to rerun.
+- **Checkpoints in the chat:** `I, Jane Doe, approve CP3 logical.v004.` The template is pre-filled; the tool refuses a changed file, a wrong version, a missing name. One worker per application, no maker-checker: the handoff says so.
+- **Mermaid is the record:** every model has YAML (truth), Mermaid, and an HTML viewer that is checked to match the Mermaid (no overlapping boxes, readable contrast).
+- **Privacy:** values of personal-data, secret, log and free-text columns are removed before anything is written.
+- **Glean conceptual first:** what the application does and depends on, before any column; raw replies saved first.
+- **Plug-ins:** client notebooks and templates come in through slots with contract tests (`@fw-integrate`).
 
-### Try it locally (no Databricks needed)
+## Quick start (local, no Databricks)
 ```bash
-git clone https://github.com/TheTimeLineCompany/bronze-to-silver-databricks.git
-cd bronze-to-silver-databricks
 pip install -r requirements-ci.txt
-python -m pytest -q tests/                      # ~110 tests; Spark tests skip without pyspark
-python tools/x_navigator.py S07_container_moves  # where the example source is, and the next step
+python -m pytest                                    # the whole suite
+python -m b2s.demo.walkthrough /tmp/b2s-demo        # fake application, bronze to handoff
 ```
-With `pyspark` installed, `RUN_SPARK=1 python -m pytest -q tests/` also runs bronze discovery end to end on a fake
-container-tracking schema (with an application log table, a contact table with personal data, and SAP-style composite keys).
+Open `/tmp/b2s-demo/proj/apps/S90_yardops/work/P3/models/logical.v001.html` to see the model viewer.
 
-### Use it on Databricks
-1. Add this repository as a **Git folder** in your workspace.
-2. In Genie Code: **Settings → Add folder → `<Git folder>/skills`**. Genie Code reads `AGENTS.md` automatically.
-3. Open the notebook **`00_start_here`**, set **action** to `setup-check`, and click **Run all**. It must print `SETUP OK`.
-4. Add a source with action `new-source` (source id + bronze schema). Put the documents in `sources/<id>/00_inbox/` as they are.
-5. Set **action** to `next` and follow the page. It tells you when a step is code (it runs it), an agent (it shows what to type in Genie Code), or a person (what to review).
-6. Give input any time: `give-instruction`, `give-feedback`, or upload files to `sources/<id>/uploads/` and run `register-uploads`.
+## On Databricks
+1. Add this repository (a release) as a Git folder in the workspace. Workers do not commit to it.
+2. Genie Code: add the `skills/` folder; Genie reads `AGENTS.md`.
+3. In the Genie chat: `@p0-setup` (first use integrates your profiler notebook and STTM templates), then `@b2s-run`.
 
-Unity Catalog grants: read-only on bronze for phases P1 to P4; write only to a dev silver schema in P5.
-
-## Adapt it to your organisation
-| File | Put in your own |
-|---|---|
-| `registry/ontology/business.yaml` | business objects, synonyms, abbreviations, relationships, business rules |
-| `registry/entities.yaml`, `registry/key_normalisation.yaml` | shared master entities, key formats, survivorship |
-| `standards/` | naming, coding, QA checklist, privacy tags and mask function |
-| `registry/ontology/information.yaml` | document types, confidence rules, discovery budgets |
-| `.github/CODEOWNERS.example` | copy to `.github/CODEOWNERS` with your approver teams |
-
-The example sources (`S01_buyer_master`, `S07_container_moves`), documents, bronze data, and entities are **fictional** and use a supply-chain domain. Replace them with yours.
-
-## Repository map
+## Repository
 | Path | What |
 |---|---|
-| `00_start_here.py` | entry notebook: status, next step, run code steps, instructions, feedback, uploads, clarify |
-| `AGENTS.md` | always-on rules for agents |
-| `skills/` | 17 agent skills, one per step (`SKILL.md` + templates + references) |
-| `sources/<id>/` | one folder per source: `00_inbox` → `01_intake` → `02_evidence` → `04_mapping` → `05_build` → `06_handoff` |
-| `registry/` | ontology, entities, key rules, source status, questions, decisions, feedback board |
-| `tools/` | discovery (`p2_2_discover.py`, `discovery/`), validators, generators, checkpoint packs, feedback, navigator, input check, clarify |
-| `lib/` | PySpark library: keys, load patterns (SCD2), QA checks, survivorship, Unity Catalog publish |
-| `schemas/`, `standards/` | STTM JSON Schema; naming, coding, QA, privacy |
-| `tests/` | validator, discovery, and Spark tests, plus a fake bronze fixture |
-| `.github/` | PR check workflow, PR template, CODEOWNERS example |
-
-## Design principles
-- **Code for guarantees, agents for judgement, people for approval.** Every gate is a script, not a prompt.
-- **Never read everything.** A funnel for documents and budgets for bronze profiling keep cost and context small.
-- **Evidence for every mapping.** Bronze wins for structure, documents win for meaning, a client answer wins for both.
-- **Ask, do not guess.** Unknown names, conflicts, and new concepts become short questions; "I don't know" becomes a client question.
-- **Personal data never reaches a file.** Only ratios and shapes are stored for sensitive columns.
-
-## Method and references
-Data profiling: Abedjan, Golab, Naumann, *Profiling relational data: a survey* (VLDB Journal, 2015) and *Data Profiling* (2018);
-key discovery (HCA/DUCC), inclusion dependencies (SPIDER, MIND/BINDER), foreign-key ranking (Rostin et al., 2009; Zhang et al., 2010).
-Grain and table roles: Kimball & Ross, *The Data Warehouse Toolkit*, 3rd ed.
-Databricks documentation: `information_schema`, lineage system tables, `SHOW STATISTICS`, `DESCRIBE HISTORY`, table constraints,
-data classification, column masks, Genie Code skills. Details: [`skills/p2-2-bronze-discovery/references/methods.md`](skills/p2-2-bronze-discovery/references/methods.md).
-
-## Status and limits
-- Version 2.4. Tested with local Spark 3.5 and pure-Python validators. The Unity Catalog metadata and lineage code degrades safely when a view or privilege is missing, and needs a real workspace for a full run.
-- Column classification and input analysis are rule-based heuristics. They narrow the questions; a person confirms scope and personal data at CP2.
-- Genie Code has no documented hooks or sub-agents; enforcement uses scripts, PR checks, CODEOWNERS, and Unity Catalog grants.
-
-## Contributing
-Issues and pull requests are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+| `AGENTS.md`, `rules/` | rules for Genie Code |
+| `skills/` | one skill per step, `@b2s-run`, `@x-approve`, `@x-research`, `@x-input`, `@x-model-view`, `@fw-integrate` |
+| `notebooks/` | `00_start_here`, `nb_p1_baseline`, `nb_p2_documents`, `nb_p5_qa` (run by the agent) |
+| `b2s/` | the framework package (`python -m b2s ...`) |
+| `lib/`, `standards/` | PySpark runtime library and client standards used by the generated silver notebooks |
+| `plugins/` | core plug-ins (defaults for each slot) |
+| `registry_template/` | ontology and registries copied into a new project |
+| `tests/` | unit, flow and end-to-end tests |
+| `docs/` | design, port guide for V1.3 code, review notes |
 
 ## License
-Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
-
-*This is an independent open-source project. It is not affiliated with, endorsed by, or sponsored by Databricks, Inc.
-"Databricks", "Unity Catalog", "Delta Lake", and "Genie" are trademarks of their owners.*
+Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). Not affiliated with Databricks, Inc.

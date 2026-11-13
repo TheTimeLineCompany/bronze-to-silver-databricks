@@ -1,30 +1,26 @@
 # Contributing
 
-Thank you for helping. This project is used on real bronze-to-silver programmes, so changes must keep the gates reliable.
+The framework lives in Git and is changed by a small group of **maintainers**. Workers download a release into their
+Databricks workspace and do not commit to it. Their improvements come back as **contribution packages**
+(`@fw-integrate` worker mode → `contrib/<name>-<version>-<date>.zip`) or as feedback.
 
-## Before you open a pull request
-1. `pip install -r requirements-ci.txt` (add `pyspark==3.5.*` for the Spark tests).
-2. Run all checks:
-   ```bash
-   python -m pytest -q tests/                  # add RUN_SPARK=1 for the discovery tests
-   python tools/x_ontology_check.py            # must print ONTOLOGY COHERENT
-   python tools/p4_2_validate_sttm.py --all
-   python tools/x_validate_gate.py             # must print CHECKPOINTS CONSISTENT
-   ```
-3. If you change a tool that writes example outputs, regenerate them (`python tools/x_checkpoint_pack.py <source> --all`, `... global --all`, `... board`).
-4. Keep `AGENTS.md` under 20,000 characters (the Genie Code limit).
+## Maintainers: before you open a pull request
+1. `pip install -r requirements-ci.txt`
+2. `python -m pytest` — the whole suite, including the end-to-end run of the fake application and the privacy scan.
+3. `python -m b2s.demo.walkthrough <empty folder>` — must end with the handoff.
+4. A framework change that changes what a step produces: bump that step's `version` in `b2s/steps.py` (it marks old outputs stale) and `FRAMEWORK_VERSION`, and add a line to `CHANGELOG.md`.
+5. Keep `AGENTS.md` under 6,000 characters (a test checks it); details go to `rules/`.
+
+## Integrating a contribution package (`@fw-integrate` maintainer mode)
+1. Unpack it; run its contract test (`b2s.plugins.contract_test`) and the full suite.
+2. Move it to `plugins/` with `origin: core`, or merge it into an existing core plug-in.
+3. A new slot needs a contract in `b2s/plugins.py` (`SLOTS`), a contract test, a design note, and a test.
 
 ## Rules
-- **No real data.** Examples, fixtures, and test data must be fictional. Never commit client documents, bronze extracts, or personal data.
-- **Guarantees go in code.** A new rule an agent must follow needs a validator or gate check and a test, not only a sentence in a skill.
+- **No real data.** Examples, fixtures and sample outputs must be fictional. Never commit client documents, bronze extracts or personal data.
+- **Guarantees go in code.** A rule an agent must follow needs a check and a test, not only a sentence in a skill.
+- **The V1.3 sequence stays** (P0–P6, CP1–CP6). Upgrades go inside the steps.
 - **Write plainly.** Docs and skills use short sentences in simple technical English (ASD-STE100 style).
-- One topic per pull request. Describe what changed and how you tested it.
-
-## Good first contributions
-- Value-kind patterns for more personal-data types (national ids, IBAN, addresses) with tests.
-- More source-system examples (fictional): ERP, WMS, TMS, CRM.
-- Adapters for other agent runtimes (the discovery card runner, the clarify step).
-- Translations of the checkpoint pack labels.
 
 ## Reporting security or privacy issues
-Do not open a public issue for a problem that could expose personal data. Contact the maintainers privately through GitHub.
+Do not open a public issue for a problem that could expose personal data. Contact the maintainers privately.

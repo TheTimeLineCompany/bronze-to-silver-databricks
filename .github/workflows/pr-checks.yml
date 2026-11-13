@@ -1,15 +1,4 @@
-# GitHub Actions PR check (ready to use in this location).
-# For Azure DevOps, run the same commands in a pipeline step.
-#
-# This is the deterministic part of every checkpoint. A PR cannot merge if
-#  - the tool tests fail,
-#  - the three ontology layers or any STTM are not coherent,
-#  - any STTM fails the validator,
-#  - a source's triage / brief / evidence register breaks the information rules,
-#  - a checkpoint in registry/sources.yaml is approved too early, without evidence, with open feedback or
-#    upstream issues, or with a missing or stale checkpoint pack.
-# Pair it with branch protection (required check + required reviewers from CODEOWNERS).
-
+# Checks for every change to the framework (maintainers). Workers do not commit; their project folders are not here.
 name: pr-checks
 on:
   pull_request:
@@ -18,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  validate:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,21 +15,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements-ci.txt
-      - name: Tool tests
-        run: python -m pytest -q tests/
-      - name: Ontology coherence (business -> data -> information)
-        run: python tools/x_ontology_check.py
-      - name: Validate every STTM
-        run: python tools/p4_2_validate_sttm.py --all
-      - name: Context checks for sources that have a triage file
-        run: |
-          for d in sources/*/01_intake/triage.yaml; do
-            [ -e "$d" ] || continue
-            sid=$(basename "$(dirname "$(dirname "$d")")")
-            python tools/p1_2_check_context.py "$sid"
-          done
-      - name: Checkpoint order, evidence, feedback, upstream issues, and fresh checkpoint packs
-        run: python tools/x_validate_gate.py --next
-      - name: Feedback overview (information only)
-        if: always()
-        run: python tools/x_feedback.py list --open
+      - name: Tests (store, steps, checkpoints, models, viewer, baseline, documents, STTM, build, release, plug-ins)
+        run: python -m pytest
+      - name: Walkthrough of the fake application, bronze to handoff
+        run: python -m b2s.demo.walkthrough "$RUNNER_TEMP/demo"

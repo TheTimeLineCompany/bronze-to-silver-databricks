@@ -1,14 +1,13 @@
 ## What changes
-Source: `S__` · Checkpoint: `CP__` · Phase folder: `0_`
+Step(s): `P_._` · Checkpoint(s): `CP_` · Slot / plug-in (if any): `____`
 
-## Checkpoint pack
-- [ ] I ran `python tools/x_checkpoint_pack.py <source> <CP>` after the last change (the PR check fails on a stale pack).
-- [ ] Reviewer: open `<phase folder>/checkpoint/<CP>.html` first.
+## Checks
+- [ ] `python -m pytest` passes.
+- [ ] `python -m b2s.demo.walkthrough <folder>` ends with the handoff.
+- [ ] Step `version` bumped in `b2s/steps.py` when a step's output changes (old outputs become stale on purpose).
+- [ ] `FRAMEWORK_VERSION` and `CHANGELOG.md` updated.
+- [ ] No real data in fixtures, samples or docs.
 
-## Feedback and upstream issues
-- [ ] Feedback for this checkpoint is verified or rejected (`python tools/x_feedback.py list <source>`).
-- [ ] No upstream issue that blocks this checkpoint is still proposed or open.
-
-## Approval (only when this PR approves a checkpoint)
-- [ ] `registry/sources.yaml`: status `approved`, `approved_by`, `date`, `pr` filled in.
-- [ ] Review file `Result: PASS` (CP4, CP4b, CP5).
+## For a contribution package from a worker
+- [ ] Contract test passes on the package's sample output.
+- [ ] Moved to `plugins/` with `origin: core` (or merged into the core plug-in of the slot).
