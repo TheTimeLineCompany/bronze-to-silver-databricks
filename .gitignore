@@ -2,3 +2,7 @@ __pycache__/
 .pytest_cache/
 spark-warehouse/
 *.bak
+
+# Owner screenshots and review inputs stay local (never committed)
+docs/V1_3_review_inputs/
+*.png
