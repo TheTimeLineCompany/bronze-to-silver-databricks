@@ -1,0 +1,9 @@
+name: sttm_export_excel_default
+slot: sttm_export_excel
+version: 1.0.0
+origin: core
+entry: adapter.py:export
+author: framework maintainers
+description: >
+  Default STTM Excel export. Placeholder until the client STTM Excel template is integrated with @fw-integrate.
+  Sheets: Tables, Mapping, Open items.

@@ -49,7 +49,8 @@ def staging_spec(t: dict) -> dict:
 
 
 def rules(entity: str, path: str | None = None) -> dict:
-    path = path or os.path.join(_ROOT, "registry", "key_normalisation.yaml")
+    from lib.paths import registry_file
+    path = path or registry_file("key_normalisation.yaml")
     with open(path, encoding="utf-8") as f:
         return ((yaml.safe_load(f) or {}).get("survivorship") or {}).get(entity) or {}
 
@@ -143,8 +144,8 @@ def build_master(spark, entity: str, catalog: str, schema: str, feeding: dict, b
     from functools import reduce
     from pyspark.sql import functions as F
     from lib.load_patterns import load
-    root = root or _ROOT
-    with open(os.path.join(root, "registry", "entities.yaml"), encoding="utf-8") as f:
+    from lib.paths import registry_file
+    with open(registry_file("entities.yaml", root), encoding="utf-8") as f:
         ent = next(e for e in yaml.safe_load(f)["entities"] if e["name"] == entity)
     spec = master_spec(ent, list(feeding.values()))
     sk = (spec.get("surrogate_key") or {}).get("column")
@@ -159,7 +160,7 @@ def build_master(spark, entity: str, catalog: str, schema: str, feeding: dict, b
                 df = df.withColumn(a, F.lit(None))
         frames.append(df.select(*bk, *attrs, "_src_id", "_src_changed_ts"))
     staged = reduce(lambda x, y: x.unionByName(y), frames)
-    m = survive(staged, bk, attrs, rules(entity, os.path.join(root, "registry", "key_normalisation.yaml")))
+    m = survive(staged, bk, attrs, rules(entity, registry_file("key_normalisation.yaml", root)))
     if sk:
         of = (spec.get("surrogate_key") or {}).get("of") or bk
         m = m.withColumn(sk, F.sha2(F.concat_ws("|", *[F.col(c).cast("string") for c in of]), 256))

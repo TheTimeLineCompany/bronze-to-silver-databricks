@@ -1,37 +1,28 @@
 ---
 name: p5-3-code-review
-description: Step P5.3. Independent code review of one source's notebooks and Job in a NEW chat against the approved STTM, client coding and naming standards, and QA results, and write sources/<id>/05_build/reviews/code_review.md with Result PASS or FAIL. Use after p5-2-qa-runner passes, never in the chat that wrote the code.
+description: Step P5.3. Review the generated and completed notebooks against the approved STTM and the coding standards, in a NEW chat (never review your own work in the same chat), and write the review with a verdict. Use after P5.2 QA passed.
 ---
 
-# P5.3 Code review (phase P5, checkpoint CP5_code_qa)
+# P5.3 Code review (new chat)
 
-## Important
-New chat only. Report problems; do not fix them in the review chat.
+## Read
+`build/index` (notebook versions, run order), each notebook version it lists, the approved STTM (`sttm/sttm` at the CP4 version), `standards/coding.md`, `qa/results`.
 
-## Inputs
-`05_build/` notebooks and job, `05_build/qa_results/summary.json`, approved `04_mapping/sttm.yaml`, `standards/`, `lib/`.
+## Check
+- Every TODO(genie) cell does what the STTM says: filters, dedup, derived columns, business rules (cite the rule id).
+- `bronze_count` is the row count after filter + dedup; no row is lost or duplicated by a join.
+- No GENERATED cell was changed; no REVIEW block is left.
+- Keys use `lib.keys.normalise`; foreign keys use `lib.keys.lookup_sk`; no own trim/upper/lpad.
+- Personal-data columns follow the privacy handling of CP2; no value of a sensitive column is printed or written.
+- Writes go to the dev silver schema only.
 
-## Checklist
-- [ ] Every `# GENERATED` cell is unchanged (compare with a fresh `p5_1_gen_notebook.py` output).
-- [ ] Each STTM column, join, filter, and dedup rule is in the code, exactly.
-- [ ] Each business-logic column matches the CP4b sign-off formula and names its BR id.
-- [ ] Lookups use the current master row and the registry key rule; orphan policy as in the STTM.
-- [ ] Load pattern from `lib/load_patterns.py` matches the STTM; no hand-written merge logic.
-- [ ] Naming and coding standards: widgets, no hard-coded catalog, no `collect()` on large data, comments on rules.
-- [ ] QA summary: all pass, every checklist item present, no threshold changed.
-- [ ] Job: one task per notebook, masters first, retries and timeout set.
-- [ ] Applied CP5 feedback items are really in the code.
-
-## Output
-`05_build/reviews/code_review.md` from `../p4-3-sttm-review/templates/review.md`, exactly one line `Result: PASS` or `Result: FAIL`.
-Findings can also become feedback items: `python tools/x_feedback.py new <id> CP5_code_qa --comment "..."`.
-
-## Checkpoint pack (last step of the phase)
-Run `python tools/x_checkpoint_pack.py <id> CP5_code_qa`.
-It writes `.xlsx`, `.json`, `.md`, and `.html` into the phase's `checkpoint/` folder. The reviewer opens the `.html` first.
-Run it again after every change: the checkpoint check fails when the pack is stale.
-
-## When the problem belongs to an earlier phase
-Do not work around it. Raise it, and continue with the rest:
-`python tools/x_feedback.py raise <id> <earlier CP> --step p5-3-code-review --comment "..." --blocks CP5_code_qa`
-A person accepts or rejects it. Your checkpoint stays blocked until it is resolved.
+## Write
+`build/code_review.md`, saved with `python -m b2s save <app> build/code_review <file> --reason "review" --via genie`:
+```
+# Code review — <app>
+Index: build/index.vNNN
+Verdict: pass            (or: Verdict: changes needed)
+## Findings
+- <notebook>: <finding> -> <what to change>
+```
+CP5 passes only with `Verdict: pass` on a review of the current index. Then `python -m b2s cp-auto <app> CP5`.

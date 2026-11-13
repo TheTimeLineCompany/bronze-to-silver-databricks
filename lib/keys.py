@@ -26,7 +26,8 @@ UNKNOWN_SK = hashlib.sha256(UNKNOWN_BK.encode("utf-8")).hexdigest()
 
 @lru_cache(maxsize=1)
 def rules(path: str | None = None) -> dict:
-    path = path or os.path.join(_ROOT, "registry", "key_normalisation.yaml")
+    from lib.paths import registry_file
+    path = path or registry_file("key_normalisation.yaml")
     with open(path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 

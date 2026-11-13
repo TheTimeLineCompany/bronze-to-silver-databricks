@@ -37,7 +37,8 @@ def _res(check, table, ok, metric=None, threshold=None, evidence=""):
 
 def entity_tables(catalog: str, schema: str, root: str | None = None) -> dict:
     """{entity name: catalog.schema.target_table} for every shared master in registry/entities.yaml."""
-    with open(os.path.join(root or _ROOT, "registry", "entities.yaml"), encoding="utf-8") as f:
+    from lib.paths import registry_file
+    with open(registry_file("entities.yaml", root), encoding="utf-8") as f:
         return {e["name"]: f"{catalog}.{schema}.{e['target_table']}" for e in yaml.safe_load(f)["entities"]}
 
 
