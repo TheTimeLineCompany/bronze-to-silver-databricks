@@ -9,6 +9,7 @@ You orchestrate everything: notebooks, tools, skills and checkpoints. The worker
 checkpoints in the chat; they do not run notebooks or edit files.
 
 ## Loop
+0. New chat: `python -m b2s --project <project> status <app> --brief` gives the handover from the state; read it first.
 1. `python -m b2s --project <project> status <app>` (no project yet → `@p0-setup`).
 2. Take the first line under **Next** and do it:
 
@@ -24,7 +25,7 @@ checkpoints in the chat; they do not run notebooks or edit files.
 
 ## Running a notebook
 - Open the notebook in the framework folder, set its widgets (`project_root`, `app`, `run_by` = `genie`, and the step's own), and run all cells.
-- Read the `Result:` cells and the check cell. If the run stopped at the time budget (`partial`), run it again: it resumes.
+- Read the last line `B2S_STATUS {...}` (short JSON), then the `Result:` cells. If `partial` is true (time budget), run it again: it resumes.
 - Never paste table data into the chat; read the summary files.
 - Every notebook run is recorded in `events/` with `run_by: genie` and the workspace user.
 

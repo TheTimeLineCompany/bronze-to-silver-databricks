@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 
 from . import FRAMEWORK_ROOT, FRAMEWORK_VERSION
-from .layout import APP_ID, Layout, guard_write
+from .layout import APP_ID, Layout, guard_write, is_shared
 from .store import atomic_write, dump_yaml, emit_event, load_any, now_iso
 
 DEFAULT_SETTINGS = {
@@ -49,11 +49,12 @@ REQUIRED_POINTS = {"CP3", "CP4", "CP5", "CP6"}
 def init_project(root: str | Path, name: str, workers: list | None = None) -> Layout:
     """Create a project folder: project.yaml (framework pin), ontology copy, folders. Refuses /Workspace/Shared (DB-12)."""
     layout = Layout(root)
-    if "/Workspace/Shared" in layout.root.as_posix():
+    if is_shared(root) or is_shared(layout.root):
         raise ValueError("project folder must not be under /Workspace/Shared (readable by all users; R-01, DB-12)")
     if layout.project_yaml.exists():
         raise FileExistsError(f"project exists: {layout.project_yaml}")
     cfg = {"name": name, "framework_version": FRAMEWORK_VERSION, "created": now_iso(), "workers": workers or [],
+           "approvers": [],   # names allowed in approval statements; empty = any name except agent names
            "settings": DEFAULT_SETTINGS, "approval_points": DEFAULT_APPROVAL_POINTS}
     atomic_write(layout.project_yaml, dump_yaml(cfg))
     src = FRAMEWORK_ROOT / "registry_template"
@@ -62,10 +63,8 @@ def init_project(root: str | Path, name: str, workers: list | None = None) -> La
             atomic_write(layout.ontology_dir / f.name, f.read_bytes())
     for d in (layout.events_dir, layout.ids_dir, layout.plugins_dir, layout.contrib_dir, layout.root / "apps"):
         guard_write(d).mkdir(parents=True, exist_ok=True)
-    atomic_write(layout.root / "AGENTS.md", (
-        "# Project folder\n\nThis folder holds project state for the Bronze-to-Silver framework "
-        f"{FRAMEWORK_VERSION}.\nRules for agents: see AGENTS.md and rules/ in the framework folder.\n"
-        "Never edit a file whose name has .vNNN.; save changes as a new version (`python -m b2s save`).\n").encode())
+    from .install import refresh_project_agents
+    refresh_project_agents(layout)
     emit_event(layout, "project_created", note=name)
     return layout
 

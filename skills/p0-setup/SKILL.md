@@ -5,11 +5,18 @@ description: Step P0. Set up a project folder, integrate the client's own notebo
 
 # P0 Setup (once per project) and first-use integration
 
-## 1. Setup check
-Run `notebooks/00_start_here` with `action = setup-check` (widgets: `project_root`, `run_by = genie`). It must print `SETUP OK`. Fix what it reports (libraries in the notebook's serverless environment; project folder not under `/Workspace/Shared`).
+## 1. Workspace checks (first time in a workspace)
+Run `notebooks/nb_doctor` (widgets: `project_root`, `run_by = genie`; optionally one view and its base table for K-04).
+It prints PASS / FAIL / MANUAL for K-01 … K-08 and writes `capabilities` into `project.yaml` (the code follows them,
+e.g. the lock method). A FAIL on K-01 or SHARED stops here: tell the worker what to fix. Report the MANUAL items.
+Then run `notebooks/00_start_here` with `action = setup-check`; it must print `SETUP OK`.
 
 ## 2. Project
 No `project.yaml` yet → run `00_start_here` with `action = new-project` (`text` = project name). It pins the framework version and copies the ontology into `_project/`.
+
+## 2b. Skills where Genie loads them
+`python -m b2s --project <p> install-skills <your skill folder>` (for example `/Workspace/Users/<me>/.assistant/skills`).
+`status --brief` warns when the installed skills do not match the framework version.
 
 ## 3. First use: integrate the client's assets (once per project)
 `python -m b2s --project <p> plugin list` shows each slot and whether it runs the core default.

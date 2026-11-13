@@ -2,7 +2,10 @@
 
 Design: docs/V1_4_DESIGN.md. All state lives in files of a project folder; see b2s.store and b2s.versions.
 """
+import sys
 from pathlib import Path
+
+sys.dont_write_bytecode = True        # never write __pycache__ into /Workspace (feedback I-17 §5)
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 try:

@@ -22,6 +22,7 @@ dbutils.widgets.text("profiler_run", "", "Profiler plug-in run (plan.json path; 
 
 # Setup: framework on the path, identity from the workspace (never typed), libraries check, project state.
 import os, sys
+sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 FRAMEWORK = os.path.abspath("..")          # notebooks/ sits inside the framework folder; the working dir is the notebook's
 sys.path.insert(0, FRAMEWORK)
 try:
@@ -36,7 +37,7 @@ from b2s import FRAMEWORK_VERSION
 from b2s.project import open_project, app_config
 from b2s.store import acquire_lease
 from b2s.baseline import run, SparkReader
-layout = open_project(dbutils.widgets.get("project_root"))
+layout = open_project((dbutils.widgets.get("project_root").strip() or os.environ.get("B2S_PROJECT", "")))
 APP = dbutils.widgets.get("app")
 lease = acquire_lease(layout, APP)
 print("framework", FRAMEWORK_VERSION, "| user", os.environ.get("B2S_USER"), "| lease until", lease["expires"])
@@ -110,3 +111,13 @@ print("privacy check OK")
 
 from b2s.store import release_lease
 release_lease(layout, APP)
+
+# COMMAND ----------
+
+# Status (one short JSON line for Genie Code; feedback I-17 §4)
+import json as _json
+_status = {"notebook": 'nb_p1_baseline', "app": globals().get("APP"), "ok": True}
+for _k in ("summary", "res", "results", "req"):
+    if isinstance(globals().get(_k), dict):
+        _status.update({k: v for k, v in globals()[_k].items() if k in ("partial", "_version", "remaining_count", "id", "passed", "failed")})
+print("B2S_STATUS " + _json.dumps(_status, default=str)[:2000])

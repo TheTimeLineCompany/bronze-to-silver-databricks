@@ -47,8 +47,14 @@ def kind_of(item_id: str) -> str:
     return PREFIX_TO_KIND[prefix]
 
 
+def bucket(item_id: str) -> str:
+    """E-0123 -> E-01xx (100 ids per folder); OP-3f9a2c -> OP-3f (hash ids by first two characters)."""
+    prefix, rest = item_id.split("-", 1)
+    return f"{prefix}-{rest[:-2]}xx" if rest.isdigit() else f"{prefix}-{rest[:2]}"
+
+
 def _stem(layout: Layout, app: str, kind: str, item_id: str) -> Path:
-    return layout.state_dir_app(app) / "items" / KINDS[kind][1] / item_id
+    return layout.state_dir_app(app) / "items" / KINDS[kind][1] / bucket(item_id) / item_id
 
 
 RESERVED = {"id", "kind", "app", "created", "updated"}
@@ -141,8 +147,8 @@ def list_items(layout: Layout, app: str, kind: str, **filters) -> list[dict]:
     folder = layout.state_dir_app(app) / "items" / KINDS[kind][1]
     if not folder.exists():
         return []
-    ids = sorted({f.name.split(".v")[0] for f in folder.iterdir() if versions.VER_RE.match(f.name) and f.name.endswith(".json")
-                  and not f.name.endswith(".meta.json")})
+    ids = sorted({f.name.split(".v")[0] for b in folder.iterdir() if b.is_dir() for f in b.iterdir()
+                  if versions.VER_RE.match(f.name) and f.name.endswith(".json") and not f.name.endswith(".meta.json")})
     out = []
     for i in ids:
         it = get(layout, app, i)

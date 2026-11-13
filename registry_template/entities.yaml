@@ -1,17 +1,17 @@
 # Central conformed entities (the shared ER model).
 # Checkpoint CP3 approves this file. After CP3, change it only through a change request PR
-# (see registry/decisions.md). Every source STTM must point its foreign keys here.
+# (decisions are items and approvals in the project). Every source STTM must point its foreign keys here.
 #
 # Fields
 #   name            Entity name used in STTM `fk.entity` and `conformed_entity`.
-#   business_object Business object it implements (registry/ontology/business.yaml).
-#   data_class      master | reference (registry/ontology/data.yaml).
+#   business_object Business object it implements (_project/business.yaml).
+#   data_class      master | reference (_project/data.yaml).
 #   target_table    Silver table name (follow standards/naming.yaml).
 #   grain           One sentence: what one row means.
 #   business_key    Natural key columns (after key normalisation).
 #   surrogate_key   Column that other tables reference as their FK.
 #   scd_type        0, 1 or 2. Masters are usually 2.
-#   key_rule        Name of a rule in registry/key_normalisation.yaml.
+#   key_rule        Name of a rule in _project/key_normalisation.yaml.
 #   owner           Person who approves changes.
 #   status          proposed | approved
 

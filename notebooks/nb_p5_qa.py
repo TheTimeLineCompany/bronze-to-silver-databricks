@@ -17,6 +17,7 @@ dbutils.widgets.dropdown("run_by", "genie", ["genie", "person"], "Run by")
 
 # Setup: framework on the path, identity from the workspace (never typed), project state.
 import os, sys
+sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 FRAMEWORK = os.path.abspath("..")
 sys.path.insert(0, FRAMEWORK)
 try:
@@ -29,7 +30,7 @@ for lib_name in ("yaml",):
 from b2s import FRAMEWORK_VERSION, versions
 from b2s.project import open_project
 from b2s.build import record_results
-layout = open_project(dbutils.widgets.get("project_root"))
+layout = open_project((dbutils.widgets.get("project_root").strip() or os.environ.get("B2S_PROJECT", "")))
 APP = dbutils.widgets.get("app")
 os.environ["B2S_REGISTRY_DIR"] = os.path.join(str(layout.root), "_project")
 from lib import qa_checks as qa
@@ -77,3 +78,13 @@ print(rv.label, "| checks", len(results), "| not passing", sum(r["status"] != "p
 
 # MAGIC %md
 # MAGIC Next: P5.3 code review in a new chat (`@p5-3-code-review`), then `python -m b2s cp-auto <app> CP5`.
+
+# COMMAND ----------
+
+# Status (one short JSON line for Genie Code; feedback I-17 §4)
+import json as _json
+_status = {"notebook": 'nb_p5_qa', "app": globals().get("APP"), "ok": True}
+for _k in ("summary", "res", "results", "req"):
+    if isinstance(globals().get(_k), dict):
+        _status.update({k: v for k, v in globals()[_k].items() if k in ("partial", "_version", "remaining_count", "id", "passed", "failed")})
+print("B2S_STATUS " + _json.dumps(_status, default=str)[:2000])

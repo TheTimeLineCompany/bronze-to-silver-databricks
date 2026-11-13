@@ -27,6 +27,7 @@ dbutils.widgets.text("text2", "", "Lookup schemas / statement")
 
 # Setup: framework on the path, identity from the workspace (never typed).
 import os, sys
+sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 sys.path.insert(0, os.path.abspath(".."))
 try:
     os.environ["B2S_USER"] = spark.sql("SELECT current_user() u").collect()[0]["u"]
@@ -38,7 +39,7 @@ from b2s import FRAMEWORK_VERSION, navigator, items
 from b2s.project import init_project, open_project, register_app
 from b2s.approve import request, record, ApprovalError
 action = dbutils.widgets.get("action")
-root, app = dbutils.widgets.get("project_root").strip(), dbutils.widgets.get("app").strip()
+root, app = (dbutils.widgets.get("project_root").strip() or os.environ.get("B2S_PROJECT", "")), dbutils.widgets.get("app").strip()
 t1, t2 = dbutils.widgets.get("text").strip(), dbutils.widgets.get("text2").strip()
 print("framework", FRAMEWORK_VERSION, "| user", os.environ.get("B2S_USER"), "| action", action)
 
@@ -51,7 +52,8 @@ if action == "setup-check":
             __import__(lib)
         except ImportError:
             problems.append(f"library {lib} missing: add it to this notebook's serverless environment")
-    if root and "/Workspace/Shared" in root:
+    from b2s.layout import is_shared
+    if root and is_shared(root):
         problems.append("project folder is under /Workspace/Shared (readable by all users): move it")
     if not os.environ.get("B2S_USER"):
         problems.append("current_user() not available")
@@ -95,3 +97,13 @@ if root and action not in ("setup-check",):
     from b2s.store import list_events
     evs = [e for e in list_events(open_project(root)) if e["user"] == os.environ.get("B2S_USER")]
     print(f"events by {os.environ.get('B2S_USER')}: {len(evs)} (latest: {evs[-1]['action'] if evs else '-'})")
+
+# COMMAND ----------
+
+# Status (one short JSON line for Genie Code; feedback I-17 §4)
+import json as _json
+_status = {"notebook": '00_start_here', "app": globals().get("APP"), "ok": True}
+for _k in ("summary", "res", "results", "req"):
+    if isinstance(globals().get(_k), dict):
+        _status.update({k: v for k, v in globals()[_k].items() if k in ("partial", "_version", "remaining_count", "id", "passed", "failed")})
+print("B2S_STATUS " + _json.dumps(_status, default=str)[:2000])

@@ -1,10 +1,10 @@
 # BUSINESS ONTOLOGY — what the supply-chain business is made of, independent of any system.
-# Layer 1 of 3 (business -> data -> information). See registry/ontology/README.md.
+# Layer 1 of 3 (business -> data -> information). Copied into <project>/_project/ by P0.
 #
 # Why: 30 source systems use different words for the same thing ("vendor", "supplier",
 # "provider"). Agents and people must use ONE vocabulary. Every silver table names a
 # business_object from this file, and every FK must follow a relationship declared here.
-# tools/x_ontology_check.py and tools/p4_2_validate_sttm.py enforce this.
+# b2s.models and b2s.sttm check this.
 #
 # EXAMPLE CONTENT: refine it with the client in P0 and approve it at CP3.
 
@@ -28,7 +28,7 @@ processes:
   P-SAVE-02: {domain: SAVE, name: Record actual savings}
 
 # Abbreviations found in source column and table names -> business words.
-# Used by bronze discovery (tools/discovery/core.py) to map bronze tables to business objects. Extend per source.
+# Used by the P1 baseline and P2.3 column understanding (b2s) to map bronze tables to business objects. Extend per source.
 abbreviations:
   cntr: container
   ctr: container

@@ -12,7 +12,7 @@ import re
 
 from . import items, versions
 from .layout import Layout
-from .project import approval_points
+from .project import approval_points, config as _config
 from .steps import OUTPUT_TO_STEP, ext_of
 from .store import atomic_write, dump_json, emit_event, load_any, next_id, now_iso, sha256_file, write_once
 
@@ -195,11 +195,11 @@ def request(layout: Layout, app: str, point: str) -> dict:
     req = {"id": rid, "app": app, "point": point, "name": cfg["name"], "files": files, "decisions": decisions,
            "changes_since_last_approval": changes, "created": now_iso()}
     req["template"] = template(point, [f["label"] for f in files.values()], decisions)
-    req["chat_text"] = chat_text(req, layout)
     write_once(layout.review_dir(app) / f"{rid}.json", dump_json(req))
     atomic_write(layout.review_dir(app) / f"{rid}.html", _page(req).encode("utf-8"))
     emit_event(layout, "approval_requested", app=app, items=[rid], note=point)
-    return req
+    # the chat text is made for display only; request files hold data, never text addressed to an agent (I-17 §4)
+    return {**req, "chat_text": chat_text(req, layout)}
 
 
 def template(point: str, labels: list[str], decisions: list[dict]) -> str:
@@ -240,6 +240,8 @@ def _page(req: dict) -> str:
 
 
 # =========================================================================== record
+AGENT_NAMES = {"genie", "genie code", "claude", "assistant", "the assistant", "agent", "the agent", "ai", "copilot",
+               "databricks assistant", "framework", "framework checks", "system"}
 _STMT = re.compile(r"^\s*I\s*,\s*(?P<name>[^,\n]+?)\s*,\s*approve[sd]?\b(?P<rest>.*)$", re.I)
 _STMT_LOOSE = re.compile(r"^\s*I\s+(?P<name>[^\n]+?)\s+approve[sd]?\b(?P<rest>.*)$", re.I)
 _LABEL = re.compile(r"\b([A-Za-z0-9_]+)\.v(\d{3})\b")
@@ -256,6 +258,8 @@ def parse_statement(text: str) -> dict:
     name = m["name"].strip()
     if "<" in name or not re.search(r"[A-Za-z]", name):
         raise ApprovalError("the statement needs your name in place of <your name>")
+    if name.lower().strip(" .") in AGENT_NAMES:
+        raise ApprovalError(f"'{name}' is an agent, not a person: the worker approves with their own name")
     decisions = {}
     for l in lines[1:]:
         d = _DEC.match(l)
@@ -276,6 +280,9 @@ def record(layout: Layout, app: str, request_id: str, statement: str, *, how: st
     if approvals_for_request(layout, app, request_id):
         raise ApprovalError(f"request {request_id} was already approved")
     st = parse_statement(statement)
+    allowed = [a.lower() for a in (_config(layout).get("approvers") or [])]
+    if allowed and st["name"].lower() not in allowed:
+        raise ApprovalError(f"'{st['name']}' is not an approver of this project (project.yaml approvers)")
     rest = st["rest"].lower()
     if not (re.search(rf"\b{re.escape(point.lower())}\b", rest) or cfg["name"].lower() in rest):
         raise ApprovalError(f"the statement must name the approval point ({point} or '{cfg['name']}')")

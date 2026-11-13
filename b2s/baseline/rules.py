@@ -1,4 +1,4 @@
-"""Vendored from V1.1 tools/discovery/core.py (public 2.4.0, commit db4fc1b). Do not edit the V1.1 file.
+"""Column and key rules for the P1 baseline (first taken from the 2.4.0 discovery engine; maintained here).
 
 Kept: identifier tokens, type families, key likeness and composite-key search (find_keys), column classes
 (classify_column), and value redaction (redact_values). Changes for V1.4 live in b2s.baseline.engine, not here.

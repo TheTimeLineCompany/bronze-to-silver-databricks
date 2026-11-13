@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections import Counter
 
-from .rules_v11 import VALUE_KINDS, family
+from .rules import VALUE_KINDS, family
 
 _KIND_RE = {k: re.compile(v) for k, v in VALUE_KINDS.items()}
 

@@ -17,7 +17,7 @@ deterministic notebook or format arrives.
    - **Notebook asset** (e.g. the client's bronze profiler): `kind: notebook`, copy the notebook unchanged into the folder (`notebook: <file>`), list its widgets under `parameters` (placeholders `{app}`, `{project_root}`, `{run_dir}`, `{schema}`), and write `adapter.py:convert(run_dir)` that turns the files the notebook writes into the slot contract. Add `sample_output/` with the real output of one run on non-personal test data — the contract test runs `convert` on it.
    - Example `plugin.yaml` (notebook): `name: client_profiler`, `slot: profiler`, `kind: notebook`, `version: 2.1.0`, `notebook: client_profiler.py`, `parameters: {schema: '{schema}', output_folder: '{run_dir}'}`, `entry: adapter.py:convert`, `description: ...`.
 3. `python -m b2s plugin install plugin-src/<name>` — runs the contract test (e.g. an export must keep every table, column and open item).
-4. Ask the worker to approve it in the chat: `I, <your name>, approve PLUGIN <name>.v<version>.` then `python -m b2s plugin activate <name> --statement "<reply exactly as typed>"`.
+4. Ask the worker to approve it in the chat: `I, <your name>, approve PLUGIN <name>.v<version>.` then `python -m b2s plugin activate <name> --statement-file -` with the reply on stdin, exactly as typed.
 5. From now on the plug-in overrides the core one; every run records its version and approval pages show the override. A notebook plug-in is run by the agent in the step that uses it (`@p1-baseline` for the profiler: `plugins.run_plan` gives the notebook and widgets, `plugins.collect` converts its output).
 6. `python -m b2s plugin package <name> --note CHANGE_NOTE.md` — the zip in `contrib/` goes to the maintainers.
 

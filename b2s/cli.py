@@ -33,6 +33,18 @@ def _out(a, obj, text=None):
         print(text)
 
 
+def _statement(a) -> str:
+    """The worker's statement, verbatim: --statement-file <file> or --statement-file - (stdin); --statement as a fallback.
+    Prefer stdin or a file: quotes and line breaks in a statement must not pass through shell quoting."""
+    if a.statement_file == "-":
+        return sys.stdin.read()
+    if a.statement_file:
+        return Path(a.statement_file).read_text(encoding="utf-8")
+    if a.statement:
+        return a.statement
+    sys.exit("give the statement with --statement-file - (stdin) or --statement-file <file>")
+
+
 def _load_json_arg(s: str):
     p = Path(s)
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else json.loads(s)
@@ -52,8 +64,31 @@ def cmd_register(a):
 
 def cmd_status(a):
     lay = _layout(a)
+    if a.brief:
+        print(navigator.brief(lay, a.app))
+        return
     st = navigator.status(lay, a.app)
     _out(a, st, navigator.render_text(st))
+
+
+def cmd_doctor(a):
+    from . import doctor
+    from .install import refresh_project_agents
+    lay = _layout(a)
+    res = doctor.file_checks(lay)
+    refresh_project_agents(lay)
+    _out(a, res, doctor.render(res["results"]) + f"\ncapabilities: {res['capabilities']}")
+    sys.exit(0 if all(r["ok"] is not False for k, r in res["results"].items() if k in ("K-01", "SHARED")) and
+             res["capabilities"]["lock_mode"] != "none" else 1)
+
+
+def cmd_install_skills(a):
+    from .install import install_skills, refresh_project_agents
+    lay = _layout(a) if (a.project or os.environ.get("B2S_PROJECT")) else None
+    stamp = install_skills(a.target, lay)
+    if lay:
+        refresh_project_agents(lay)
+    print(f"installed {len(stamp['skills'])} skills into {a.target} (framework {stamp['framework_version']})")
 
 
 def cmd_save(a):
@@ -200,7 +235,7 @@ def cmd_approve(a):
             req = request(lay, a.app, a.arg)
             _out(a, req, req["chat_text"])
         else:
-            stmt = Path(a.statement_file).read_text(encoding="utf-8") if a.statement_file else a.statement
+            stmt = _statement(a)
             res = record(lay, a.app, a.arg, stmt, how=a.how)
             msg = f"recorded {res['approval']['id']} ({res['approval']['point']}) for {res['approval']['name_in_statement']}"
             if res.get("decisions"):
@@ -218,7 +253,7 @@ def cmd_plugin(a):
     if a.action == "install":
         _out(a, plugins.install(lay, a.arg))
     elif a.action == "activate":
-        _out(a, plugins.activate(lay, a.arg, a.statement))
+        _out(a, plugins.activate(lay, a.arg, _statement(a)))
     elif a.action == "package":
         print(plugins.package(lay, a.arg, Path(a.note).read_text(encoding="utf-8") if Path(a.note).exists() else a.note))
     else:
@@ -304,7 +339,9 @@ def build_parser() -> argparse.ArgumentParser:
     APP = (["app"], {})
     add("init", cmd_init, (["root"], {}), (["name"], {}))
     add("register", cmd_register, APP, (["name"], {}), (["--schemas"], {"required": True}), (["--lookups"], {}))
-    add("status", cmd_status, APP)
+    add("status", cmd_status, APP, (["--brief"], {"action": "store_true", "help": "handover text for a new chat"}))
+    add("doctor", cmd_doctor)
+    add("install-skills", cmd_install_skills, (["target"], {"help": "Genie skill folder, e.g. /Workspace/Users/<me>/.assistant/skills"}))
     add("save", cmd_save, APP, (["stem"], {}), (["file"], {}), (["--reason"], {"required": True}))
     add("diff", cmd_diff, APP, (["stem"], {}), (["a"], {}), (["b"], {}))
     add("view", cmd_view, APP, (["model"], {"nargs": "?"}), (["version"], {"nargs": "?"}))
@@ -328,7 +365,7 @@ def build_parser() -> argparse.ArgumentParser:
         (["arg"], {"help": "checkpoint CP1..CP4 (request) or AR id (record)"}), (["--statement"], {}),
         (["--statement-file"], {}), (["--how"], {"default": "chat", "choices": ["chat", "notebook"]}))
     pl = add("plugin", cmd_plugin, (["action"], {"choices": ["install", "activate", "package", "list"]}),
-             (["arg"], {"nargs": "?"}), (["--statement"], {}), (["--note"], {}))
+             (["arg"], {"nargs": "?"}), (["--statement"], {}), (["--statement-file"], {}), (["--note"], {}))
     return p
 
 

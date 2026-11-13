@@ -22,7 +22,8 @@ CP3b (key rules) and CP4b (business logic) stay as in V1.3 for now.
    `I, <your name>, approve CP3 logical.v004.`
    At CP1 and CP4 the decisions follow, one per line, pre-filled with the worker's previous decisions.
 3. Wait for the worker's reply. Pass it **verbatim**:
-   `python -m b2s approve record <app> <AR-id> --statement "<reply exactly as typed>" --via genie`
+   `python -m b2s approve record <app> <AR-id> --statement-file - --via genie` with the reply on stdin, exactly as typed
+   (a here-document; never inside shell quotes — quotes and line breaks in a statement must arrive unchanged)
 4. Report the result. If it refuses (a file changed, a version differs, a name or decision is missing), say why and ask again — a new request shows the new version.
 
 ## Never

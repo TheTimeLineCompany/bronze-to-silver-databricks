@@ -15,7 +15,7 @@ from ..layout import Layout
 from ..project import app_config, ontology, settings
 from ..store import emit_event, sha256_bytes
 from .profile import profile_columns
-from .rules_v11 import (DESCISH, KEYISH, SENSITIVE_CLASSES, STAGING, classify_column, find_keys, is_technical,
+from .rules import (DESCISH, KEYISH, SENSITIVE_CLASSES, STAGING, classify_column, find_keys, is_technical,
                         log_name_count, tokens)
 
 ENGINE_VERSION = "p2-1"
@@ -39,6 +39,27 @@ def _patterns(layout: Layout) -> dict:
     pats = dict(DEFAULT_PATTERNS)
     pats.update((info.get("column_patterns") or {}))
     return {k: [re.compile(p, re.I) for p in v] for k, v in pats.items()}
+
+
+NON_BUSINESS = {"audit_metadata", "cdc_metadata", "application_log", "secret_or_token", "empty", "constant"}
+
+
+def _abbreviations(layout: Layout) -> dict:
+    abbr = dict((ontology(layout, "business").get("abbreviations") or {}))
+    abbr.update(ontology(layout, "information").get("abbreviations") or {})
+    return {str(k).lower(): str(v).lower() for k, v in abbr.items()}
+
+
+def unified(col: str, abbr: dict) -> str:
+    """plt_cd -> plant_code style name used to compare tables whose columns differ only by abbreviation."""
+    parts = [p for p in re.split(r"[^a-z0-9]+", re.sub(r"([a-z])([A-Z])", r"\1_\2", col).lower()) if p]
+    return "_".join(abbr.get(p, p) for p in parts)
+
+
+def business_signature(prof: dict, abbr: dict) -> list:
+    """[(unified name, column)] of the business columns, sorted by unified name."""
+    return sorted((unified(c["column"], abbr), c["column"]) for c in prof["columns"]
+                  if c.get("column_class") not in NON_BUSINESS)
 
 
 def _desc_like(col: str) -> bool:
@@ -111,8 +132,8 @@ def profile_table(reader, table: str, cfg: dict, pats: dict, external_cols: list
         sample = []
         profs = [dict(c) for c in external_cols]
     else:
-        sample = reader.sample(table, int(cfg.get("sample_rows", 5_000_000)), int(cfg.get("seed", 42))) if rows_total else []
-        profs = profile_columns(sample, cols, topk=int(cfg.get("topk", 20)))
+        n_prof, profs = reader.profile_columns(table, cols, cfg) if rows_total else (0, profile_columns([], cols))
+        sample = range(n_prof)                 # only its length is used below; rows never leave the reader
     n_log = log_name_count(profs)
     pre = {p["column"]: classify_column(p, table_log_names=n_log)["column_class"] for p in profs}
     budget = {"sample_rows": max(1, len(sample) if external_cols is None else rows_total), "max_key_size": cfg.get("max_key_size", 4),
@@ -180,6 +201,7 @@ def run(layout: Layout, app: str, reader, *, time_budget_s: float | None = None,
     budget_s = time_budget_s if time_budget_s is not None else float(st.get("time_budget_minutes", 25)) * 60
     pats = _patterns(layout)
     pat_src = {k: [p.pattern for p in v] for k, v in pats.items()}
+    abbr = _abbreviations(layout)
     t0 = time.monotonic()
     done, skipped, created, remaining = {}, [], [], []
     for i, t in enumerate(tables):
@@ -189,7 +211,7 @@ def run(layout: Layout, app: str, reader, *, time_budget_s: float | None = None,
         state = reader.state(t)
         state_hash = _sha(state)
         fp = _sha({"framework": FRAMEWORK_VERSION, "engine": ENGINE_VERSION, "settings": cfg, "patterns": pat_src,
-                   "redact": do_redact, "state": state, "profiler": external_info if external_profiles else None,
+                   "redact": do_redact, "state": state, "abbreviations": abbr, "profiler": external_info if external_profiles else None,
                    "external": _sha((external_profiles or {}).get(t)) if external_profiles else None})
         stem = layout.stem(app, f"baseline/tables/{t}")
         cur = versions.latest(stem, "json")
@@ -198,6 +220,9 @@ def run(layout: Layout, app: str, reader, *, time_budget_s: float | None = None,
             skipped.append(t)
             continue
         prof = profile_table(reader, t, cfg, pats, (external_profiles or {}).get(t))
+        sig = business_signature(prof, abbr)
+        prof["business_signature"] = [u for u, _ in sig]
+        prof["business_hash"] = reader.content_hash(t, [c for _, c in sig]) if prof["row_count"] and sig else None
         if external_profiles and t in external_profiles:
             prof["profiler_plugin"] = external_info
         if do_redact:
@@ -213,7 +238,10 @@ def run(layout: Layout, app: str, reader, *, time_budget_s: float | None = None,
     groups: dict = {}
     for t, (p, _) in done.items():
         if p["row_count"]:
-            groups.setdefault((tuple(c["column"] for c in p["columns"]), p["content_hash"]), []).append(t)
+            # same business columns (after unifying abbreviations, audit/CDC columns left out) and same content
+            key = (tuple(p.get("business_signature") or [c["column"] for c in p["columns"]]),
+                   p.get("business_hash") or p["content_hash"])
+            groups.setdefault(key, []).append(t)
     copy_of = {}
     for ts in groups.values():
         if len(ts) > 1:

@@ -24,6 +24,30 @@ def in_test_mode() -> bool:
     return os.environ.get("B2S_TEST") == "1" or "PYTEST_CURRENT_TEST" in os.environ
 
 
+def workspace_path(path: str | Path) -> str:
+    """One form for every way a workspace path is written: '/Workspace/Users/a/x', '/Users/a/x', 'dbfs:/Workspace/...',
+    Windows separators, trailing slashes, '..'. Returns '/Users/a/x' style (no /Workspace prefix)."""
+    s = str(path).replace("\\", "/").strip()
+    for prefix in ("dbfs:", "file:"):
+        if s.lower().startswith(prefix):
+            s = s[len(prefix):]
+    s = "/" + "/".join(p for p in s.split("/") if p not in ("", "."))
+    parts = []
+    for p in s.split("/")[1:]:
+        if p == "..":
+            parts = parts[:-1]
+        else:
+            parts.append(p)
+    if parts and parts[0].lower() == "workspace":
+        parts = parts[1:]
+    return "/" + "/".join(parts)
+
+
+def is_shared(path: str | Path) -> bool:
+    """True for /Workspace/Shared/..., /Shared/... in any spelling (readable by all workspace users)."""
+    return workspace_path(path).lower().startswith("/shared")
+
+
 def _norm(path: str | Path) -> Path:
     """Absolute, normalised path without resolving the file itself (resolve() on Windows can return a \\\\?\\ form
     for a file that is being deleted). '..' parts are collapsed, so they cannot escape the root."""

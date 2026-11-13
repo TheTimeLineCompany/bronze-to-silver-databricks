@@ -48,7 +48,7 @@ rules:
 #   source_priority:  source order for 'source_priority' and for ties
 #   attributes:       per attribute: {priority: [sources...]} or {rule: most_recent_update}
 # A NULL never wins over a value. Every master row records the winners in _survivor.
-# Required for every entity that two or more STTMs map (tools/x_ontology_check.py).
+# Required for every entity that two or more STTMs map (checked by the P5.4 master build).
 survivorship:
   Part:
     default: most_recent_update

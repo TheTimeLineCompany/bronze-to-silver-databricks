@@ -17,7 +17,8 @@ Read `rules/approvals.md` first.
    ```
    Point to the page `review/approvals/AR-nnnn.html` (it embeds the model viewer).
 4. Wait for the worker's reply. Then:
-   `python -m b2s approve record <app> <AR-id> --statement "<the reply exactly as typed>" --via genie`
+   `python -m b2s approve record <app> <AR-id> --statement-file - --via genie` with the reply on stdin, exactly as typed
+   (a here-document; never inside shell quotes — quotes and line breaks in a statement must arrive unchanged)
 5. Report: recorded (and at CP4: the decisions, and the handoff folder or the questions it waits for), or the reason it was refused. If a file changed, make a new request.
 
 ## Never

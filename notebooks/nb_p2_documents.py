@@ -15,6 +15,7 @@ dbutils.widgets.text("app", "", "Application id (S01_name)")
 
 # Setup: framework on the path, identity from the workspace, project state.
 import os, sys
+sys.dont_write_bytecode = True          # no __pycache__ in /Workspace
 sys.path.insert(0, os.path.abspath(".."))
 try:
     os.environ["B2S_USER"] = spark.sql("SELECT current_user() u").collect()[0]["u"]
@@ -25,7 +26,7 @@ os.environ["B2S_RUN_BY"] = dbutils.widgets.get("run_by")   # recorded in every e
 from b2s import FRAMEWORK_VERSION, documents, versions
 from b2s.project import open_project
 from b2s.store import acquire_lease, release_lease
-layout = open_project(dbutils.widgets.get("project_root"))
+layout = open_project((dbutils.widgets.get("project_root").strip() or os.environ.get("B2S_PROJECT", "")))
 APP = dbutils.widgets.get("app")
 acquire_lease(layout, APP)
 print("framework", FRAMEWORK_VERSION, "| user", os.environ.get("B2S_USER"))
@@ -102,3 +103,13 @@ for p in layout.sub(APP, "documents", "extracts").glob("*.md"):
     assert not re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", p.read_text(encoding="utf-8")), p.name
 print("privacy check OK")
 release_lease(layout, APP)
+
+# COMMAND ----------
+
+# Status (one short JSON line for Genie Code; feedback I-17 §4)
+import json as _json
+_status = {"notebook": 'nb_p2_documents', "app": globals().get("APP"), "ok": True}
+for _k in ("summary", "res", "results", "req"):
+    if isinstance(globals().get(_k), dict):
+        _status.update({k: v for k, v in globals()[_k].items() if k in ("partial", "_version", "remaining_count", "id", "passed", "failed")})
+print("B2S_STATUS " + _json.dumps(_status, default=str)[:2000])

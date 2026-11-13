@@ -87,6 +87,35 @@ def rerun_plan(layout: Layout, app: str) -> list[dict]:
             for k, v in st.items() if v["status"] in ("stale", "todo")]
 
 
+def brief(layout: Layout, app: str, max_chars: int = 3000) -> str:
+    """Handover text for a new chat, made from the state only (feedback I-17 §4: no hand-written notes)."""
+    from . import FRAMEWORK_VERSION, items
+    from .install import skills_problem
+    from .project import config
+    from .store import list_events
+    st = status(layout, app)
+    done = [f"{s['step']} " + ", ".join(t for t in s["outputs"].values() if t) for s in st["steps"] if s["status"] == "current"]
+    open_steps = [f"{s['step']} {s['status']}: {s['why'][0] if s['why'] else s['how']}" for s in st["steps"]
+                  if s["status"] != "current"]
+    cps = [f"{a['point']} {a['state']}" for a in st["approvals"] if a["state"] != "n/a"]
+    qs = [q["id"] for q in items.list_items(layout, app, "question") if q["status"] in ("open", "assumed")]
+    asm = [a["id"] for a in items.list_items(layout, app, "assumption", status="active")]
+    evs = [e for e in list_events(layout, app=app)][-3:]
+    lines = [f"Handover {app} (framework {FRAMEWORK_VERSION}, project pins {config(layout).get('framework_version')})",
+             "Done: " + ("; ".join(done) or "-"),
+             "Open: " + ("; ".join(open_steps) or "-"),
+             "Checkpoints: " + (", ".join(cps) or "-"),
+             f"Questions open: {len(qs)} {' '.join(qs[:10])}".rstrip(),
+             f"Assumptions active: {len(asm)} {' '.join(asm[:10])}".rstrip(),
+             "Last: " + ("; ".join(f"{e['at']} {e['action']} {e.get('step') or ''} {e.get('run_by') or e.get('via')}" for e in evs) or "-"),
+             "Next: " + (st["next"][0]["do"] if st["next"] else "nothing open")]
+    warn = skills_problem(layout)
+    if warn:
+        lines.append("Warning: " + warn)
+    text = "\n".join(lines)
+    return text if len(text) <= max_chars else text[: max_chars - 20] + "\n... (cut; use --json)"
+
+
 def render_text(st: dict) -> str:
     """Short text for the chat or the notebook."""
     lines = [f"Application {st['app']}", ""]

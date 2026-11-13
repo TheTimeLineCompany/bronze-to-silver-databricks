@@ -14,16 +14,16 @@ classes:
   DocumentType:   {desc: "What kind of file it is. See document_types."}
   BronzeTable:    {desc: "A table in the bronze schema.", has: [BronzeColumn]}
   BronzeColumn:   {desc: "A column in a bronze table."}
-  Evidence:       {desc: "One atomic claim with its origin (E-0001...). Lives in 02_evidence/evidence_register.csv.",
+  Evidence:       {desc: "One atomic claim with its origin (E-0001...). One item file per version in state/items/evidence/.",
                    about: [BronzeTable, BronzeColumn, Entity, Relationship, BusinessRule, CodeValue],
                    has: [origin, authority, confidence, status]}
-  Entity:         {desc: "Shared master entity in registry/entities.yaml (Part, Supplier, ...)."}
+  Entity:         {desc: "Shared master entity in _project/entities.yaml (Part, Supplier, ...)."}
   Relationship:   {desc: "A link between two tables or a table and an entity, with cardinality."}
   BusinessRule:   {desc: "A calculation or decision rule from the business (pricing, savings, KPIs)."}
   CodeValue:      {desc: "Meaning of a code or status value (for example STATUS_CD = 'A' means active)."}
   Mapping:        {desc: "The STTM: target tables and columns, each citing Evidence ids."}
   Question:       {desc: "Open point for the client (Q-0001...). Blocking or not."}
-  Decision:       {desc: "Recorded decision (D-0001...) in registry/decisions.md."}
+  Decision:       {desc: "A decision recorded as an item or an approval (APR-)."}
   Checkpoint:     {desc: "A human approval point (CP1...CP6). See checkpoints."}
   Feedback:       {desc: "Human input at a checkpoint (FB-0001...) that drives a rerun."}
 
@@ -52,7 +52,7 @@ document_types:
 evidence_origins:
   bronze_profile:  {authority: 1, proves: [key_uniqueness, nullability, format, cardinality, row_counts]}
   document:        {authority: "from document_types", proves: [meaning, business_rule, code_value, grain, relationship]}
-  client_answer:   {authority: 1, proves: [anything], note: "An answered Question in registry/open_questions.yaml, or a clarify answer the client confirmed"}
+  client_answer:   {authority: 1, proves: [anything], note: "An answered question (Q- item), or an answer the client confirmed"}
   team_knowledge:  {authority: 3, proves: [meaning, business_rule, code_value, grain, relationship],
                     note: "What a team member said in a clarify session (x-clarify). Medium at most; needs one corroboration."}
 
@@ -66,12 +66,12 @@ relevance:
   ignore:     "Never read. Duplicates, superseded versions, unrelated files."
 
 reading_rules:
-  - "Agents never read 00_inbox as a whole. They read 01_intake/manifest.md, then only files triaged core or supporting, and only the pages or sheets in read_plan."
+  - "Agents never read the inbox as a whole. They read the document inventory and triage (P2.1), then only files triaged core or supporting, and only the parts in the reading plan."
   - "One version per document group. Older versions are 'ignore' unless a person says otherwise."
-  - "Downstream steps (P2 onward) read 01_intake/source_brief.md and evidence_register.csv, not the inbox."
+  - "Later steps read the app brief and the evidence items, not the inbox."
   - "If a needed fact is missing from the brief, add it as new Evidence with its origin. Do not re-read everything."
 
-discovery_budgets:              # P2.2 bronze discovery (tools/p2_2_discover.py). Keeps cost and agent context small.
+discovery_budgets:              # kept from 2.4.0 for reference; the P1 baseline budgets are in project.yaml settings.baseline
   max_tables: 200               # per source; narrow with sources.yaml discovery.include
   sample_rows: 200000           # profiles run on a sample of this size
   max_pattern_columns: 12       # letter/digit shapes for the most key-like short string columns
@@ -115,7 +115,7 @@ confidence:
   low:     "A hypothesis only. Must be verified in bronze profiling or answered by the client before it supports a key, FK, grain, or business rule."
   unknown: "Treat as low."
 
-confidence_rules:      # enforced by tools/p4_2_validate_sttm.py
+confidence_rules:
   - "A PK, BK, or FK column cannot rest only on low/unknown-confidence evidence."
   - "A business_logic column cannot rest only on low/unknown-confidence evidence."
   - "If bronze profiling contradicts a document, bronze wins for structure; raise a Question for meaning."
@@ -123,40 +123,30 @@ confidence_rules:      # enforced by tools/p4_2_validate_sttm.py
 evidence_status: [unverified, corroborated, confirmed_by_bronze, contradicted, superseded]
 
 # ---------------------------------------------------------------------------
-# 5. Phases, checkpoints, handovers
+# 5. Column patterns and abbreviations (P1 baseline; edit per project)
 # ---------------------------------------------------------------------------
-# Folder per phase (folder number = phase number). P3 is global (registry/).
-phase_folders: {P1: 01_intake, P2: 02_evidence, P4: 04_mapping, P5: 05_build, P6: 06_handoff}
+# Columns left out of the key search and out of copy detection. The baseline records which rule removed which column.
+column_patterns:
+  cdc:   ['^_?load_?ver(sion)?$', '^_?cdc_', '^op_?type$', '^_?commit_?version$', '^_?change_?seq(uence)?$']
+  audit: ['^(created|updated|modified|changed|inserted|deleted)_?(by|at|on|ts|date|time|user)$']
 
-# Checkpoint pack: written by tools/x_checkpoint_pack.py into <phase folder>/checkpoint/ (global: registry/checkpoint/).
-# The .json holds SHA-1 hashes of its inputs; x_validate_gate.py refuses an approval with a missing or stale pack.
-checkpoint_pack:
-  json: "machine-readable: next skill, agents, a Delta table, an API"
-  xlsx: "README sheet (key numbers, issues, decisions) + one sheet per list, filters on"
-  md:   "one-page text summary for the PR and Git history"
-  html: "one page, no tabs: status, key numbers, connections, needs attention, reviewer decides, one key table"
+# Abbreviations found in column names -> words. Tables whose business columns differ only by these are compared as
+# copies (plt_cd and plant_code are the same column). Business-object abbreviations are in business.yaml.
+abbreviations:
+  plt: plant
+  cd: code
+  nm: name
+  desc: description
+  qty: quantity
+  amt: amount
+  dt: date
+  ts: timestamp
+  no: number
+  nr: number
+  num: number
+  stat: status
+  sts: status
+  typ: type
 
-phases:
-  P0: {name: Setup,                 scope: once}
-  P1: {name: Intake and focus,      scope: per source}
-  P2: {name: Discovery and evidence, scope: per source}
-  P3: {name: Central model,         scope: global}
-  P4: {name: Mapping,               scope: per source}
-  P5: {name: Build,                 scope: per source}
-  P6: {name: Handoff,               scope: per source}
-
-checkpoints:
-  CP1_source_brief:     {phase: P1, scope: source, approver: phase1-lead}
-  CP2_evidence:         {phase: P2, scope: source, approver: phase1-lead}
-  CP3_central_model:    {phase: P3, scope: global, approver: data-architect}
-  CP3b_key_rules:       {phase: P3, scope: global, approver: data-architect}
-  CP4_sttm:             {phase: P4, scope: source, approver: phase1-lead}
-  CP4b_business_logic:  {phase: P4, scope: source, approver: client-sme}
-  CP5_code_qa:          {phase: P5, scope: source, approver: phase2-lead}
-  CP6_handoff:          {phase: P6, scope: source, approver: deployment-lead}
-
-handovers:
-  H1: {after: [CP4_sttm, CP4b_business_logic], from: phase1-team, to: phase2-team,
-       package: ["04_mapping/sttm.yaml (approved)", "04_mapping/exports/", "02_evidence/evidence_register.csv", "04_mapping/reviews/", "04_mapping/checkpoint/"]}
-  H2: {after: [CP6_handoff], from: phase2-team, to: deployment-team,
-       package: ["05_build/ notebooks + job", "05_build/qa_results/summary.json", "06_handoff/readiness.md", "04_mapping/exports/"]}
+# The phases, checkpoints and folders of the framework are defined in code (b2s/steps.py, b2s/project.py,
+# b2s/layout.py) and in AGENTS.md; they are not configured here.

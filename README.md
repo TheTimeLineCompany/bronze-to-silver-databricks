@@ -53,21 +53,26 @@ Open `/tmp/b2s-demo/proj/apps/S90_yardops/work/P3/models/logical.v001.html` to s
 
 ## On Databricks
 1. Add this repository (a release) as a Git folder in the workspace. Workers do not commit to it.
-2. Genie Code: add the `skills/` folder; Genie reads `AGENTS.md`.
-3. In the Genie chat: `@p0-setup` (first use integrates your profiler notebook and STTM templates), then `@b2s-run`.
+2. Run `notebooks/nb_doctor` once: workspace checks K-01 … K-08 with PASS / FAIL, saved as capabilities the code follows.
+3. `python -m b2s --project <folder> install-skills <your Genie skill folder>`; Genie reads `AGENTS.md`.
+4. In the Genie chat: `@p0-setup` (first use integrates your profiler notebook and STTM templates), then `@b2s-run`.
+   A new chat starts from `python -m b2s --project <folder> status <app> --brief`.
+
+Status: built and tested locally (fake application); not yet run on a Databricks workspace. See the verification
+table in [`docs/V1_4_DESIGN.md`](docs/V1_4_DESIGN.md) §14.
 
 ## Repository
 | Path | What |
 |---|---|
 | `AGENTS.md`, `rules/` | rules for Genie Code |
 | `skills/` | one skill per step, `@b2s-run`, `@x-approve`, `@x-research`, `@x-input`, `@x-model-view`, `@fw-integrate` |
-| `notebooks/` | `00_start_here`, `nb_p1_baseline`, `nb_p2_documents`, `nb_p5_qa` (run by the agent) |
+| `notebooks/` | `00_start_here`, `nb_doctor`, `nb_p1_baseline`, `nb_p2_documents`, `nb_p5_qa` (run by the agent) |
 | `b2s/` | the framework package (`python -m b2s ...`) |
 | `lib/`, `standards/` | PySpark runtime library and client standards used by the generated silver notebooks |
 | `plugins/` | core plug-ins (defaults for each slot) |
 | `registry_template/` | ontology and registries copied into a new project |
 | `tests/` | unit, flow and end-to-end tests |
-| `docs/` | design, port guide for V1.3 code, review notes |
+| `docs/` | design (with verification status), migration from V1.3, review notes |
 
 ## License
 Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). Not affiliated with Databricks, Inc.

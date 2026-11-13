@@ -1,9 +1,9 @@
 # DATA ONTOLOGY — how business objects become data in bronze and silver.
-# Layer 2 of 3 (business -> data -> information). See registry/ontology/README.md.
+# Layer 2 of 3 (business -> data -> information). Copied into <project>/_project/ by P0.
 #
 # Every silver table declares: business_object (business.yaml) + data_class (this file).
 # The data_class decides the allowed load patterns, history, and key rules.
-# tools/p4_2_validate_sttm.py and tools/x_ontology_check.py enforce these rules.
+# b2s.models and b2s.sttm check these rules.
 
 version: 1
 
@@ -19,7 +19,7 @@ data_classes:
     business_kinds: [party, thing, place]
     allowed_load_patterns: [scd2, merge]
     history: "SCD2 by default; SCD1 only if the registry says history is not needed."
-    conformed: true          # must be an entity in registry/entities.yaml
+    conformed: true          # must be an entity in _project/entities.yaml
     key: "business key normalised by a key rule + surrogate key"
   reference:
     desc: "Small code lists and classifications (materials, status codes, units)."
@@ -65,7 +65,7 @@ data_classes:
     key: "both foreign keys (+ validity start)"
 
 key_types:
-  BK:    "Business key: natural identifier after key normalisation (registry/key_normalisation.yaml)."
+  BK:    "Business key: natural identifier after key normalisation (_project/key_normalisation.yaml)."
   SK:    "Surrogate key: sha2 hash of BK (+ effective_from for SCD2). Name ends _sk. Primary key in silver."
   FK:    "Foreign key: always the surrogate key of a conformed entity, and must follow a business relationship."
   PK_FK: "A key that is both (for 1:1 extensions)."
@@ -79,4 +79,4 @@ lineage:
   - "silver column (sttm.yaml column, rule + transform)"
   - "bronze table/column (sttm.yaml sources + column.source)"
   - "evidence (evidence_register.csv E-xxxx)"
-  - "origin (input file IF-xxxx + location, or 02_evidence/profiling/ file, or answered question)"
+  - "origin (input file IF-xxxx + location, or work/P1 baseline file, or answered question)"

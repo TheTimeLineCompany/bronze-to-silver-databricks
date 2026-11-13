@@ -95,10 +95,30 @@ class LockTimeout(TimeoutError):
     pass
 
 
+_CAPS: dict = {}
+
+
+def lock_mode(layout: Layout) -> str:
+    """o_excl (default) | mkdir — from project.yaml capabilities, written by `b2s doctor` after checks K-02/MKDIR."""
+    p = layout.project_yaml
+    try:
+        m = p.stat().st_mtime
+    except FileNotFoundError:
+        return "o_excl"
+    if _CAPS.get(str(p), (None,))[0] != m:
+        cfg = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        _CAPS[str(p)] = (m, (cfg.get("capabilities") or {}).get("lock_mode", "o_excl"))
+    return _CAPS[str(p)][1]
+
+
 @contextlib.contextmanager
 def file_lock(layout: Layout, name: str, timeout: float = 30.0, stale_after: float = 120.0):
-    """Exclusive lock via O_CREAT|O_EXCL on state/locks/<name>.lock (check K-02 on /Workspace).
-    A lock older than `stale_after` seconds is broken (its holder crashed)."""
+    """Exclusive lock on state/locks/<name>.lock: O_CREAT|O_EXCL (K-02), or os.mkdir when the doctor found that
+    O_EXCL does not work on this file system. A lock older than `stale_after` seconds is broken (its holder crashed)."""
+    if lock_mode(layout) == "mkdir":
+        with _mkdir_lock(layout, name, timeout, stale_after):
+            yield
+        return
     lock = guard_write(layout.locks_dir / f"{name}.lock")
     lock.parent.mkdir(parents=True, exist_ok=True)
     deadline = time.monotonic() + timeout
@@ -130,6 +150,34 @@ def file_lock(layout: Layout, name: str, timeout: float = 30.0, stale_after: flo
                 break
             except PermissionError:          # Windows: briefly held open by an antivirus scan or another process
                 time.sleep(0.01)
+
+
+@contextlib.contextmanager
+def _mkdir_lock(layout: Layout, name: str, timeout: float, stale_after: float):
+    lock = guard_write(layout.locks_dir / f"{name}.lockdir")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            os.mkdir(lock)
+            break
+        except (FileExistsError, PermissionError):
+            try:
+                if time.time() - lock.stat().st_mtime > stale_after:
+                    os.rmdir(lock)
+                    continue
+            except (FileNotFoundError, PermissionError, OSError):
+                pass
+            if time.monotonic() > deadline:
+                raise LockTimeout(f"could not get lock {name} within {timeout}s")
+            time.sleep(0.005 + secrets.randbelow(10) / 1000)
+    try:
+        yield
+    finally:
+        try:
+            os.rmdir(lock)
+        except FileNotFoundError:
+            pass
 
 
 # --------------------------------------------------------------------------- sequential ids (DC-09)
@@ -171,7 +219,7 @@ def emit_event(layout: Layout, action: str, *, app: str | None = None, step: str
     }
     if extra:
         ev.update(extra)
-    write_once(layout.events_dir / stamp[:8] / f"{eid}.json", dump_json(ev))
+    write_once(layout.events_dir / stamp[:8] / stamp[9:11] / f"{eid}.json", dump_json(ev))
     return eid
 
 
